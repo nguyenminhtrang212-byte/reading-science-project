@@ -11,239 +11,216 @@
   main{max-width:900px;margin:0 auto;padding:20px 16px 70px}
   h1{font-size:1.7rem;margin:.1em 0}
   h2{color:var(--accent);font-size:1.25rem;margin:1.8em 0 .4em}
+  h3{font-size:1rem;margin:1em 0 .2em;color:#555}
   .sub{color:#666;margin:0 0 .8em}
   .card{background:var(--card);border-radius:14px;padding:14px 18px;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   .hero{background:linear-gradient(135deg,#c0392b,#e67e22);color:#fff;border-radius:16px;padding:18px 22px}
   .hero p{margin:.3em 0}
   .steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
   .steps span{background:rgba(255,255,255,.2);border-radius:20px;padding:2px 12px;font-size:.9rem}
-  .tabs{display:flex;gap:8px;margin:14px 0}
-  .tab{font:inherit;font-weight:700;padding:8px 18px;border-radius:10px;border:2px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer}
-  .tab.on{background:var(--accent);color:#fff}
   .vi{display:none;color:var(--blue);font-weight:500;font-size:.95rem}
   .vi.on,body.show-all .vi{display:block}
   .mini{font:inherit;font-size:.85rem;border:2px solid #f0d5c6;background:#fff;border-radius:8px;padding:2px 10px;cursor:pointer;white-space:nowrap}
   .mini:hover{border-color:var(--accent)}
   button.btn{font:inherit;font-weight:600;padding:10px 20px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
   button.btn.alt{background:#fff;color:var(--accent);border:2px solid var(--accent)}
-  .sides{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media(max-width:600px){.sides{grid-template-columns:1fr}}
-  .side{border-radius:12px;padding:10px 14px;background:#fdf1ea;border:2px solid #f0d5c6}
-  .q{font-weight:600;margin-bottom:8px}
-  .opts{display:flex;flex-wrap:wrap;gap:8px}
-  .opts label{border:2px solid #e5e5e5;border-radius:10px;padding:6px 14px;cursor:pointer;background:#fafafa}
-  .opts input{margin-right:6px}
-  .opts label.ok{border-color:var(--ok);background:#e6f4ea}
-  .opts label.bad{border-color:var(--bad);background:#fce8e6}
-  .fb{margin-top:6px;font-size:.95rem}.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
-  .opt{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center}
-  .opt .txt{font-weight:600}
-  @media(max-width:600px){.opt{grid-template-columns:1fr}}
-  select{font:inherit;padding:4px 8px;border-radius:8px;border:2px solid #e5e5e5}
-  select.ok{border-color:var(--ok);background:#e6f4ea} select.bad{border-color:var(--bad);background:#fce8e6}
-  .star{color:#b8860b;font-weight:700}
+  .story{line-height:1.85}
+  .story p{margin:.5em 0}
+  .gloss{border-bottom:2px dotted var(--blue);cursor:pointer;color:var(--blue);font-weight:600}
+  #glossbox{position:sticky;bottom:10px;background:var(--blue);color:#fff;border-radius:12px;padding:10px 16px;margin-top:10px;display:none;z-index:5}
+  .q{font-weight:600;margin-bottom:6px}
   textarea,input[type=text]{width:100%;font:inherit;padding:8px 10px;border:2px solid #e5e5e5;border-radius:10px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
-  .chip{background:#fff;border:2px solid #f0d5c6;border-radius:20px;padding:4px 12px;cursor:pointer;font:inherit;font-size:.95rem}
-  .chip:hover{border-color:var(--accent)}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--accent)}
+  .fb{margin-top:6px;font-size:.95rem}.fb.ok{color:var(--ok)}.fb.hint{color:#555}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
   .phr{display:flex;gap:8px;align-items:flex-start}
   .phr .t{flex:1}.phr .en{font-weight:700}
+  .opt{border-left:5px solid #f0d5c6;padding-left:12px;margin:12px 0}
+  .opt label{display:block;font-size:.9rem;color:#666;margin:6px 0 2px}
   .check label{display:block;padding:4px 0;cursor:pointer}
   #badge{display:none;text-align:center;font-size:1.3rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#1e8e3e,#34a853);border-radius:14px;padding:14px;margin:10px 0}
   .tag{display:inline-block;background:#fde8e1;color:var(--accent);border-radius:6px;padding:0 8px;font-size:.8rem;margin-left:6px;font-weight:500}
   .role{border-left:5px solid var(--accent);padding-left:12px;margin:8px 0}
+  .stage{background:#fdf1ea;border-radius:8px;padding:2px 10px;font-weight:700;color:var(--accent);display:inline-block;margin-top:10px}
+  @media print{.mini,.btn,#toggleVi{display:none}}
 </style>
 </head>
 <body>
 <main>
   <div class="hero">
     <h1>🏅 Be a Win-Win Expert</h1>
-    <p>You are an expert. Two people have a problem. Help them find a <b>win-win solution</b> (giải pháp đôi bên cùng có lợi).</p>
-    <div class="steps"><span>1 Understand</span><span>2 List options</span><span>3 Check: fair? feasible?</span><span>4 Give your solution</span><span>5 Checklist</span></div>
+    <p>Mai tells you her problem. You are the expert. Listen, understand, and give <b>advice</b> for a <b>win-win solution</b> (giải pháp đôi bên cùng có lợi).</p>
+    <div class="steps"><span>1 Understand</span><span>2 Options</span><span>3 Expert phrases</span><span>4 Give advice</span><span>5 Checklist</span></div>
   </div>
   <div style="margin:10px 0"><button class="btn alt" id="toggleVi">👁 Xem / ẩn nghĩa tiếng Việt (tất cả)</button></div>
   <label>Your name / Tên của em: <input type="text" id="name" placeholder="Name…" style="max-width:320px"></label>
 
-  <h2>Choose a case <span class="tag">chọn tình huống</span></h2>
-  <div class="tabs" id="tabs"></div>
-  <div class="card" id="case"></div>
+  <h2>Mai’s Story <span class="tag">đọc hoặc nghe</span></h2>
+  <p class="sub">Bấm từ gạch chấm xanh để xem nghĩa.</p>
+  <div class="card story">
+    <div style="margin-bottom:6px"><button class="mini" id="listen">🔊 Listen</button> <button class="mini" id="vibtn">Xem nghĩa cả bài</button></div>
+    <p>Hi, I’m Mai. I’m 14. I <span class="gloss" data-m="share (v): dùng chung">share</span> a room with my brother Nam. He is 15. We have a problem every night.</p>
+    <p>Nam plays football for his school team. He gets up at 5:30 every morning, so he goes to bed at 9:30. He wants the room <span class="gloss" data-m="dark (adj): tối">dark</span> and quiet.</p>
+    <p>But I have an English test tomorrow. I need to study until 11 o’clock, and I need the light on.</p>
+    <p>Last night Nam said, “Turn off the light! I can’t sleep!” I said, “I have a test! Go to the living room!” We <span class="gloss" data-m="argue (v): tranh cãi">argued</span> for ten minutes. Then Nam turned off the light, and I studied with my phone. Now my eyes are <span class="gloss" data-m="tired (adj): mệt">tired</span> and Nam is angry.</p>
+    <p>I don’t want to argue any more. Can you help us?</p>
+    <div class="vi" id="svi">Mình là Mai, 14 tuổi. Mình ở chung phòng với anh Nam (15 tuổi). Mỗi đêm bọn mình đều có vấn đề. Nam chơi bóng đá cho đội trường, 5:30 sáng dậy nên 9:30 đi ngủ; anh muốn phòng tối và yên tĩnh. Nhưng mai mình có bài kiểm tra tiếng Anh, phải học đến 11 giờ và cần bật đèn. Tối qua Nam nói “Tắt đèn đi! Anh không ngủ được!” Mình nói “Em có bài kiểm tra! Anh ra phòng khách đi!” Hai anh em cãi nhau 10 phút. Rồi Nam tắt đèn, mình học bằng điện thoại. Giờ mắt mình mỏi và Nam đang giận. Mình không muốn cãi nhau nữa. Bạn giúp bọn mình được không?</div>
+  </div>
+  <div id="glossbox"></div>
 
-  <h2>Step 1 · Understand the problem <span class="tag">hiểu vấn đề</span></h2>
+  <h2>Step 1 · Understand the story <span class="tag">gõ câu trả lời</span></h2>
+  <p class="sub">Type your answers in English. Short sentences are OK. Bấm “Gợi ý” nếu cần.</p>
   <div id="s1"></div>
 
-  <h2>Step 2 · Check the options <span class="tag">kiểm tra lựa chọn</span></h2>
-  <p class="sub">For each option choose: Is it fair? Is it feasible? (fair = công bằng · feasible = khả thi) · A win-win option is <b>fair</b> and <b>feasible</b>.</p>
+  <h2>Step 2 · Find options <span class="tag">gõ lựa chọn</span></h2>
+  <p class="sub">Write 3 options for Mai and Nam. For each option say why it is <b>fair</b> (công bằng) and <b>feasible</b> (khả thi – làm được). Use “How about…?”</p>
   <div id="s2"></div>
-  <div style="margin:10px 0"><button class="btn" id="check12">Check Step 1 &amp; 2</button> <span id="score12" style="font-weight:700;margin-left:10px"></span></div>
+  <div class="card">
+    <div class="q">Which option is your win-win solution? Why?</div>
+    <textarea id="best" rows="2" placeholder="My win-win solution is option … because …"></textarea>
+  </div>
+  <div class="row"><button class="mini" id="ideaBtn">💡 Xem ý tưởng gợi ý</button></div>
+  <div class="card" id="ideas" style="display:none"></div>
 
-  <h2>Step 3 · Useful phrases <span class="tag">cụm hữu ích</span></h2>
-  <p class="sub">🔊 nghe · “Xem nghĩa” · “+ Add” thêm câu vào bài viết của em ở Step 4.</p>
+  <h2>Step 3 · Expert phrases <span class="tag">cách nói của chuyên gia</span></h2>
+  <p class="sub">🔊 nghe · “Xem nghĩa” · “+ Add” thêm câu vào lời khuyên ở Step 4.</p>
   <div id="phrases"></div>
 
-  <h2>Step 4 · You are the expert! Write your solution <span class="tag">viết giải pháp</span></h2>
+  <h2>Step 4 · Give your advice <span class="tag">nói như chuyên gia</span></h2>
   <div class="card">
-    <div class="q">Talk to the two people. Use 4 or more phrases from Step 3.</div>
-    <textarea id="answer" rows="9" placeholder="Can we stop for a second? …"></textarea>
-    <p class="sub" style="margin-top:6px">Mẫu / Sample: “Can we stop for a second? What do you need? … How about …? This works for me because … It’s fair because … It’s feasible because … It’s a win-win solution.”</p>
+    <div class="q">Talk to Mai and Nam like an expert. Use 4 or more phrases from Step 3.</div>
+    <textarea id="answer" rows="10" placeholder="Hi Mai. Thank you for telling me your story. I understand…"></textarea>
+    <p class="sub" style="margin-top:6px">Mẫu / Sample: “Hi Mai. Thank you for telling me your story. I understand. It sounds hard. Can we stop for a second? What does Nam need? … How about …? I think it’s a good idea because … It’s fair and feasible. It’s a win-win solution.”</p>
+    <div class="row"><button class="mini" id="listenAns">🔊 Nghe lời khuyên của em</button></div>
   </div>
 
   <h2>Step 5 · Expert checklist <span class="tag">tự kiểm tra</span></h2>
   <div class="card check" id="checklist"></div>
   <div id="badge">🏅 Win-Win Expert! Great job!</div>
-  <div class="bar" style="display:flex;gap:10px;flex-wrap:wrap">
-    <button class="btn" id="copy">📋 Copy my answer (gửi cho cô)</button>
+  <div class="row">
+    <button class="btn" id="copy">📋 Copy my answers (gửi cho cô)</button>
     <button class="btn alt" id="print">🖨 Print / Save PDF</button>
   </div>
   <div class="fb" id="copied"></div>
 
   <h2>Bonus · Role-play in 3 <span class="tag">nói theo nhóm 3</span></h2>
   <div class="card">
-    <div class="role"><b>A</b> = person 1 · <b>B</b> = person 2 · <b>C</b> = Expert</div>
-    <div class="role"><b>C (Expert):</b> Can we stop for a second? What do you need, A? And you, B?</div>
-    <div class="role"><b>A and B:</b> I need … because …</div>
-    <div class="role"><b>C:</b> Let’s list some options. How about …? Is it fair? Is it feasible?</div>
-    <div class="role"><b>A and B:</b> This works for me because … / Hmm, not really.</div>
-    <div class="role"><b>C:</b> Great! It’s a win-win solution.</div>
-    <p class="sub">Đổi vai sau mỗi lượt. Dùng tình huống Lan–Mẹ hoặc Nam–Mai.</p>
+    <div class="role"><b>Mai</b> · <b>Nam</b> · <b>Expert</b> (đổi vai sau mỗi lượt)</div>
+    <div class="role"><b>Expert:</b> Thank you for telling me your story. I understand. Can we stop for a second?</div>
+    <div class="role"><b>Expert:</b> Mai, what do you need? Nam, what do you need?</div>
+    <div class="role"><b>Mai / Nam:</b> I need … because …</div>
+    <div class="role"><b>Expert:</b> Let’s list some options. How about …? Is it fair? Is it feasible?</div>
+    <div class="role"><b>Mai / Nam:</b> This works for me because … / Hmm, not really.</div>
+    <div class="role"><b>Expert:</b> Great! It’s a win-win solution.</div>
   </div>
 </main>
 
 <script>
-const cases={
- A:{title:'Case A · Mom’s Phone',
-  story:'Lan is 14. She has a test tomorrow. She needs her phone to study with her group. Mom says, “No. Your phone distracts you.” Lan is angry. Mom is worried.',
-  vi:'Lan 14 tuổi, mai có bài kiểm tra. Bạn cần điện thoại để học nhóm. Mẹ nói “Không. Điện thoại làm con mất tập trung.” Lan tức giận, mẹ lo lắng.',
-  sides:[['Mom','wants Lan to focus on studying.'],['Lan','wants to use her phone to study with her group.']],
-  q:[
-   {q:'What is the problem?',o:['Lan and Mom want different things about the phone.','Lan has no friends.','Mom has no phone.'],a:0},
-   {q:'Mom needs…',o:['Lan to focus on studying.','a new phone.','more homework for Lan.'],a:0},
-   {q:'Lan needs…',o:['to play games.','to answer her study group.','to sleep early.'],a:1}],
-  opts:[
-   {t:'Mom keeps the phone all night.',f:'no',z:'yes'},
-   {t:'Lan uses her phone as much as she wants.',f:'no',z:'yes'},
-   {t:'Lan uses the phone for 30 minutes for her group, then gives it to Mom.',f:'yes',z:'yes'},
-   {t:'Lan turns off other apps and uses only the study group chat.',f:'yes',z:'yes'}]},
- B:{title:'Case B · One Room, Two Students',
-  story:'Nam and Mai are brother and sister. They share one room. Nam goes to bed at 9:30 because he gets up at 5:30 for football. Mai has an English test tomorrow. She wants to study until 11 with the light on. They argue every night.',
-  vi:'Nam và Mai là anh em, ở chung một phòng. Nam đi ngủ lúc 9:30 vì 5:30 sáng dậy tập bóng đá. Mai mai có bài kiểm tra tiếng Anh, muốn học đến 11 giờ với đèn bật. Họ cãi nhau mỗi đêm.',
-  sides:[['Nam','wants to sleep early in a dark room.'],['Mai','wants to study late with the light on.']],
-  q:[
-   {q:'What is the problem?',o:['Nam and Mai want different things in the same room.','Nam does not like football.','Mai has no test.'],a:0},
-   {q:'Nam needs…',o:['a dark, quiet room to sleep.','to study English.','to watch TV.'],a:0},
-   {q:'Mai needs…',o:['to go to bed at 9:30.','light and time to study.','a football.'],a:1}],
-  opts:[
-   {t:'Nam stays awake until 11.',f:'no',z:'yes'},
-   {t:'Mai studies all night with the big light on.',f:'no',z:'yes'},
-   {t:'Mai uses a small desk lamp and Nam uses a sleep mask.',f:'yes',z:'yes'},
-   {t:'Mai studies in the living room after 9:30.',f:'yes',z:'yes'}]}
-};
-const phrases=[
- ['Can we stop for a second?','Mình dừng lại một chút được không?'],
- ['What do you need?','Bạn cần gì?'],
- ['The problem is that…','Vấn đề là…'],
- ['Let’s list some options.','Cùng liệt kê vài lựa chọn nhé.'],
- ['How about…?','Hay là… nhé? / … thì sao?'],
- ['This works for me because…','Cách này ổn với tôi vì…'],
- ['It’s fair because…','Nó công bằng vì…'],
- ['It’s feasible because…','Nó khả thi vì…'],
- ['It’s a win-win solution.','Đây là giải pháp đôi bên cùng có lợi.'],
- ['Take your time.','Cứ từ từ, không cần vội.']
-];
-const checklist=[
- 'My solution is fair for both people. (công bằng cho cả hai)',
- 'My solution is feasible. (khả thi – làm được)',
- 'I used “How about…?” or “Let’s…”.',
- 'I used “because…” to give a reason.',
- 'I used 4 or more phrases from Step 3.',
- 'I said “It’s a win-win solution.”'
-];
-let cur='A';
 const $=id=>document.getElementById(id);
+const storyText=document.querySelector('.story').innerText.replace(/🔊 Listen|Xem nghĩa cả bài/g,'').split('Mình là Mai')[0];
 function speak(t){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u);}
 $('toggleVi').onclick=()=>document.body.classList.toggle('show-all');
+$('listen').onclick=()=>speak(storyText);
+$('vibtn').onclick=()=>$('svi').classList.toggle('on');
+document.querySelectorAll('.gloss').forEach(g=>g.onclick=()=>{const b=$('glossbox');b.style.display='block';b.textContent=g.dataset.m});
 
-function renderTabs(){
-  $('tabs').innerHTML='';
-  Object.keys(cases).forEach(k=>{
-    const b=document.createElement('button');b.className='tab'+(k===cur?' on':'');b.textContent=cases[k].title;
-    b.onclick=()=>{cur=k;renderTabs();renderCase();};$('tabs').appendChild(b);
-  });
-}
-function renderCase(){
-  const c=cases[cur];
-  $('case').innerHTML='<div class="q">'+c.title+' <button class="mini" id="listen">🔊</button> <button class="mini" id="vibtn">Xem nghĩa</button></div><p>'+c.story+'</p><div class="vi" id="cvi">'+c.vi+'</div>'+
-   '<div class="sides" style="margin-top:8px">'+c.sides.map(s=>'<div class="side"><b>'+s[0]+'</b> '+s[1]+'</div>').join('')+'</div>';
-  $('listen').onclick=()=>speak(c.story);
-  $('vibtn').onclick=()=>$('cvi').classList.toggle('on');
-  // step 1
-  $('s1').innerHTML='';
-  c.q.forEach((it,i)=>{
-    const d=document.createElement('div');d.className='card';
-    d.innerHTML='<div class="q">'+(i+1)+'. '+it.q+'</div><div class="opts">'+it.o.map((o,j)=>'<label><input type="radio" name="s1_'+i+'" value="'+j+'">'+o+'</label>').join('')+'</div><div class="fb"></div>';
-    $('s1').appendChild(d);it.el=d;
-  });
-  // step 2
-  $('s2').innerHTML='';
-  c.opts.forEach((it,i)=>{
-    const d=document.createElement('div');d.className='card opt';
-    d.innerHTML='<div class="txt">'+(i+1)+'. '+it.t+'<div class="fb"></div></div>'+
-     '<label>Fair? <select data-k="f"><option value="">–</option><option value="yes">Yes</option><option value="no">No</option></select></label>'+
-     '<label>Feasible? <select data-k="z"><option value="">–</option><option value="yes">Yes</option><option value="no">No</option></select></label>';
-    $('s2').appendChild(d);it.el=d;
-  });
-  $('score12').textContent='';
-  $('answer').value='';
-  renderChecklist();
-}
-function renderChecklist(){
-  $('checklist').innerHTML=checklist.map((t,i)=>'<label><input type="checkbox" data-i="'+i+'"> '+t+'</label>').join('');
-  $('checklist').querySelectorAll('input').forEach(x=>x.onchange=updateBadge);
-  updateBadge();
-}
-function updateBadge(){
-  const n=$('checklist').querySelectorAll('input:checked').length;
-  $('badge').style.display=n>=5?'block':'none';
-}
-$('check12').onclick=()=>{
-  const c=cases[cur];let s=0,tot=0;
-  c.q.forEach((it,i)=>{
-    tot++;
-    const labels=it.el.querySelectorAll('label');const sel=it.el.querySelector('input:checked');
-    labels.forEach(l=>l.classList.remove('ok','bad'));labels[it.a].classList.add('ok');
-    const fb=it.el.querySelector('.fb');
-    if(sel&&+sel.value===it.a){s++;fb.className='fb ok';fb.textContent='✓ Correct';}
-    else{if(sel)labels[+sel.value].classList.add('bad');fb.className='fb bad';fb.textContent='✗ Try again / xem đáp án màu xanh';}
-  });
-  c.opts.forEach(it=>{
-    ['f','z'].forEach(k=>{
-      tot++;const sel=it.el.querySelector('select[data-k="'+k+'"]');
-      sel.classList.remove('ok','bad');
-      if(sel.value===it[k]){s++;sel.classList.add('ok');}else{sel.classList.add('bad');}
-    });
-    const fb=it.el.querySelector('.fb');
-    const win=it.f==='yes'&&it.z==='yes';
-    fb.className='fb';fb.innerHTML=win?'<span class="star">⭐ Win-win option!</span>':'Not win-win (fair: '+it.f+', feasible: '+it.z+')';
-  });
-  $('score12').textContent='Score: '+s+' / '+tot;
-};
-const pe=$('phrases');
-phrases.forEach(([en,vi])=>{
-  const d=document.createElement('div');d.className='card phr';
-  d.innerHTML='<button class="mini">🔊</button><div class="t"><div class="en">'+en+'</div><div class="vi">'+vi+'</div></div><button class="mini">Xem nghĩa</button><button class="mini">+ Add</button>';
-  const [sp,,mean,add]=d.children;
-  sp.onclick=()=>speak(en.replace('…',''));
-  mean.onclick=()=>d.querySelector('.vi').classList.toggle('on');
-  add.onclick=()=>{const a=$('answer');a.value+=(a.value&&!a.value.endsWith('\n')?' ':'')+en;a.focus();};
-  pe.appendChild(d);
+const s1=[
+ {q:'1. What does Nam do every morning? Why does he go to bed at 9:30?',k:['5:30','football','early'],s:'Nam gets up at 5:30 for football, so he goes to bed at 9:30.'},
+ {q:'2. What does Nam want?',k:['dark','quiet','sleep'],s:'Nam wants the room dark and quiet. He wants to sleep early.'},
+ {q:'3. What does Mai want? Why?',k:['study','test','light','11'],s:'Mai wants to study until 11 with the light on. She has an English test tomorrow.'},
+ {q:'4. What is the problem? Complete: “The problem is that…”',k:['light','room','sleep','study','different'],s:'The problem is that Nam wants to sleep but Mai needs the light to study in the same room.'},
+ {q:'5. How do Mai and Nam feel now?',k:['tired','angry','upset'],s:'Mai is tired and does not want to argue. Nam is angry.'}
+];
+s1.forEach(it=>{
+  const d=document.createElement('div');d.className='card';
+  d.innerHTML='<div class="q">'+it.q+'</div><textarea rows="2" placeholder="Type your answer…"></textarea><div class="row"><button class="mini">Kiểm tra từ khoá</button><button class="mini">Gợi ý</button></div><div class="fb"></div>';
+  const ta=d.querySelector('textarea'),fb=d.querySelector('.fb'),[chk,hint]=d.querySelectorAll('.mini');
+  chk.onclick=()=>{const v=ta.value.toLowerCase();const hit=it.k.filter(w=>v.includes(w));
+    if(!v.trim()){fb.className='fb hint';fb.textContent='Hãy gõ câu trả lời trước nhé.';}
+    else if(hit.length){fb.className='fb ok';fb.textContent='✓ Good! Em đã nhắc đến ý chính ('+hit.join(', ')+'). Cô sẽ đọc kỹ hơn.';}
+    else{fb.className='fb hint';fb.textContent='Đọc lại câu chuyện và thử lần nữa. Bấm “Gợi ý” nếu cần.';}};
+  hint.onclick=()=>{fb.className='fb hint';fb.textContent='Gợi ý: '+it.s;};
+  it.el=ta;$('s1').appendChild(d);
 });
+
+const opts=[];
+for(let i=1;i<=3;i++){
+  const d=document.createElement('div');d.className='card';
+  d.innerHTML='<div class="opt"><div class="q">Option '+i+'</div>'+
+   '<label>What is the option? (e.g., “How about … ?”)</label><input type="text" class="o">'+
+   '<label>It’s fair because…</label><input type="text" class="f">'+
+   '<label>It’s feasible because…</label><input type="text" class="z"></div>';
+  $('s2').appendChild(d);opts.push(d);
+}
+const ideas=[
+ ['Mai uses a small desk lamp and Nam uses a sleep mask.','Mai dùng đèn bàn nhỏ, Nam đeo bịt mắt ngủ.'],
+ ['Mai studies in the living room after 9:30.','Mai ra phòng khách học sau 9:30.'],
+ ['Mai studies early, from 6 to 9:30 p.m. Then she reviews quietly in the morning.','Mai học sớm từ 6 đến 9:30 tối, rồi ôn nhẹ vào sáng hôm sau.'],
+ ['Nam sleeps in the living room on test nights only.','Nam ngủ ở phòng khách chỉ vào những đêm Mai thi.']
+];
+$('ideas').innerHTML='<b>Ideas</b> (không bắt buộc – hãy tự nghĩ trước nhé!)'+ideas.map(i=>'<div style="margin-top:8px">• '+i[0]+'<div class="vi on">'+i[1]+'</div></div>').join('');
+$('ideaBtn').onclick=()=>{const e=$('ideas');e.style.display=e.style.display==='none'?'block':'none';};
+
+const stages=[
+ ['1 · Listen & show you understand',[
+   ['Thank you for telling me your story.','Cảm ơn bạn đã kể cho mình nghe.'],
+   ['I understand. It sounds hard.','Mình hiểu. Nghe có vẻ khó.'],
+   ['Can we stop for a second?','Mình dừng lại một chút được không?']]],
+ ['2 · Ask & find the problem',[
+   ['What do you need?','Bạn cần gì?'],
+   ['What does Nam need?','Nam cần gì?'],
+   ['The problem is that…','Vấn đề là…']]],
+ ['3 · Give advice',[
+   ['Let’s list some options.','Cùng liệt kê vài lựa chọn nhé.'],
+   ['How about…?','Hay là… nhé? / … thì sao?'],
+   ['Why don’t you…?','Sao bạn không…?'],
+   ['You can…','Bạn có thể…']]],
+ ['4 · Check the idea',[
+   ['I think it’s a good idea because…','Mình nghĩ đây là ý hay vì…'],
+   ['It’s fair because…','Nó công bằng vì…'],
+   ['It’s feasible because…','Nó khả thi vì…'],
+   ['This works for both of you because…','Cách này ổn cho cả hai bạn vì…']]],
+ ['5 · Finish',[
+   ['It’s a win-win solution.','Đây là giải pháp đôi bên cùng có lợi.'],
+   ['Take your time.','Cứ từ từ, không cần vội.']]]
+];
+stages.forEach(([name,list])=>{
+  const h=document.createElement('div');h.className='stage';h.textContent=name;$('phrases').appendChild(h);
+  list.forEach(([en,vi])=>{
+    const d=document.createElement('div');d.className='card phr';
+    d.innerHTML='<button class="mini">🔊</button><div class="t"><div class="en">'+en+'</div><div class="vi">'+vi+'</div></div><button class="mini">Xem nghĩa</button><button class="mini">+ Add</button>';
+    const [sp,,mean,add]=d.children;
+    sp.onclick=()=>speak(en.replace('…',''));
+    mean.onclick=()=>d.querySelector('.vi').classList.toggle('on');
+    add.onclick=()=>{const a=$('answer');a.value+=(a.value&&!/\s$/.test(a.value)?' ':'')+en;a.focus();};
+    $('phrases').appendChild(d);
+  });
+});
+$('listenAns').onclick=()=>speak($('answer').value||'Please write your advice first.');
+
+const checklist=[
+ 'I answered the questions in Step 1 with my own words.',
+ 'My solution is fair for both Mai and Nam. (công bằng)',
+ 'My solution is feasible. (khả thi – làm được)',
+ 'I used “How about…?” or “You can…” or “Why don’t you…?”.',
+ 'I used “because…” to give a reason.',
+ 'I used 4 or more phrases from Step 3 and said “It’s a win-win solution.”'
+];
+$('checklist').innerHTML=checklist.map((t,i)=>'<label><input type="checkbox"> '+t+'</label>').join('');
+function upd(){$('badge').style.display=$('checklist').querySelectorAll('input:checked').length>=5?'block':'none';}
+$('checklist').querySelectorAll('input').forEach(x=>x.onchange=upd);
+
 $('copy').onclick=async()=>{
-  const c=cases[cur];
-  const text='Name: '+($('name').value||'—')+'\n'+c.title+'\n\nMy solution:\n'+$('answer').value+'\n\nChecklist: '+$('checklist').querySelectorAll('input:checked').length+'/'+checklist.length;
-  try{await navigator.clipboard.writeText(text);$('copied').className='fb ok';$('copied').textContent='✓ Copied! Paste it to your teacher.';}
-  catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();$('copied').className='fb ok';$('copied').textContent='✓ Copied!';}
+  let t='Name: '+($('name').value||'—')+'\nTask: Win-Win Expert (Mai & Nam)\n\nSTEP 1\n';
+  s1.forEach(it=>t+=it.q+'\n→ '+(it.el.value||'—')+'\n');
+  t+='\nSTEP 2\n';
+  opts.forEach((d,i)=>t+='Option '+(i+1)+': '+d.querySelector('.o').value+'\n  Fair because: '+d.querySelector('.f').value+'\n  Feasible because: '+d.querySelector('.z').value+'\n');
+  t+='Win-win solution: '+$('best').value+'\n\nSTEP 4 – My advice:\n'+$('answer').value+'\n\nChecklist: '+$('checklist').querySelectorAll('input:checked').length+'/'+checklist.length;
+  try{await navigator.clipboard.writeText(t);}
+  catch(e){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();}
+  $('copied').className='fb ok';$('copied').textContent='✓ Copied! Paste it to your teacher.';
 };
 $('print').onclick=()=>window.print();
-renderTabs();renderCase();
 </script>
 </body>
 </html>
