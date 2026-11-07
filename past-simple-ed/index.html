@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Past: Time Expressions + -ed (A2)</title>
+<style>
+  :root{--bg:#fff2ea;--ink:#222;--accent:#c0392b;--ok:#1e8e3e;--bad:#d93025;--blue:#1a73e8;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:920px;margin:0 auto;padding:20px 16px 80px}
+  h1{font-size:1.7rem;margin:.1em 0}
+  h2{color:var(--accent);font-size:1.3rem;margin:2em 0 .4em}
+  h3{font-size:1.05rem;margin:1.2em 0 .3em}
+  .sub{color:#666;margin:0 0 .8em}
+  .card{background:var(--card);border-radius:14px;padding:14px 18px;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .hero{background:linear-gradient(135deg,#c0392b,#e67e22);color:#fff;border-radius:16px;padding:18px 22px}
+  .hero p{margin:.3em 0}
+  .tag{display:inline-block;background:#fde8e1;color:var(--accent);border-radius:6px;padding:0 8px;font-size:.8rem;margin-left:6px;font-weight:500}
+  .vi{display:none;color:var(--blue);font-weight:500;font-size:.95rem}
+  .vi.on,body.show-all .vi{display:block}
+  .mini{font:inherit;font-size:.85rem;border:2px solid #f0d5c6;background:#fff;border-radius:8px;padding:2px 10px;cursor:pointer;white-space:nowrap}
+  .mini:hover{border-color:var(--accent)}
+  button.btn{font:inherit;font-weight:600;padding:10px 20px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
+  button.btn.alt{background:#fff;color:var(--accent);border:2px solid var(--accent)}
+  .ed{color:var(--accent);font-weight:700}
+  .tl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
+  .tl button{font:inherit;font-size:.9rem;border:2px solid #f0d5c6;background:#fff;border-radius:20px;padding:3px 12px;cursor:pointer}
+  .tl button:hover{border-color:var(--accent)}
+  .tl .now{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+  .tl i{color:#aaa;font-style:normal}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+  .te{background:var(--card);border-radius:12px;padding:10px 14px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .te .p{font-weight:800;font-size:1.05rem}
+  .te .ex{margin:4px 0}
+  .te .row{display:flex;gap:6px;margin-top:4px}
+  .story p{margin:.4em 0;line-height:1.8}
+  .rule{border-left:5px solid var(--accent);padding-left:12px;margin:10px 0}
+  .rule .big{font-weight:800}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .chip{background:#fff;border:2px solid #f0d5c6;border-radius:20px;padding:2px 12px;cursor:pointer;font:inherit;font-size:.95rem}
+  .chip:hover{border-color:var(--accent)}
+  table{border-collapse:collapse;width:100%}
+  td,th{border-bottom:1px solid #eee;padding:6px 8px;text-align:left}
+  .ex-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid #f3f3f3}
+  .ex-row .l{min-width:210px;font-weight:600}
+  input[type=text],textarea{font:inherit;padding:6px 10px;border:2px solid #e5e5e5;border-radius:10px}
+  input[type=text]{width:160px}
+  textarea{width:100%}
+  input.ok,select.ok{border-color:var(--ok);background:#e6f4ea}
+  input.bad,select.bad{border-color:var(--bad);background:#fce8e6}
+  select{font:inherit;padding:4px 8px;border-radius:8px;border:2px solid #e5e5e5}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opts label{border:2px solid #e5e5e5;border-radius:10px;padding:4px 14px;cursor:pointer;background:#fafafa}
+  .opts label.ok{border-color:var(--ok);background:#e6f4ea}
+  .opts label.bad{border-color:var(--bad);background:#fce8e6}
+  .ans{color:var(--ok);font-size:.9rem;font-weight:600}
+  .bank{background:#fdf1ea;border-radius:10px;padding:8px 12px;margin:6px 0;font-weight:600}
+  .fb{margin-top:6px;font-size:.95rem}.fb.ok{color:var(--ok)}.fb.hint{color:#555}
+  #score{font-size:1.3rem;font-weight:800;margin-left:10px}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0}
+  .gap{width:110px;margin:0 3px}
+  @media print{.mini,.btn,#toggleVi{display:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="hero">
+    <h1>⏪ Talking About the Past</h1>
+    <p>Time expressions (yesterday, ago, last…) + regular verbs with <b>-ed</b> · Level A2</p>
+    <p style="font-size:.95rem">Part 1 Time expressions · Part 2 Stories · Part 3 The -ed rules · Part 4 Practice</p>
+  </div>
+  <div style="margin:10px 0"><button class="btn alt" id="toggleVi">👁 Xem / ẩn nghĩa tiếng Việt (tất cả)</button></div>
+  <label>Your name / Tên: <input type="text" id="name" placeholder="Name…" style="width:260px"></label>
+
+  <!-- PART 1 -->
+  <h2>Part 1 · Time expressions in the past <span class="tag">cách nói thời gian đã qua</span></h2>
+  <p class="sub">Dòng thời gian: từ rất xa → gần hiện tại. Bấm để nghe.</p>
+  <div class="tl" id="tl"></div>
+  <div id="te"></div>
+  <div class="card">
+    <b>Nhớ nhanh / Quick rules</b>
+    <ul style="margin:6px 0 0 18px">
+      <li><b>… ago</b> = cách đây… : <span class="ed">two days ago</span> (đặt <b>sau</b> khoảng thời gian).</li>
+      <li><b>last</b> + week/month/year/night… : <span class="ed">last week</span> (không dùng “the”).</li>
+      <li><b>in</b> + năm/tháng · <b>on</b> + thứ/ngày · <b>at</b> + giờ.</li>
+      <li><b>yesterday</b> = hôm qua · <b>the day before yesterday</b> = hôm kia.</li>
+    </ul>
+  </div>
+
+  <!-- PART 2 -->
+  <h2>Part 2 · Real situations <span class="tag">tình huống thực tế</span></h2>
+  <p class="sub">Đọc / nghe. Chữ <span class="ed">đỏ</span> = động từ -ed. Gạch chân thời gian khi đọc nhé.</p>
+  <div id="stories"></div>
+
+  <!-- PART 3 -->
+  <h2>Part 3 · The -ed rules <span class="tag">quy tắc thêm -ed</span></h2>
+  <p class="sub">Bấm vào từ để nghe quá khứ.</p>
+  <div id="rules"></div>
+  <h3>Pronunciation of -ed <span class="tag">cách đọc -ed</span></h3>
+  <div id="pron"></div>
+  <div class="card">
+    <b>⚠ Irregular verbs – không thêm -ed</b>
+    <div class="chips" id="irr"></div>
+    <div class="vi">Một số động từ có dạng quá khứ riêng, phải học thuộc.</div>
+  </div>
+
+  <!-- PART 4 -->
+  <h2>Part 4 · Practice <span class="tag">bài tập</span></h2>
+
+  <h3>Exercise 1 · Spelling – write the past form <span class="tag">gõ dạng quá khứ</span></h3>
+  <div class="card" id="ex1"></div>
+
+  <h3>Exercise 2 · Choose the correct spelling</h3>
+  <div id="ex2"></div>
+
+  <h3>Exercise 3 · Pronunciation: /t/, /d/ or /ɪd/? <span class="tag">🔊 nghe rồi chọn</span></h3>
+  <div class="card" id="ex3"></div>
+
+  <h3>Exercise 4 · Time expressions</h3>
+  <div class="bank">Word bank: yesterday · ago · last · in · when · on</div>
+  <div class="card" id="ex4"></div>
+
+  <h3>Exercise 5 · Lan’s Saturday – write the verb in the past <span class="tag">điền động từ</span></h3>
+  <div class="card story" id="ex5"></div>
+
+  <h3>Exercise 6 · Irregular alert! (không thêm -ed)</h3>
+  <div id="ex6"></div>
+
+  <div class="bar">
+    <button class="btn" id="check">Check answers</button>
+    <button class="btn alt" id="reset">Làm lại</button>
+    <span id="score"></span>
+  </div>
+
+  <h3>Exercise 7 · Write about yesterday <span class="tag">viết 5 câu</span></h3>
+  <div class="card">
+    <div style="font-weight:600;margin-bottom:6px">Write 5 sentences about yesterday or last weekend. Use at least <b>3 time expressions</b> and <b>3 verbs with -ed</b>.</div>
+    <textarea id="writing" rows="6" placeholder="Yesterday morning, I cleaned my room. …"></textarea>
+    <div class="row" style="display:flex;gap:8px;margin-top:6px"><button class="mini" id="analyze">Kiểm tra bài viết</button></div>
+    <div class="fb" id="wfb"></div>
+  </div>
+
+  <div class="bar">
+    <button class="btn" id="copy">📋 Copy results (gửi cho cô)</button>
+    <button class="btn alt" id="print">🖨 Print / Save PDF</button>
+  </div>
+  <div class="fb ok" id="copied"></div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+function speak(t){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u);}
+const hl=s=>s.replace(/\b([A-Za-z]{2,}ed)\b/g,'<span class="ed">$1</span>');
+$('toggleVi').onclick=()=>document.body.classList.toggle('show-all');
+
+/* ---------- Part 1 ---------- */
+const tl=['a long time ago','last year','last month','last week','yesterday','this morning','just now','NOW'];
+tl.forEach((t,i)=>{
+  const b=document.createElement('button');b.textContent=t;if(t==='NOW')b.className='now';
+  b.onclick=()=>speak(t==='NOW'?'now':t);$('tl').appendChild(b);
+  if(i<tl.length-1){const a=document.createElement('i');a.textContent='→';$('tl').appendChild(a);}
+});
+const groups=[
+ ['Very recent · vừa mới xảy ra',[
+  ['just now','vừa mới đây','I finished my homework just now.','Mình vừa làm xong bài tập.'],
+  ['a moment ago','cách đây một lát','She called me a moment ago.','Cô ấy vừa gọi mình lúc nãy.'],
+  ['this morning','sáng nay (bây giờ đã là chiều/tối)','I cleaned my room this morning.','Sáng nay mình dọn phòng.']]],
+ ['Yesterday & last night · hôm qua, tối qua',[
+  ['yesterday','hôm qua','We played football yesterday.','Hôm qua tụi mình đá bóng.'],
+  ['yesterday evening','chiều/tối hôm qua','He cooked dinner yesterday evening.','Tối qua anh ấy nấu cơm.'],
+  ['last night','tối qua / đêm qua','I watched a film last night.','Tối qua mình xem phim.'],
+  ['the day before yesterday','hôm kia','They visited Grandma the day before yesterday.','Hôm kia họ thăm bà.']]],
+ ['… ago · cách đây…',[
+  ['two hours ago','cách đây 2 giờ','Mai started work two hours ago.','Mai bắt đầu làm việc cách đây 2 giờ.'],
+  ['three days ago','cách đây 3 ngày','I washed my bike three days ago.','Mình rửa xe đạp cách đây 3 ngày.'],
+  ['a week ago','cách đây một tuần','We planned the trip a week ago.','Tụi mình lên kế hoạch chuyến đi cách đây một tuần.'],
+  ['a month ago','cách đây một tháng','He joined the club a month ago.','Anh ấy tham gia câu lạc bộ cách đây một tháng.'],
+  ['a long time ago','cách đây rất lâu','Grandpa walked to school a long time ago.','Ông đi bộ đến trường từ rất lâu rồi.']]],
+ ['last + … · … trước / vừa rồi',[
+  ['last week','tuần trước','I helped my mom last week.','Tuần trước mình giúp mẹ.'],
+  ['last weekend','cuối tuần trước','We stayed at home last weekend.','Cuối tuần trước tụi mình ở nhà.'],
+  ['last month','tháng trước','She painted her room last month.','Tháng trước cô ấy sơn phòng.'],
+  ['last summer','mùa hè năm ngoái','My family visited Da Nang last summer.','Hè năm ngoái gia đình mình đi Đà Nẵng.']]],
+ ['Exact time · in / on / at / when',[
+  ['in 2020 / in June','vào năm 2020 / vào tháng 6','We moved to Hue in 2020.','Tụi mình chuyển đến Huế năm 2020.'],
+  ['on Monday / on 5 May','vào thứ Hai / ngày 5 tháng 5','She arrived on Monday.','Cô ấy đến vào thứ Hai.'],
+  ['at 7 a.m. yesterday','lúc 7 giờ sáng hôm qua','He started work at 7 a.m. yesterday.','Hôm qua anh ấy bắt đầu làm việc lúc 7 giờ sáng.'],
+  ['when I was ten','khi mình mười tuổi','I learned to swim when I was ten.','Mình học bơi khi mười tuổi.']]]
+];
+groups.forEach(([name,list])=>{
+  const h=document.createElement('h3');h.textContent=name;$('te').appendChild(h);
+  const g=document.createElement('div');g.className='grid';
+  list.forEach(([p,v,e,ev])=>{
+    const d=document.createElement('div');d.className='te';
+    d.innerHTML='<div class="p">'+p+'</div><div class="ex">'+hl(e)+'</div><div class="vi"><b>'+v+'</b><br>'+ev+'</div><div class="row"><button class="mini">🔊</button><button class="mini">Xem nghĩa</button></div>';
+    const [a,b]=d.querySelectorAll('.mini');
+    a.onclick=()=>speak(e);b.onclick=()=>d.querySelector('.vi').classList.toggle('on');
+    g.appendChild(d);
+  });
+  $('te').appendChild(g);
+});
+
+/* ---------- Part 2 ---------- */
+const stories=[
+ ['Minh’s Weekend','last weekend',
+  ['Last weekend, Minh stayed at home.','On Saturday morning, he cleaned his room and washed his clothes.','In the afternoon, he played football with his friends.','Yesterday, he visited his grandma. She cooked his favorite soup.','Two hours ago, he finished his homework.'],
+  'Cuối tuần trước, Minh ở nhà. Sáng thứ Bảy, bạn dọn phòng và giặt quần áo. Buổi chiều, bạn đá bóng với bạn bè. Hôm qua, bạn thăm bà, bà nấu món canh bạn thích. Cách đây hai giờ, bạn làm xong bài tập.'],
+ ['A Trip to Da Nang','last summer',
+  ['Last summer, my family traveled to Da Nang.','We arrived at 6 a.m. and walked on the beach.','We watched the sunrise. My brother jumped into the water, and I stayed on the sand.','Two days later, we visited the Dragon Bridge.','We loved the trip!'],
+  'Hè năm ngoái, gia đình mình đi Đà Nẵng. Tụi mình đến lúc 6 giờ sáng và đi bộ trên bãi biển, ngắm bình minh. Em trai nhảy xuống nước, còn mình ở trên cát. Hai ngày sau, tụi mình thăm cầu Rồng. Cả nhà rất thích chuyến đi!'],
+ ['Grandma’s Childhood','a long time ago',
+  ['A long time ago, my grandma lived in a small village.','When she was ten, she walked three kilometers to school.','She studied under a small lamp.','She helped her mother in the garden and cooked rice for the family.','She never used a phone.'],
+  'Rất lâu rồi, bà mình sống ở một ngôi làng nhỏ. Khi mười tuổi, bà đi bộ ba cây số đến trường, học dưới ngọn đèn nhỏ. Bà giúp mẹ làm vườn và nấu cơm cho cả nhà. Bà chưa bao giờ dùng điện thoại.']
+];
+stories.forEach(([title,when,lines,vi])=>{
+  const d=document.createElement('div');d.className='card story';
+  d.innerHTML='<b>'+title+'</b> <span class="tag">'+when+'</span><p>'+lines.map(hl).join('<br>')+'</p><div class="vi">'+vi+'</div><div style="display:flex;gap:6px"><button class="mini">🔊 Listen</button><button class="mini">Xem nghĩa</button></div>';
+  const [a,b]=d.querySelectorAll('.mini');
+  a.onclick=()=>speak(lines.join(' '));b.onclick=()=>d.querySelector('.vi').classList.toggle('on');
+  $('stories').appendChild(d);
+});
+
+/* ---------- Part 3 ---------- */
+const rules=[
+ ['Rule 1','Most verbs: + ed','Phần lớn động từ: thêm -ed','walk → walked · play → played · watch → watched · clean → cleaned · help → helped'],
+ ['Rule 2','Verb ends in -e: + d','Động từ tận cùng là -e: chỉ thêm -d','like → liked · dance → danced · live → lived · arrive → arrived'],
+ ['Rule 3','Consonant + y → -ied (vowel + y: just + ed)','Phụ âm + y → bỏ y, thêm -ied (nguyên âm + y: thêm -ed)','study → studied · carry → carried · cry → cried · try → tried  |  play → played · stay → stayed'],
+ ['Rule 4','1 short vowel + 1 consonant → double the consonant + ed','1 nguyên âm ngắn + 1 phụ âm → gấp đôi phụ âm rồi thêm -ed','stop → stopped · plan → planned · chat → chatted · jog → jogged  |  NOT w, x, y: show → showed · fix → fixed']
+];
+rules.forEach(([n,en,vi,ex])=>{
+  const d=document.createElement('div');d.className='rule card';
+  d.innerHTML='<div><span class="big">'+n+'.</span> '+en+'</div><div class="vi on">'+vi+'</div><div class="chips"></div>';
+  ex.split('|')[0].split('·').forEach(p=>{
+    const t=p.trim();if(!t)return;const past=t.split('→')[1].trim();
+    const c=document.createElement('button');c.className='chip';c.innerHTML=t.replace(past,'<span class="ed">'+past+'</span>');c.onclick=()=>speak(past);
+    d.querySelector('.chips').appendChild(c);
+  });
+  if(ex.includes('|')){const x=document.createElement('div');x.style.cssText='margin-top:6px;font-size:.95rem;color:#555';x.textContent='Also: '+ex.split('|')[1].trim();d.appendChild(x);}
+  $('rules').appendChild(d);
+});
+const pron=[
+ ['/t/','sau âm vô thanh (k, p, s, sh, ch…)',['walked','helped','watched','washed','stopped']],
+ ['/d/','sau âm hữu thanh & nguyên âm',['played','lived','cleaned','called','studied']],
+ ['/ɪd/','sau t hoặc d',['wanted','needed','visited','started','painted']]
+];
+pron.forEach(([s,v,ws])=>{
+  const d=document.createElement('div');d.className='card';
+  d.innerHTML='<b>'+s+'</b> <span class="vi on" style="display:inline"> – '+v+'</span><div class="chips"></div>';
+  ws.forEach(w=>{const c=document.createElement('button');c.className='chip';c.textContent='🔊 '+w;c.onclick=()=>speak(w);d.querySelector('.chips').appendChild(c);});
+  $('pron').appendChild(d);
+});
+[['go','went'],['eat','ate'],['see','saw'],['buy','bought'],['have','had'],['make','made'],['come','came'],['write','wrote']].forEach(([a,b])=>{
+  const c=document.createElement('button');c.className='chip';c.innerHTML=a+' → <b>'+b+'</b>';c.onclick=()=>speak(b);$('irr').appendChild(c);
+});
+
+/* ---------- Exercises ---------- */
+const norm=s=>s.toLowerCase().trim();
+const ex1=[['walk','walked'],['like','liked'],['study','studied'],['stop','stopped'],['play','played'],['dance','danced'],['carry','carried'],['plan','planned'],['watch','watched'],['cry','cried'],['chat','chatted'],['visit','visited']];
+const inputs=[];
+ex1.forEach(([b,a],i)=>{
+  const r=document.createElement('div');r.className='ex-row';
+  r.innerHTML='<span class="l">'+(i+1)+'. '+b+' →</span><input type="text" autocomplete="off" autocapitalize="off"><span class="ans"></span>';
+  $('ex1').appendChild(r);inputs.push({el:r.querySelector('input'),a,ans:r.querySelector('.ans')});
+});
+const ex2=[['stop',['stoped','stopped','stopt'],1],['study',['studyed','studied','studdied'],1],['like',['likeed','liked','liket'],1],['play',['plaied','played','plaid'],1],['plan',['planed','planned','plannd'],1],['cry',['cryed','cried','criied'],1]];
+const ex3=[['walked','t'],['played','d'],['wanted','ɪd'],['watched','t'],['cleaned','d'],['needed','ɪd'],['helped','t'],['lived','d']];
+const ex4=[['I watched a film ___ night.','last'],['She called me two hours ___.','ago'],['We visited Hue ___ 2022.','in'],['He cooked dinner ___ evening.','yesterday'],['I lived in Hanoi ___ I was ten.','when'],['They moved here a long time ___.','ago'],['She arrived ___ Monday.','on']];
+const ex5=['Lan {cleaned|clean} her room yesterday morning. She {studied|study} English for two hours. Two hours ago, she {called|call} her friend Mai. They {planned|plan} a picnic for Sunday.',
+ 'In the afternoon, Lan {helped|help} her mom. They {cooked|cook} fish and {watched|watch} TV together. Lan {stopped|stop} using her phone at 10 p.m. and {carried|carry} the dishes to the kitchen.'];
+const ex6=[['I ___ to school yesterday.',['goed','went','gone'],1],['She ___ a movie last night.',['seed','saw','seen'],1],['We ___ pizza last Sunday.',['eated','ate','eat'],1],['He ___ a new bike two weeks ago.',['buyed','bought','buy'],1]];
+
+const mcs=[];
+function mcRender(list,host,fmt){
+  list.forEach((it,i)=>{
+    const d=document.createElement('div');d.className='card';
+    const [q,o,a]=it;const name=host+i;
+    d.innerHTML='<div style="font-weight:600;margin-bottom:6px">'+fmt(q,i)+'</div><div class="opts">'+o.map((x,j)=>'<label><input type="radio" name="'+name+'" value="'+j+'"> '+x+'</label>').join('')+'</div>';
+    $(host).appendChild(d);mcs.push({el:d,a});
+  });
+}
+mcRender(ex2,'ex2',(q,i)=>(i+1)+'. '+q+' → past form?');
+mcRender(ex6,'ex6',(q,i)=>(i+1)+'. '+q);
+
+const sel3=[];
+ex3.forEach(([w,a],i)=>{
+  const r=document.createElement('div');r.className='ex-row';
+  r.innerHTML='<span class="l"><button class="mini">🔊</button> '+(i+1)+'. '+w+'</span><select><option value="">–</option><option>t</option><option>d</option><option>ɪd</option></select><span class="ans"></span>';
+  r.querySelector('.mini').onclick=()=>speak(w);
+  $('ex3').appendChild(r);sel3.push({el:r.querySelector('select'),a,ans:r.querySelector('.ans')});
+});
+const sel4=[];
+ex4.forEach(([q,a],i)=>{
+  const r=document.createElement('div');r.className='ex-row';
+  const parts=q.split('___');
+  r.innerHTML='<span class="l" style="min-width:0">'+(i+1)+'. '+parts[0]+'<select><option value="">–</option><option>yesterday</option><option>ago</option><option>last</option><option>in</option><option>when</option><option>on</option></select>'+parts[1]+'</span><span class="ans"></span>';
+  $('ex4').appendChild(r);sel4.push({el:r.querySelector('select'),a,ans:r.querySelector('.ans')});
+});
+const gaps=[];
+ex5.forEach(t=>{
+  const p=document.createElement('p');
+  p.innerHTML=t.replace(/\{([a-z]+)\|([a-z]+)\}/g,(m,a,v)=>'<input type="text" class="gap" data-a="'+a+'" placeholder="('+v+')" autocomplete="off" autocapitalize="off">');
+  $('ex5').appendChild(p);
+});
+document.querySelectorAll('#ex5 .gap').forEach(g=>gaps.push(g));
+
+let total=0;
+$('check').onclick=()=>{
+  let s=0;total=0;
+  inputs.forEach(x=>{total++;const ok=norm(x.el.value)===x.a;x.el.className=ok?'ok':'bad';x.ans.textContent=ok?'✓':'→ '+x.a;if(ok)s++;});
+  mcs.forEach(m=>{total++;const labels=m.el.querySelectorAll('label');const sel=m.el.querySelector('input:checked');
+    labels.forEach(l=>l.className='');labels[m.a].classList.add('ok');
+    if(sel&&+sel.value===m.a)s++;else if(sel)labels[+sel.value].classList.add('bad');});
+  sel3.forEach(x=>{total++;const ok=x.el.value===x.a;x.el.className=ok?'ok':'bad';x.ans.textContent=ok?'✓':'→ '+x.a;if(ok)s++;});
+  sel4.forEach(x=>{total++;const ok=x.el.value===x.a;x.el.className=ok?'ok':'bad';x.ans.textContent=ok?'✓':'→ '+x.a;if(ok)s++;});
+  gaps.forEach(g=>{total++;const ok=norm(g.value)===g.dataset.a;g.className='gap '+(ok?'ok':'bad');if(!ok)g.title='Answer: '+g.dataset.a;if(ok)s++;});
+  $('score').textContent='Score: '+s+' / '+total;
+  window._score=s;
+};
+$('reset').onclick=()=>{
+  document.querySelectorAll('main input[type=text]:not(#name)').forEach(i=>{i.value='';i.className=i.classList.contains('gap')?'gap':'';i.title=''});
+  document.querySelectorAll('input[type=radio]').forEach(i=>i.checked=false);
+  document.querySelectorAll('select').forEach(s=>{s.value='';s.className=''});
+  document.querySelectorAll('.opts label').forEach(l=>l.className='');
+  document.querySelectorAll('.ans').forEach(a=>a.textContent='');
+  $('score').textContent='';
+};
+const timeRe=/\b(yesterday|last (night|week|weekend|month|year|summer|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|ago|just now|this morning|when i was|in 20\d\d|on (monday|tuesday|wednesday|thursday|friday|saturday|sunday)|the day before yesterday)\b/gi;
+$('analyze').onclick=()=>{
+  const t=$('writing').value;
+  const ed=(t.match(/\b[A-Za-z]{2,}ed\b/g)||[]).filter(w=>!/^(need|seed|speed|feed|bleed)$/i.test(w));
+  const te=t.match(timeRe)||[];
+  const sentences=t.split(/[.!?]+/).filter(x=>x.trim()).length;
+  const f=$('wfb');f.className='fb '+((ed.length>=3&&te.length>=3&&sentences>=5)?'ok':'hint');
+  f.textContent='Sentences: '+sentences+'/5 · -ed verbs: '+ed.length+'/3 ('+ed.slice(0,6).join(', ')+') · time expressions: '+te.length+'/3 ('+te.slice(0,6).join(', ')+')'+((ed.length>=3&&te.length>=3&&sentences>=5)?' ✓ Great!':' – thử thêm nhé!');
+};
+$('copy').onclick=async()=>{
+  const t='Name: '+($('name').value||'—')+'\nLesson: The Past – time expressions + -ed\nScore (Ex1–6): '+($('score').textContent||'not checked yet')+'\n\nExercise 7:\n'+($('writing').value||'—')+'\n\n'+($('wfb').textContent||'');
+  try{await navigator.clipboard.writeText(t);}catch(e){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();}
+  $('copied').textContent='✓ Copied! Paste it to your teacher.';
+};
+$('print').onclick=()=>window.print();
+</script>
+</body>
+</html>
