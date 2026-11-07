@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Past Story Path – 15 self-study lessons (A2)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <div class="hero">
+    <h1>🧭 Past Story Path</h1>
+    <p>15 self-study lessons: from <b>"Yesterday I woke up…"</b> to <b>telling a full story</b> in the past simple.</p>
+    <p style="font-size:.95rem">Lộ trình tự học 15 bài, từ cơ bản đến nâng cao. Mỗi bài khoảng 15–40 phút. Làm theo thứ tự, cần đạt 60% để hoàn thành bài.</p>
+  </div>
+  <div class="card">
+    <div class="top"><b id="ptxt">Progress</b><button class="mini" id="reset">Xóa tiến độ</button></div>
+    <div class="prog"><i id="pbar" style="width:0%"></i></div>
+    <label>Your name / Tên của em: <input type="text" id="pwname" style="width:260px"></label>
+  </div>
+  <div id="list"></div>
+  <div class="card">
+    <b>Dành cho cô giáo</b>
+    <p class="sub" style="margin:4px 0">Mỗi bài có nút “Copy my results” để học sinh dán kết quả (điểm + bài viết) gửi cho cô. Tiến độ lưu theo trình duyệt của từng em.</p>
+    <button class="btn alt" id="copylinks">📋 Copy all 15 links</button> <span class="msg ok" id="cm"></span>
+  </div>
+</main>
+<script src="engine.js"></script>
+<script src="data-1.js"></script>
+<script src="data-2.js"></script>
+<script src="data-3.js"></script>
+<script src="data-4.js"></script>
+<script>
+(function(){
+  var LS=window.LESSONS,ids=Object.keys(LS).sort(),store=window.PW.store;
+  var levels={1:['Level 1 · Foundation','Cơ bản: từ vựng, -ed, động từ bất quy tắc, was/were'],2:['Level 2 · Build sentences','Xây câu: thứ tự thời gian, phủ định, câu hỏi, đoạn văn ngày đi học'],3:['Level 3 · Connect ideas','Nối ý: từ nối, thêm chi tiết, ôn động từ bất quy tắc'],4:['Level 4 · Tell stories','Kể chuyện: cấu trúc truyện, sự kiện quá khứ, while/when, dự án cuối']};
+  var list=document.getElementById('list'),done=0,cur=0;
+  ids.forEach(function(id){ if(!store.get('pw_done_'+id)&&!cur)cur=id; });
+  var last=0;
+  ids.forEach(function(id){
+    var L=LS[id];
+    if(L.level!==last){last=L.level;var h=document.createElement('div');h.className='lv';h.textContent=levels[L.level][0];list.appendChild(h);var s=document.createElement('div');s.className='sub';s.textContent=levels[L.level][1];list.appendChild(s);}
+    var d=store.get('pw_done_'+id),info=null;try{info=d&&JSON.parse(d);}catch(e){}
+    if(info)done++;
+    var c=document.createElement('div');c.className='card lc'+(info?' done':'');
+    c.innerHTML='<div class="no">'+(info?'✓':id)+'</div><div style="flex:1"><h3>'+L.title+(String(cur)===id?' <span class="tag">start here</span>':'')+'</h3><p>'+L.goal+'</p><p>≈ '+L.time+' min'+(info?' · score '+info.s+' / '+info.m+' · '+info.d:'')+'</p></div><a class="btn'+(info?' alt':'')+'" href="'+L.file+'">'+(info?'Review':'Start')+'</a>';
+    list.appendChild(c);
+  });
+  var pct=Math.round(100*done/ids.length);
+  document.getElementById('pbar').style.width=pct+'%';
+  document.getElementById('ptxt').textContent='Progress: '+done+' / '+ids.length+' lessons ('+pct+'%)';
+  var inp=document.getElementById('pwname');inp.value=store.get('pw_name')||'';inp.oninput=function(){store.set('pw_name',inp.value);};
+  document.getElementById('reset').onclick=function(){if(confirm('Xóa toàn bộ tiến độ trên trình duyệt này?')){ids.forEach(function(id){try{localStorage.removeItem('pw_done_'+id);}catch(e){}});location.reload();}};
+  document.getElementById('copylinks').onclick=function(){
+    var base=location.href.replace(/[^\/]*$/,'').replace(/[?#].*$/,'');
+    var t=ids.map(function(id){return id+'. '+LS[id].title+'\n'+base+LS[id].file;}).join('\n\n');
+    function ok(){document.getElementById('cm').textContent='✓ Copied!';}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){});}
+    else{var x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy');}catch(e){}x.remove();ok();}
+  };
+})();
+</script>
+</body>
+</html>
