@@ -8,49 +8,88 @@
   :root{--bg:#fff2ea;--ink:#222;--accent:#c0392b;--ok:#1e8e3e;--bad:#d93025;--card:#fff}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-  main{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+  main{max-width:880px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.6rem;margin:.2em 0}
-  h2{color:var(--accent);font-size:1.25rem;margin:1.6em 0 .5em}
-  .sub{color:#666;margin:0 0 1em}
+  h2{color:var(--accent);font-size:1.25rem;margin:1.8em 0 .4em}
+  .sub{color:#666;margin:0 0 .8em}
   .card{background:var(--card);border-radius:14px;padding:14px 18px;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   .words{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
-  .word{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid #f0d5c6;border-radius:12px;padding:10px 14px;cursor:pointer;font-size:1.25rem;font-weight:700;text-align:left}
+  .word{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid #f0d5c6;border-radius:12px;padding:10px 14px;cursor:pointer;font:inherit;font-size:1.2rem;font-weight:700;text-align:left}
   .word:hover{border-color:var(--accent)}
   .word small{display:block;font-weight:400;color:#777;font-size:.8rem}
   .word b{color:var(--accent)}
+  .vi{display:none;color:#1a73e8;font-weight:500;font-size:.95rem}
+  body.show-all .vi,.vi.on{display:block}
+  .phrase{display:flex;align-items:flex-start;gap:10px}
+  .phrase .t{flex:1}
+  .phrase .en{font-weight:700}
+  .mini{font:inherit;font-size:.85rem;border:2px solid #f0d5c6;background:#fff;border-radius:8px;padding:2px 10px;cursor:pointer;white-space:nowrap}
+  .mini:hover{border-color:var(--accent)}
+  .passage{line-height:1.8}
+  .passage p{margin:.5em 0}
+  .gloss{border-bottom:2px dotted #1a73e8;cursor:pointer;color:#1a73e8;font-weight:600}
+  #glossbox{position:sticky;bottom:10px;background:#1a73e8;color:#fff;border-radius:12px;padding:10px 16px;margin-top:10px;display:none}
   .q{font-weight:600;margin-bottom:8px}
   .opts{display:flex;flex-wrap:wrap;gap:8px}
   .opts label{border:2px solid #e5e5e5;border-radius:10px;padding:6px 14px;cursor:pointer;background:#fafafa}
   .opts input{margin-right:6px}
   .opts label.ok{border-color:var(--ok);background:#e6f4ea}
   .opts label.bad{border-color:var(--bad);background:#fce8e6}
-  input[type=text]{width:100%;font:inherit;padding:8px 10px;border:2px solid #e5e5e5;border-radius:10px}
+  input[type=text],textarea{width:100%;font:inherit;padding:8px 10px;border:2px solid #e5e5e5;border-radius:10px}
   .fb{margin-top:6px;font-size:.95rem}
-  .fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
-  .bar{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+  .fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)} .fb.hint{color:#555}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0}
   button.btn{font:inherit;font-weight:600;padding:10px 20px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
   button.btn.alt{background:#fff;color:var(--accent);border:2px solid var(--accent)}
   #score{font-size:1.2rem;font-weight:700}
-  .tag{display:inline-block;background:#fde8e1;color:var(--accent);border-radius:6px;padding:0 8px;font-size:.8rem;margin-left:6px}
+  .tag{display:inline-block;background:#fde8e1;color:var(--accent);border-radius:6px;padding:0 8px;font-size:.8rem;margin-left:6px;font-weight:500}
 </style>
 </head>
 <body>
 <main>
   <h1>Mini Test – Win-win Solution</h1>
-  <p class="sub">Khoảng 5 phút · không có đồng hồ, cô giáo tự điều chỉnh thời gian.</p>
+  <p class="sub">Không có đồng hồ – cô giáo tự điều chỉnh thời gian. Các phần làm độc lập, có thể bỏ qua phần không cần.</p>
+  <div class="bar" style="margin:8px 0"><button class="btn alt" id="toggleVi">👁 Xem / ẩn nghĩa tiếng Việt (tất cả)</button></div>
 
   <h2>Part 1 · Listen &amp; repeat (stress) <span class="tag">🔊 nghe và đọc theo</span></h2>
   <p class="sub">Bấm vào từ để nghe. CHỮ HOA = âm tiết nhấn (stressed syllable).</p>
   <div class="words" id="words"></div>
 
-  <h2>Part 2 · Vocabulary</h2>
-  <div id="p2"></div>
+  <h2>Part 2 · Problem-solving phrases <span class="tag">bấm “Xem nghĩa”</span></h2>
+  <p class="sub">Bấm 🔊 để nghe, bấm “Xem nghĩa” để xem tiếng Việt.</p>
+  <div id="phrases"></div>
 
-  <h2>Part 3 · Grammar</h2>
+  <h2>Part 3 · Vocabulary</h2>
   <div id="p3"></div>
 
-  <h2>Part 4 · Sentence structure <span class="tag">sắp xếp từ thành câu</span></h2>
+  <h2>Part 4 · Grammar</h2>
   <div id="p4"></div>
+
+  <h2>Part 5 · Sentence structure <span class="tag">sắp xếp từ thành câu</span></h2>
+  <div id="p5"></div>
+
+  <h2>Part 6 · Reading comprehension <span class="tag">kiểm tra độ hiểu</span></h2>
+  <p class="sub">Đọc đoạn văn. Bấm vào từ gạch chấm xanh để xem nghĩa.</p>
+  <div class="card passage" id="passage">
+    <p><b>Mom’s Phone</b></p>
+    <p>My name is Lan. Last night I had a small <span class="gloss" data-m="argument (n): cuộc tranh cãi">argument</span> with my mom. It made me feel quite <span class="gloss" data-m="upset (adj): buồn bực, không vui">upset</span>, and it was all because of my phone.</p>
+    <p>I said, “Mom, I need my phone to study with my group. I have a test tomorrow.”</p>
+    <p>Mom said, “No. Go study. Your phone <span class="gloss" data-m="distract (v): làm mất tập trung">distracts</span> you.”</p>
+    <p>I said, “But my friends are <span class="gloss" data-m="text (v): nhắn tin">texting</span> in the group! I need to answer.”</p>
+    <p>Mom said, “I said no. Give me your phone.”</p>
+    <p>I got angry. I said, “You don’t understand! You’re always like this!” Then I gave her my phone and went to my room.</p>
+    <p>Mom didn’t say anything. She just <span class="gloss" data-m="sigh (v): thở dài">sighed</span>.</p>
+  </div>
+  <div id="glossbox"></div>
+  <div id="p6"></div>
+
+  <h2>Part 7 · Your idea <span class="tag">không chấm điểm – cô đọc</span></h2>
+  <div class="card">
+    <div class="q">Write one win-win idea for Lan and her mom. Use “How about…?” or “Let’s…”.</div>
+    <textarea rows="2" placeholder="How about …"></textarea>
+    <div class="fb hint" id="sample"></div>
+    <button class="mini" id="showSample" style="margin-top:6px">Xem câu gợi ý</button>
+  </div>
 
   <div class="bar">
     <button class="btn" id="check">Check answers</button>
@@ -61,12 +100,24 @@
 
 <script>
 const words=[
-  {t:'conflict',d:'CON-flict',p:'noun'},{t:'argue',d:'AR-gue',p:'verb'},
-  {t:'discuss',d:'dis-CUSS',p:'verb'},{t:'distract',d:'dis-TRACT',p:'verb'},
-  {t:'feasible',d:'FEA-si-ble',p:'adj'},{t:'option',d:'OP-tion',p:'noun'},
-  {t:'solution',d:'so-LU-tion',p:'noun'},{t:'contribute',d:'con-TRIB-ute',p:'verb'}
+  {t:'conflict',d:'CON-flict',p:'noun',m:'xung đột, đối đầu'},{t:'argue',d:'AR-gue',p:'verb',m:'tranh cãi'},
+  {t:'discuss',d:'dis-CUSS',p:'verb',m:'bàn luận'},{t:'distract',d:'dis-TRACT',p:'verb',m:'làm mất tập trung'},
+  {t:'feasible',d:'FEA-si-ble',p:'adj',m:'khả thi'},{t:'option',d:'OP-tion',p:'noun',m:'sự lựa chọn'},
+  {t:'solution',d:'so-LU-tion',p:'noun',m:'giải pháp'},{t:'contribute',d:'con-TRIB-ute',p:'verb',m:'đóng góp'}
 ];
-const mc=[
+const phrases=[
+  ['Can we stop for a second?','Mình dừng lại một chút được không?'],
+  ['What do you need?','Bạn cần gì?'],
+  ['What is the problem? – The problem is that…','Vấn đề là gì? – Vấn đề là…'],
+  ['Let’s list some options.','Cùng liệt kê vài lựa chọn nhé.'],
+  ['How about…?','Hay là… nhé? / … thì sao?'],
+  ['This works for me because…','Cách này ổn với tôi vì…'],
+  ['It’s fair because…','Nó công bằng vì…'],
+  ['It’s feasible because…','Nó khả thi vì…'],
+  ['It’s a win-win solution.','Đây là giải pháp đôi bên cùng có lợi.'],
+  ['Take your time.','Cứ từ từ, không cần vội.']
+];
+const mc3=[
  {q:'The two brothers always ___ about who plays the game first.',o:['list','argue','draft'],a:1},
  {q:'Everyone in the group should ___ ideas.',o:['contribute','distract','calm down'],a:0},
  {q:'“It’s feasible.” means:',o:['khả thi','công bằng','căng thẳng'],a:0},
@@ -82,6 +133,12 @@ const ord=[
  {q:'list / let’s / options / some',a:'Let’s list some options.'},
  {q:'works / This / me / for / because / it’s / fair',a:'This works for me because it’s fair.'}
 ];
+const rd=[
+ {q:'Why does Lan need her phone?',o:['To play a game','To study with her group','To call her friend'],a:1},
+ {q:'Why does Mom say no?',o:['The phone distracts Lan','Mom wants to use it','It is too late'],a:0},
+ {q:'What does each side want?',o:['Mom wants Lan to focus; Lan wants to use her phone to study with friends','Both want to use the phone','Mom wants Lan to text her friends'],a:0},
+ {q:'Is this a win-win solution?',o:['Yes, both are happy','No, Lan is upset and Mom sighed','Yes, Lan got her phone'],a:1}
+];
 let n=0;
 const norm=s=>s.toLowerCase().replace(/[’']/g,"'").replace(/[.!?]/g,'').replace(/\s+/g,' ').trim();
 
@@ -90,12 +147,25 @@ function speak(t){
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.8;speechSynthesis.speak(u);
 }
+document.getElementById('toggleVi').onclick=()=>document.body.classList.toggle('show-all');
+
 const wEl=document.getElementById('words');
 words.forEach(w=>{
   const b=document.createElement('button');b.className='word';
-  b.innerHTML='🔊 <span>'+w.d.replace(/([A-Z]+)/g,'<b>$1</b>')+'<small>'+w.p+'</small></span>';
-  b.onclick=()=>speak(w.t);wEl.appendChild(b);
+  b.innerHTML='🔊 <span>'+w.d.replace(/([A-Z]+)/g,'<b>$1</b>')+'<small>'+w.p+'</small><span class="vi">'+w.m+'</span></span>';
+  b.onclick=()=>{speak(w.t);b.querySelector('.vi').classList.toggle('on')};wEl.appendChild(b);
 });
+
+const pEl=document.getElementById('phrases');
+phrases.forEach(([en,vi])=>{
+  const d=document.createElement('div');d.className='card phrase';
+  d.innerHTML='<button class="mini">🔊</button><div class="t"><div class="en">'+en+'</div><div class="vi">'+vi+'</div></div><button class="mini">Xem nghĩa</button>';
+  const [sp,,mean]=[d.children[0],d.children[1],d.children[2]];
+  sp.onclick=()=>speak(en.replace(/ – .*/,'').replace('…',''));
+  mean.onclick=()=>{const v=d.querySelector('.vi');v.classList.toggle('on')};
+  pEl.appendChild(d);
+});
+
 function mcBlock(list,host){
   list.forEach(it=>{
     n++;const id=n;it.id=id;
@@ -106,17 +176,25 @@ function mcBlock(list,host){
     document.getElementById(host).appendChild(d);it.el=d;
   });
 }
-mcBlock(mc,'p2');mcBlock(gr,'p3');
+mcBlock(mc3,'p3');mcBlock(gr,'p4');
 ord.forEach(it=>{
   n++;it.id=n;
   const d=document.createElement('div');d.className='card';
   d.innerHTML='<div class="q">'+it.id+'. '+it.q+'</div><input type="text" placeholder="Viết câu hoàn chỉnh…" autocomplete="off"><div class="fb"></div>';
-  document.getElementById('p4').appendChild(d);it.el=d;
+  document.getElementById('p5').appendChild(d);it.el=d;
 });
+mcBlock(rd,'p6');
+
+const gb=document.getElementById('glossbox');
+document.querySelectorAll('.gloss').forEach(g=>g.onclick=()=>{gb.style.display='block';gb.textContent=g.dataset.m});
+
+document.getElementById('showSample').onclick=()=>{
+  document.getElementById('sample').textContent='Gợi ý: How about Lan uses her phone for 30 minutes to study with her group, and then gives it to Mom?';
+};
 
 document.getElementById('check').onclick=()=>{
   let s=0;
-  [...mc,...gr].forEach(it=>{
+  [...mc3,...gr,...rd].forEach(it=>{
     const labels=it.el.querySelectorAll('label');
     const sel=it.el.querySelector('input:checked');
     labels.forEach(l=>l.classList.remove('ok','bad'));
@@ -134,10 +212,11 @@ document.getElementById('check').onclick=()=>{
 };
 document.getElementById('reset').onclick=()=>{
   document.querySelectorAll('input[type=radio]').forEach(i=>i.checked=false);
-  document.querySelectorAll('input[type=text]').forEach(i=>i.value='');
-  document.querySelectorAll('.fb').forEach(f=>{f.textContent='';f.className='fb'});
+  document.querySelectorAll('input[type=text],textarea').forEach(i=>i.value='');
+  document.querySelectorAll('.card .fb').forEach(f=>{f.textContent='';f.className='fb'});
   document.querySelectorAll('label').forEach(l=>l.classList.remove('ok','bad'));
   document.getElementById('score').textContent='';
+  document.getElementById('sample').textContent='';
 };
 </script>
 </body>
