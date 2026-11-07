@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini Test – Win-win Solution</title>
+<style>
+  :root{--bg:#fff2ea;--ink:#222;--accent:#c0392b;--ok:#1e8e3e;--bad:#d93025;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:1.6rem;margin:.2em 0}
+  h2{color:var(--accent);font-size:1.25rem;margin:1.6em 0 .5em}
+  .sub{color:#666;margin:0 0 1em}
+  .card{background:var(--card);border-radius:14px;padding:14px 18px;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .words{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+  .word{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid #f0d5c6;border-radius:12px;padding:10px 14px;cursor:pointer;font-size:1.25rem;font-weight:700;text-align:left}
+  .word:hover{border-color:var(--accent)}
+  .word small{display:block;font-weight:400;color:#777;font-size:.8rem}
+  .word b{color:var(--accent)}
+  .q{font-weight:600;margin-bottom:8px}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opts label{border:2px solid #e5e5e5;border-radius:10px;padding:6px 14px;cursor:pointer;background:#fafafa}
+  .opts input{margin-right:6px}
+  .opts label.ok{border-color:var(--ok);background:#e6f4ea}
+  .opts label.bad{border-color:var(--bad);background:#fce8e6}
+  input[type=text]{width:100%;font:inherit;padding:8px 10px;border:2px solid #e5e5e5;border-radius:10px}
+  .fb{margin-top:6px;font-size:.95rem}
+  .fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+  button.btn{font:inherit;font-weight:600;padding:10px 20px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
+  button.btn.alt{background:#fff;color:var(--accent);border:2px solid var(--accent)}
+  #score{font-size:1.2rem;font-weight:700}
+  .tag{display:inline-block;background:#fde8e1;color:var(--accent);border-radius:6px;padding:0 8px;font-size:.8rem;margin-left:6px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Mini Test – Win-win Solution</h1>
+  <p class="sub">Khoảng 5 phút · không có đồng hồ, cô giáo tự điều chỉnh thời gian.</p>
+
+  <h2>Part 1 · Listen &amp; repeat (stress) <span class="tag">🔊 nghe và đọc theo</span></h2>
+  <p class="sub">Bấm vào từ để nghe. CHỮ HOA = âm tiết nhấn (stressed syllable).</p>
+  <div class="words" id="words"></div>
+
+  <h2>Part 2 · Vocabulary</h2>
+  <div id="p2"></div>
+
+  <h2>Part 3 · Grammar</h2>
+  <div id="p3"></div>
+
+  <h2>Part 4 · Sentence structure <span class="tag">sắp xếp từ thành câu</span></h2>
+  <div id="p4"></div>
+
+  <div class="bar">
+    <button class="btn" id="check">Check answers</button>
+    <button class="btn alt" id="reset">Làm lại</button>
+    <span id="score"></span>
+  </div>
+</main>
+
+<script>
+const words=[
+  {t:'conflict',d:'CON-flict',p:'noun'},{t:'argue',d:'AR-gue',p:'verb'},
+  {t:'discuss',d:'dis-CUSS',p:'verb'},{t:'distract',d:'dis-TRACT',p:'verb'},
+  {t:'feasible',d:'FEA-si-ble',p:'adj'},{t:'option',d:'OP-tion',p:'noun'},
+  {t:'solution',d:'so-LU-tion',p:'noun'},{t:'contribute',d:'con-TRIB-ute',p:'verb'}
+];
+const mc=[
+ {q:'The two brothers always ___ about who plays the game first.',o:['list','argue','draft'],a:1},
+ {q:'Everyone in the group should ___ ideas.',o:['contribute','distract','calm down'],a:0},
+ {q:'“It’s feasible.” means:',o:['khả thi','công bằng','căng thẳng'],a:0},
+ {q:'“Take your time.” means:',o:['Hurry up!','Stop now.','Don’t rush.'],a:2},
+ {q:'A win-win solution is good for ___.',o:['only me','only you','both sides'],a:2}
+];
+const gr=[
+ {q:'How about ___ the draft together?',o:['write','writing','to write'],a:1},
+ {q:'Mom wants Lan ___ on studying.',o:['focus','focusing','to focus'],a:2},
+ {q:'Lan wants to use her phone, ___ Mom says no.',o:['because','but','so'],a:1}
+];
+const ord=[
+ {q:'list / let’s / options / some',a:'Let’s list some options.'},
+ {q:'works / This / me / for / because / it’s / fair',a:'This works for me because it’s fair.'}
+];
+let n=0;
+const norm=s=>s.toLowerCase().replace(/[’']/g,"'").replace(/[.!?]/g,'').replace(/\s+/g,' ').trim();
+
+function speak(t){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.8;speechSynthesis.speak(u);
+}
+const wEl=document.getElementById('words');
+words.forEach(w=>{
+  const b=document.createElement('button');b.className='word';
+  b.innerHTML='🔊 <span>'+w.d.replace(/([A-Z]+)/g,'<b>$1</b>')+'<small>'+w.p+'</small></span>';
+  b.onclick=()=>speak(w.t);wEl.appendChild(b);
+});
+function mcBlock(list,host){
+  list.forEach(it=>{
+    n++;const id=n;it.id=id;
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML='<div class="q">'+id+'. '+it.q+'</div><div class="opts">'+
+      it.o.map((o,i)=>'<label><input type="radio" name="q'+id+'" value="'+i+'">'+'abc'[i]+') '+o+'</label>').join('')+
+      '</div><div class="fb"></div>';
+    document.getElementById(host).appendChild(d);it.el=d;
+  });
+}
+mcBlock(mc,'p2');mcBlock(gr,'p3');
+ord.forEach(it=>{
+  n++;it.id=n;
+  const d=document.createElement('div');d.className='card';
+  d.innerHTML='<div class="q">'+it.id+'. '+it.q+'</div><input type="text" placeholder="Viết câu hoàn chỉnh…" autocomplete="off"><div class="fb"></div>';
+  document.getElementById('p4').appendChild(d);it.el=d;
+});
+
+document.getElementById('check').onclick=()=>{
+  let s=0;
+  [...mc,...gr].forEach(it=>{
+    const labels=it.el.querySelectorAll('label');
+    const sel=it.el.querySelector('input:checked');
+    labels.forEach(l=>l.classList.remove('ok','bad'));
+    const fb=it.el.querySelector('.fb');
+    labels[it.a].classList.add('ok');
+    if(sel&&+sel.value===it.a){s++;fb.className='fb ok';fb.textContent='✓ Correct';}
+    else{if(sel)labels[+sel.value].classList.add('bad');fb.className='fb bad';fb.textContent='✗ Đáp án: '+'abc'[it.a]+') '+it.o[it.a];}
+  });
+  ord.forEach(it=>{
+    const v=it.el.querySelector('input').value;const fb=it.el.querySelector('.fb');
+    if(norm(v)===norm(it.a)){s++;fb.className='fb ok';fb.textContent='✓ Correct';}
+    else{fb.className='fb bad';fb.textContent='✗ Đáp án: '+it.a;}
+  });
+  document.getElementById('score').textContent='Score: '+s+' / '+n;
+};
+document.getElementById('reset').onclick=()=>{
+  document.querySelectorAll('input[type=radio]').forEach(i=>i.checked=false);
+  document.querySelectorAll('input[type=text]').forEach(i=>i.value='');
+  document.querySelectorAll('.fb').forEach(f=>{f.textContent='';f.className='fb'});
+  document.querySelectorAll('label').forEach(l=>l.classList.remove('ok','bad'));
+  document.getElementById('score').textContent='';
+};
+</script>
+</body>
+</html>
