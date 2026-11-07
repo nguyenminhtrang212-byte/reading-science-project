@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reading 3 – COVID-19: Understanding the Illness</title>
+<title>Reading 3 – Covid-19: The Pandemic That Changed Our Lives</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -42,6 +42,16 @@ h1{font-family:var(--read);font-weight:600;font-size:clamp(28px,6vw,40px);line-h
 .summary.cover .w.unk{color:transparent;background:var(--line);text-decoration:none;font-weight:400}
 .rv.hidevi .rw-vi{filter:blur(6px);cursor:pointer;user-select:none}
 .rv .rw-vi{font-size:15px}
+.trrow{margin:16px 0}
+.trvi{font-weight:600;background:var(--sunSoft);border-radius:10px;padding:8px 12px;margin-bottom:6px}
+.card textarea{width:100%;min-height:68px;border-radius:12px;border:2px solid var(--line);padding:9px 12px;font:inherit;font-size:17px;background:var(--card);color:var(--ink);resize:vertical}
+.kchips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.kchip{border-radius:999px;padding:2px 10px;font-size:14px;font-weight:600;border:1.5px solid var(--line);color:var(--muted)}
+.kchip.ok{border-color:var(--ok);background:var(--okSoft);color:var(--ok)}
+.kchip.no{border-color:var(--coral);background:var(--coralSoft);color:var(--coral)}
+.model{border:2px dashed var(--teal);border-radius:12px;padding:8px 12px;margin-top:6px;font-family:var(--read);font-size:18px;background:var(--tealSoft)}
+.bank{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.bank button{border:1.5px solid var(--teal);background:var(--tealSoft);color:var(--tealDark);border-radius:999px;padding:3px 12px;font-weight:600;font-size:15px}
 
 .stage{display:none}
 .stage.on{display:block}
@@ -177,14 +187,14 @@ noscript{display:block;padding:20px;text-align:center}
 <div class="app">
   <header>
     <div class="kicker">READING 3 · HEALTH · A2–B1</div>
-    <h1>COVID-19: Understanding the Illness</h1>
-    <p class="byline">Đại dịch Covid-19 — học từ vựng về bệnh tật, triệu chứng và cách phòng bệnh</p>
-    <p class="focus"><b>Focus:</b> Health vocabulary – symptoms, treatment and prevention.</p>
+    <h1>Covid-19: The Pandemic That Changed Our Lives</h1>
+    <p class="byline">Đại dịch Covid-19 — từ vựng về bệnh tật, triệu chứng và cách phòng bệnh</p>
+    <p class="focus"><b>Focus:</b> Health vocabulary – illness, symptoms, how a virus spreads and how we protect ourselves.</p>
     <ol class="stepper" id="stepper">
       <li><button data-go="1" class="on"><i>1</i><span>Đọc & chọn từ</span></button></li>
       <li><button data-go="2" disabled><i>2</i><span>Kiểm tra từ</span></button></li>
-      <li><button data-go="3" disabled><i>3</i><span>Ôn bằng bài tóm tắt</span></button></li>
-      <li><button data-go="4" disabled><i>4</i><span>Ghi âm & nộp bài</span></button></li>
+      <li><button data-go="3" disabled><i>3</i><span>Dịch bài tóm tắt</span></button></li>
+      <li><button data-go="4" disabled><i>4</i><span>Đọc lại & ghi âm</span></button></li>
     </ol>
   </header>
 
@@ -214,30 +224,20 @@ noscript{display:block;padding:20px;text-align:center}
     </section>
 
     <section class="stage" id="st2"><div id="quizBox"></div></section>
-    <section class="stage" id="st3">
+    <section class="stage" id="st3"><div id="trBox"></div></section>
+    <section class="stage" id="st4">
       <div class="card">
-        <h2>Ôn từ bằng bài tóm tắt</h2>
-        <p class="muted">Đọc lại bản tóm tắt ngắn của bài. Các từ em đã chọn nằm ngay trong câu (màu cam), bấm vào để xem lại nghĩa. Nghe, đọc theo, rồi bấm <b>Thử nhớ</b> để che các từ đó và tự nhớ lại.</p>
+        <h2>Đọc lại bản tóm tắt</h2>
+        <p class="muted">Đây là <b>bản tóm tắt mẫu</b> bằng tiếng Anh. Em so với bài dịch của mình, nghe máy đọc, đọc theo vài lần, rồi ghi âm ở phía dưới. Bấm vào từ nào em chưa chắc để xem IPA và nghĩa.</p>
         <div class="sh-btns">
           <button class="btn primary" id="sumPlay">▶ Nghe tóm tắt</button>
           <button class="btn" id="sumStop" disabled>⏹ Dừng</button>
-          <button class="btn" id="sumCover">🙈 Thử nhớ: che từ đã chọn</button>
         </div>
         <article class="reading summary" id="summary" aria-label="Bài tóm tắt"></article>
       </div>
-      <div class="card" style="margin-top:12px">
-        <h2 style="font-size:21px">Từ cần nhớ</h2>
-        <p class="muted" id="rvNote"></p>
-        <div class="sh-btns"><button class="btn" id="hideVi">👁 Che nghĩa để tự nhớ</button></div>
-        <ul class="rwords rv" id="reviewList"></ul>
-      </div>
-      <div class="sh-btns" style="margin-top:14px">
-        <button class="btn primary big" id="toRec">Sang ghi âm →</button>
-        <button class="btn" id="sumBack">← Về bài kiểm tra</button>
-      </div>
+      <div id="recBox" style="margin-top:12px"></div>
       <div class="spacer"></div>
     </section>
-    <section class="stage" id="st4"><div id="recBox"></div></section>
   </main>
 </div>
 
@@ -277,161 +277,177 @@ noscript{display:block;padding:20px;text-align:center}
 /* Nội dung bài đọc. Mỗi chuỗi = một câu (để đọc to và tô sáng từng câu). */
 const BLOCKS = [
   { t: 'p', s: [
-    "In December 2019, doctors found a new illness in China.",
+    "At the end of 2019, doctors in China found a new illness.",
     "It was caused by a new virus called coronavirus.",
-    "The illness is called COVID-19.",
-    "The virus spread very quickly around the world, and in March 2020 the World Health Organization said it was a pandemic."
+    "The illness was named Covid-19.",
+    "The virus spread quickly to many countries, and in March 2020 the World Health Organization called it a pandemic."
   ]},
   { t: 'p', s: [
-    "The virus passes from person to person.",
+    "How does the virus spread?",
+    "It spreads from person to person.",
     "When an infected person coughs, sneezes or even talks, tiny drops come out of their mouth or nose.",
-    "If you breathe in these drops, you can catch the virus.",
-    "You can also get infected if you touch a dirty surface and then touch your face."
+    "Other people can breathe in these drops and get sick.",
+    "This is why the virus spreads easily in crowded rooms."
   ]},
   { t: 'p', s: [
-    "Some people have no symptoms at all, but many people feel ill.",
-    "The most common symptoms are a fever, a dry cough and feeling very tired.",
-    "Other people have a sore throat, a headache or a pain in their body.",
-    "Some patients also lose their sense of taste or smell."
+    "The symptoms of Covid-19 are different for each person.",
+    "Many people have a fever, a dry cough and a sore throat.",
+    "Some feel very tired or have a headache.",
+    "Some patients lose their sense of taste and smell.",
+    "A few people have trouble breathing, and they need to go to hospital.",
+    "Most people feel better after one or two weeks."
   ]},
   { t: 'table',
-    head: ["Symptom", "What is it?", "What can you do?"],
+    head: ["Type", "Symptoms", "What to do"],
     rows: [
-      ["Fever", "Your body is too hot", "Rest and drink plenty of water"],
-      ["Cough", "Air comes out of your throat with a noise", "Drink warm water and stay away from other people"],
-      ["Sore throat", "Your throat hurts", "Drink warm drinks"],
-      ["Headache", "You have a pain in your head", "Rest in a quiet room"],
-      ["Loss of taste or smell", "You cannot taste or smell food", "Do a test and stay at home"]
+      ["Mild", "Fever, dry cough, sore throat, headache", "Rest at home and drink a lot of water"],
+      ["Serious", "Trouble breathing, chest pain", "Call a doctor or go to hospital quickly"]
     ]},
   { t: 'p', s: [
-    "Most people get better at home after one or two weeks.",
-    "But some people become very sick and need to go to hospital.",
-    "Older people and people with other health problems are at higher risk."
+    "Anyone can catch the virus, but some people are at higher risk.",
+    "Older people and people with other health problems, such as heart disease or diabetes, can become very ill.",
+    "Young, healthy people usually recover at home."
   ]},
   { t: 'p', s: [
-    "There are simple ways to stay safe.",
-    "Wash your hands with soap often.",
-    "Wear a mask in crowded places.",
-    "Keep a distance from other people.",
-    "Open the windows to let fresh air in.",
-    "If you feel ill, stay at home and do a test.",
-    "Call a doctor if it gets worse."
+    "How can we protect ourselves?",
+    "Doctors give simple advice."
+  ]},
+  { t: 'ol', items: [
+    ["Wash your hands with soap often."],
+    ["Wear a mask in crowded places."],
+    ["Keep a distance from other people."],
+    ["Open the windows to let fresh air in."],
+    ["If you feel sick, stay at home and take a test."]
   ]},
   { t: 'p', s: [
-    "To slow down the virus, many countries closed schools, shops and offices.",
+    "In 2020, many countries closed schools, shops and offices.",
     "This was called a lockdown.",
-    "People had to stay at home, and students studied online.",
-    "Some travellers had to quarantine for several days when they arrived in a new country."
+    "Students studied online, and many people worked from home.",
+    "Scientists worked very fast to make a vaccine.",
+    "A vaccine helps the body fight a virus before a person gets sick.",
+    "The first vaccines were ready at the end of 2020, and they saved many lives."
   ]},
   { t: 'p', s: [
-    "Scientists worked very hard, and the first vaccines were ready at the end of 2020.",
-    "A vaccine helps your body to fight the virus, so you are less likely to become seriously ill.",
-    "Many people around the world have now had a vaccine."
-  ]},
-  { t: 'p', s: [
-    "Today, life is almost back to normal.",
-    "But the pandemic taught us important lessons about health."
+    "Today, Covid-19 is still around, but life is closer to normal.",
+    "The pandemic taught us how important health is.",
+    "Washing our hands, staying at home when we are sick and caring for older people are good habits for every day."
   ]},
   { t: 'lesson', s: [
-    "Wash your hands often.",
-    "Wear a mask in crowded places.",
-    "Stay at home if you feel ill.",
-    "Get a vaccine, and call a doctor if you are very sick."
+    "A pandemic is an illness that spreads all over the world.",
+    "Symptoms are signs that a person is ill.",
+    "A vaccine helps the body fight a virus."
   ]}
 ];
-const SUGGEST = ["virus","infected","symptoms","fever","cough","sore","throat","headache","patients","hospital","vaccine","quarantine","lockdown","pandemic","mask","illness","spread","breathe","crowded","scientists"];
+const SUGGEST = ["virus","illness","symptoms","fever","cough","sore","throat","headache","patients","hospital","pandemic","vaccine","lockdown","protect","mask","recover","spread","infected","doctor","breathe"];
 
-/* Bài tóm tắt dùng lại các từ khoá — học sinh đọc lại để nhớ từ */
+/* Bài tóm tắt A2 – bước dịch (Việt → Anh), rồi đọc lại và ghi âm */
 const SUMMARY = [
-  "COVID-19 is an illness caused by a new virus.",
-  "It spreads when an infected person coughs, sneezes or talks.",
-  "Common symptoms are a fever, a dry cough, a sore throat and feeling very tired.",
-  "To stay safe, wash your hands, wear a mask and stay at home if you feel ill.",
-  "A vaccine helps your body to fight the virus.",
-  "If you feel very sick, call a doctor."
+  "Covid-19 is an illness caused by a new virus.",
+  "It spreads when sick people cough, sneeze or talk.",
+  "The symptoms are a fever, a cough and a sore throat.",
+  "We can protect ourselves with a mask, clean hands and a vaccine.",
+  "If you feel sick, stay at home and see a doctor."
 ];
+const SUMMARY_VI = [
+  "Covid-19 là một căn bệnh do một loại virus mới gây ra.",
+  "Bệnh lây lan khi người bệnh ho, hắt hơi hoặc nói chuyện.",
+  "Các triệu chứng là sốt, ho và đau họng.",
+  "Chúng ta có thể tự bảo vệ mình bằng khẩu trang, rửa tay sạch và vắc-xin.",
+  "Nếu em thấy mình bị ốm, hãy ở nhà và đi khám bác sĩ."
+];
+/* Từ khoá để máy kiểm tra bản dịch của học sinh (nhãn hiển thị, mẫu so khớp) */
+const KEYCHECK = [
+  [["illness","illness|disease|sickness"],["virus","virus"],["caused","caus"]],
+  [["spread","spread"],["cough","cough"],["sneeze","sneez"],["talk","talk|speak"]],
+  [["symptoms","symptom"],["fever","fever"],["cough","cough"],["sore throat","sore throat"]],
+  [["protect","protect"],["mask","mask"],["hands","hand"],["vaccine","vaccin"]],
+  [["sick","sick|\\bill\\b"],["stay","stay"],["home","home"],["doctor","doctor"]]
+];
+const BANK = ["illness","virus","caused","spreads","cough","sneeze","symptoms","fever","sore","throat","protect","mask","hands","vaccine","sick","stay","doctor"];
 
 /* Từ điển: [IPA (Anh-Anh), loại từ, nghĩa trong bài, ghi chú] */
 const DICT = {"a":["/ə/","art.","một (mạo từ)"],
-"about":["/əˈbaʊt/","prep.","về, liên quan đến"],
+"advice":["/ədˈvaɪs/","n.","lời khuyên","không đếm được: some advice, a piece of advice"],
 "after":["/ˈɑːftə/","prep.","sau, sau khi","after one or two weeks = sau một hoặc hai tuần"],
 "air":["/eə/","n.","không khí"],
 "all":["/ɔːl/","det.","tất cả, mọi"],
-"almost":["/ˈɔːlməʊst/","adv.","suýt, gần như"],
-"also":["/ˈɔːlsəʊ/","adv.","cũng, còn"],
 "an":["/æn/","art.","một (đứng trước nguyên âm)"],
 "and":["/ænd/","conj.","và"],
+"anyone":["/ˈeniwʌn/","pron.","bất kỳ ai"],
 "are":["/ɑː/","v.","thì, là, ở (số nhiều)"],
 "around":["/əˈraʊnd/","prep.","khắp, xung quanh","around the world = khắp thế giới"],
-"arrived":["/əˈraɪvd/","v.","đã đến nơi","arrive → arrived"],
+"as":["/æz/","prep.","như là, với tư cách là"],
 "at":["/æt/","prep.","tại, vào; nhìn vào"],
-"away":["/əˈweɪ/","adv.","xa, đi xa"],
-"back":["/bæk/","adv.","trở lại","back to normal = trở lại bình thường"],
 "become":["/bɪˈkʌm/","v.","trở nên"],
+"before":["/bɪˈfɔː/","adv.","trước đây"],
 "better":["/ˈbetə/","adj.","khỏe hơn, tốt hơn","get better = khỏi bệnh, khỏe lại"],
 "body":["/ˈbɒdi/","n.","cơ thể"],
 "breathe":["/briːð/","v.","hít thở","breathe in = hít vào · (n.) breath /breθ/ = hơi thở"],
+"breathing":["/ˈbriːðɪŋ/","n.","sự thở, việc thở","trouble breathing = khó thở"],
 "but":["/bʌt/","conj.","nhưng"],
 "by":["/baɪ/","prep.","trước (hạn), vào lúc; bởi"],
 "call":["/kɔːl/","v.","gọi (điện thoại); gọi là","call a doctor = gọi bác sĩ · called = được gọi là"],
 "called":["/kɔːld/","v.","được gọi là"],
 "can":["/kæn/","aux.","có thể"],
-"cannot":["/ˈkænɒt/","aux.","không thể","cannot = can not (viết liền)"],
+"caring":["/ˈkeərɪŋ/","v.","chăm sóc","care for = chăm sóc"],
 "catch":["/kætʃ/","v.","bị nhiễm (bệnh); bắt lấy","catch a cold / catch the virus = bị cảm / nhiễm vi-rút"],
 "caused":["/kɔːzd/","v.","đã gây ra","caused by = bị gây ra bởi"],
+"chest":["/tʃest/","n.","ngực","chest pain = đau ngực"],
 "china":["/ˈtʃaɪnə/","proper n.","Trung Quốc"],
+"clean":["/kliːn/","adj.","sạch sẽ"],
 "closed":["/kləʊzd/","v.","đã đóng cửa","close → closed"],
+"closer":["/ˈkləʊsə/","adj.","gần hơn","closer to normal = gần trở lại bình thường hơn"],
 "come":["/kʌm/","v.","đến, đi ra","come out = đi ra, thoát ra"],
-"comes":["/kʌmz/","v.","đến, đi ra","come out = đi ra, thoát ra"],
-"common":["/ˈkɒmən/","adj.","phổ biến, thường gặp","the most common symptoms = các triệu chứng thường gặp nhất"],
 "coronavirus":["/kəˈrəʊnəvaɪrəs/","n.","vi-rút corona","loại vi-rút gây bệnh COVID-19"],
 "cough":["/kɒf/","n.","cơn ho, tiếng ho","(v.) cough = ho · phát âm -gh = /f/"],
 "coughs":["/kɒfs/","v.","ho","cough → coughs"],
 "countries":["/ˈkʌntriz/","n.","các quốc gia","country = quốc gia"],
-"country":["/ˈkʌntri/","n.","quốc gia, đất nước"],
 "covid":["/ˈkəʊvɪd/","proper n.","COVID-19 (tên bệnh)","COVID-19 = Corona Virus Disease 2019"],
 "crowded":["/ˈkraʊdɪd/","adj.","đông người, chật ních","crowded places = nơi đông người"],
-"days":["/deɪz/","n.","những ngày"],
-"december":["/dɪˈsembə/","proper n.","tháng Mười Hai"],
-"dirty":["/ˈdɜːti/","adj.","bẩn","≠ clean"],
+"day":["/deɪ/","n.","ngày"],
+"diabetes":["/ˌdaɪəˈbiːtiːz/","n.","bệnh tiểu đường"],
+"different":["/ˈdɪfrənt/","adj.","khác, khác biệt"],
+"disease":["/dɪˈziːz/","n.","bệnh (thường nặng, kéo dài)","heart disease = bệnh tim"],
 "distance":["/ˈdɪstəns/","n.","khoảng cách","keep a distance = giữ khoảng cách"],
 "do":["/duː/","v.","làm"],
 "doctor":["/ˈdɒktə/","n.","bác sĩ"],
 "doctors":["/ˈdɒktəz/","n.","các bác sĩ"],
-"down":["/daʊn/","adv.","xuống"],
+"does":["/dʌz/","aux.","(trợ động từ ngôi thứ ba số ít)","How does the virus spread? = Vi-rút lây lan như thế nào?"],
 "drink":["/drɪŋk/","v.","uống","(n.) a drink = đồ uống"],
-"drinks":["/drɪŋks/","n.","đồ uống","warm drinks = đồ uống ấm"],
 "drops":["/drɒps/","n.","những giọt nhỏ","tiny drops = những giọt li ti (nước bọt, dịch mũi)"],
 "dry":["/draɪ/","adj.","khô, khô hạn"],
+"each":["/iːtʃ/","det.","mỗi"],
+"easily":["/ˈiːzɪli/","adv.","một cách dễ dàng","easy → easily"],
 "end":["/end/","n.","phần cuối, lúc kết thúc"],
 "even":["/ˈiːvn/","adv.","thậm chí","even talks = thậm chí chỉ nói chuyện"],
-"face":["/feɪs/","n.","khuôn mặt"],
+"every":["/ˈevri/","det.","mỗi, mọi"],
+"fast":["/fɑːst/","adv.","nhanh","work very fast = làm việc rất nhanh"],
 "feel":["/fiːl/","v.","cảm thấy"],
-"feeling":["/ˈfiːlɪŋ/","n.","cảm giác"],
 "fever":["/ˈfiːvə/","n.","sốt, cơn sốt","have a fever = bị sốt"],
+"few":["/fjuː/","det.","một vài, một số ít","a few people = một vài người"],
 "fight":["/faɪt/","v.","chống lại, chiến đấu","fight the virus = chống lại vi-rút"],
 "first":["/fɜːst/","adj.","đầu tiên"],
-"food":["/fuːd/","n.","thức ăn"],
 "for":["/fɔː/","prep.","cho, đối với"],
 "found":["/faʊnd/","v.","đã tìm thấy"],
 "fresh":["/freʃ/","adj.","mới, tươi"],
 "from":["/frɒm/","prep.","từ"],
 "get":["/get/","v.","trở nên"],
 "gets":["/ɡets/","v.","trở nên","gets worse = trở nên tệ hơn"],
+"give":["/ɡɪv/","v.","cho, tạo ra"],
 "go":["/ɡəʊ/","v.","đi","go to hospital = đi nằm viện / đi bệnh viện"],
-"had":["/hæd/","v.","đã có; đã (trợ động từ)"],
+"good":["/ɡʊd/","adj.","tốt","good habits = thói quen tốt"],
+"habits":["/ˈhæbɪts/","n.","các thói quen","habit = thói quen"],
 "hands":["/hændz/","n.","đôi bàn tay","wash your hands = rửa tay"],
-"hard":["/hɑːd/","adv.","chăm chỉ, vất vả","work hard = làm việc chăm chỉ"],
 "have":["/hæv/","v.","có; đã (trợ động từ)"],
-"head":["/hed/","n.","cái đầu"],
 "headache":["/ˈhedeɪk/","n.","chứng đau đầu","have a headache = bị đau đầu"],
 "health":["/helθ/","n.","sức khỏe","(adj.) healthy = khỏe mạnh"],
+"healthy":["/ˈhelθi/","adj.","khỏe mạnh","(n.) health = sức khỏe"],
+"heart":["/hɑːt/","n.","trái tim","heart disease = bệnh tim"],
 "helps":["/helps/","v.","giúp"],
 "higher":["/ˈhaɪə/","adj.","cao hơn","high – higher – highest"],
 "home":["/həʊm/","n.","nhà","at home = ở nhà · stay at home = ở nhà"],
 "hospital":["/ˈhɒspɪtl/","n.","bệnh viện","go to hospital = đi nằm viện"],
-"hot":["/hɒt/","adj.","nóng"],
-"hurts":["/hɜːts/","v.","đau, làm đau","Your throat hurts = cổ họng bạn bị đau"],
+"how":["/haʊ/","adv.","như thế nào, bao nhiêu"],
 "if":["/ɪf/","conj.","nếu"],
 "ill":["/ɪl/","adj.","ốm, bị bệnh","feel ill = cảm thấy mệt, không khỏe"],
 "illness":["/ˈɪlnəs/","n.","bệnh, cơn bệnh","(adj.) ill = ốm"],
@@ -441,26 +457,24 @@ const DICT = {"a":["/ə/","art.","một (mạo từ)"],
 "is":["/ɪz/","v.","thì, là"],
 "it":["/ɪt/","pron.","nó, điều đó"],
 "keep":["/kiːp/","v.","giữ","keep a distance = giữ khoảng cách"],
-"less":["/les/","det.","ít hơn (không đếm được)"],
-"lessons":["/ˈlesnz/","n.","những bài học"],
 "let":["/let/","v.","để cho, cho phép","let fresh air in = để không khí trong lành vào"],
 "life":["/laɪf/","n.","cuộc sống"],
-"likely":["/ˈlaɪkli/","adj.","có khả năng","less likely to = ít có khả năng làm gì hơn"],
+"lives":["/laɪvz/","n.","những mạng sống, cuộc sống","số ít: life /laɪf/"],
 "lockdown":["/ˈlɒkdaʊn/","n.","phong tỏa, giãn cách xã hội","mọi người phải ở nhà, trường và cửa hàng đóng cửa"],
 "lose":["/luːz/","v.","mất, đánh mất","lose your sense of taste = mất vị giác"],
-"loss":["/lɒs/","n.","sự mất đi","loss of taste = mất vị giác"],
+"lot":["/lɒt/","n.","nhiều","a lot of = rất nhiều"],
+"make":["/meɪk/","v.","tạo ra, làm ra"],
 "many":["/ˈmeni/","det.","nhiều (đếm được)"],
 "march":["/mɑːtʃ/","proper n.","tháng Ba"],
 "mask":["/mɑːsk/","n.","khẩu trang; mặt nạ","wear a mask = đeo khẩu trang"],
+"mild":["/maɪld/","adj.","nhẹ (bệnh)","mild symptoms = triệu chứng nhẹ"],
 "most":["/məʊst/","det.","nhiều nhất"],
 "mouth":["/maʊθ/","n.","cái miệng"],
+"named":["/neɪmd/","v.","được đặt tên là","name → named"],
 "need":["/niːd/","n.","nhu cầu"],
 "new":["/njuː/","adj.","mới"],
-"no":["/nəʊ/","adv.","không"],
-"noise":["/nɔɪz/","n.","tiếng ồn, tiếng động"],
 "normal":["/ˈnɔːml/","adj.","bình thường","back to normal = trở lại bình thường"],
 "nose":["/nəʊz/","n.","cái mũi"],
-"now":["/naʊ/","adv.","bây giờ, hiện nay"],
 "of":["/ɒv/","prep.","của, trong số"],
 "offices":["/ˈɒfɪsɪz/","n.","các văn phòng"],
 "often":["/ˈɒfn/","adv.","thường xuyên","chữ t không đọc: /ˈɒfn/"],
@@ -471,56 +485,58 @@ const DICT = {"a":["/ə/","art.","một (mạo từ)"],
 "or":["/ɔː/","conj.","hoặc"],
 "organization":["/ˌɔːɡənaɪˈzeɪʃn/","n.","tổ chức","World Health Organization = Tổ chức Y tế Thế giới (WHO)"],
 "other":["/ˈʌðə/","adj.","khác"],
+"our":["/ˈaʊə/","det.","của chúng ta"],
+"ourselves":["/ˌaʊəˈselvz/","pron.","chính chúng ta","protect ourselves = tự bảo vệ mình"],
 "out":["/aʊt/","adv.","ra ngoài"],
+"over":["/ˈəʊvə/","prep.","khắp (all over = khắp nơi)","all over the world = khắp thế giới"],
 "pain":["/peɪn/","n.","cơn đau","a pain in the body = đau người"],
 "pandemic":["/pænˈdemɪk/","n.","đại dịch","bệnh lây lan khắp nhiều nước, nhiều châu lục"],
-"passes":["/ˈpɑːsɪz/","v.","truyền, lây từ… sang…","passes from person to person = lây từ người sang người"],
 "patients":["/ˈpeɪʃnts/","n.","các bệnh nhân","patient = bệnh nhân"],
 "people":["/ˈpiːpl/","n.","con người, mọi người"],
 "person":["/ˈpɜːsn/","n.","người"],
 "places":["/ˈpleɪsɪz/","n.","những nơi, địa điểm"],
-"plenty":["/ˈplenti/","pron.","rất nhiều"],
 "problems":["/ˈprɒbləmz/","n.","các vấn đề","health problems = các vấn đề sức khỏe"],
-"quarantine":["/ˈkwɒrəntiːn/","v.","cách ly","(n.) quarantine = sự cách ly (để tránh lây bệnh)"],
+"protect":["/prəˈtekt/","v.","bảo vệ"],
 "quickly":["/ˈkwɪkli/","adv.","một cách nhanh chóng"],
-"quiet":["/ˈkwaɪət/","adj.","yên tĩnh"],
 "ready":["/ˈredi/","adj.","sẵn sàng, đã xong"],
+"recover":["/rɪˈkʌvə/","v.","hồi phục, khỏi bệnh","recover at home = khỏi bệnh tại nhà"],
 "rest":["/rest/","v.","nghỉ ngơi","(n.) rest = sự nghỉ ngơi"],
 "risk":["/rɪsk/","n.","nguy cơ, rủi ro","at higher risk = có nguy cơ cao hơn"],
-"room":["/ruːm/","n.","căn phòng"],
-"safe":["/seɪf/","adj.","an toàn","stay safe = giữ an toàn"],
-"said":["/sed/","v.","đã nói"],
+"rooms":["/ruːmz/","n.","các căn phòng","crowded rooms = những căn phòng đông người"],
+"saved":["/seɪvd/","v.","đã cứu","save → saved"],
 "schools":["/skuːlz/","n.","các trường học"],
 "scientists":["/ˈsaɪəntɪsts/","n.","các nhà khoa học"],
+"see":["/siː/","v.","nhìn thấy; đi khám","see a doctor = đi khám bác sĩ"],
 "sense":["/sens/","n.","giác quan","sense of taste / smell = vị giác / khứu giác"],
-"seriously":["/ˈsɪəriəsli/","adv.","một cách nghiêm túc"],
-"several":["/ˈsevrəl/","det.","vài, một số","several days = vài ngày"],
+"serious":["/ˈsɪəriəs/","adj.","nghiêm trọng, nặng","serious symptoms = triệu chứng nặng"],
 "shops":["/ʃɒps/","n.","các cửa hàng"],
 "sick":["/sɪk/","adj.","ốm, bị bệnh","very sick = ốm nặng · (sick ≈ ill)"],
+"signs":["/saɪnz/","n.","dấu hiệu","sign = dấu hiệu"],
 "simple":["/ˈsɪmpl/","adj.","đơn giản"],
-"slow":["/sləʊ/","adj.","chậm"],
 "smell":["/smel/","n.","mùi; khứu giác","(v.) smell = ngửi, có mùi"],
+"sneeze":["/sniːz/","v.","hắt hơi"],
 "sneezes":["/ˈsniːzɪz/","v.","hắt hơi","sneeze = hắt hơi (hắt xì)"],
-"so":["/səʊ/","adv.","vậy thì; rất"],
 "soap":["/səʊp/","n.","xà phòng"],
 "some":["/sʌm/","det.","một vài"],
 "sore":["/sɔː/","adj.","đau, rát","a sore throat = đau họng"],
 "spread":["/spred/","v.","lây lan, lan rộng","spread – spread – spread (không đổi dạng)"],
 "spreads":["/spredz/","v.","lây lan, lan rộng"],
 "stay":["/steɪ/","v.","ở lại, giữ nguyên"],
+"staying":["/ˈsteɪɪŋ/","v.","ở lại","stay at home = ở nhà"],
+"still":["/stɪl/","adv.","vẫn còn"],
 "students":["/ˈstjuːdnts/","n.","các học sinh, sinh viên"],
 "studied":["/ˈstʌdid/","v.","đã học","study → studied"],
-"surface":["/ˈsɜːfɪs/","n.","bề mặt","a dirty surface = bề mặt bẩn (bàn, tay nắm cửa)"],
-"symptom":["/ˈsɪmptəm/","n.","triệu chứng","dấu hiệu cho thấy bạn bị bệnh"],
+"such":["/sʌtʃ/","det.","như là, kiểu như"],
 "symptoms":["/ˈsɪmptəmz/","n.","các triệu chứng","symptom = triệu chứng"],
+"take":["/teɪk/","v.","làm, thực hiện; lấy","take a test = làm xét nghiệm"],
+"talk":["/tɔːk/","v.","nói chuyện"],
 "talks":["/tɔːks/","v.","nói chuyện","talk → talks"],
 "taste":["/teɪst/","n.","vị giác; vị","(v.) taste = nếm"],
 "taught":["/tɔːt/","v.","đã dạy","teach – taught – taught"],
 "test":["/test/","n.","xét nghiệm; bài kiểm tra","do a test = làm xét nghiệm"],
+"that":["/ðæt/","pron.","điều đó, rằng, mà"],
 "the":["/ðə/","art.","(mạo từ xác định)"],
 "their":["/ðeə/","det.","của họ, của chúng"],
-"then":["/ðen/","adv.","sau đó, rồi thì"],
-"there":["/ðeə/","adv.","ở đó"],
 "these":["/ðiːz/","det.","những cái này"],
 "they":["/ðeɪ/","pron.","họ"],
 "this":["/ðɪs/","pron.","này, điều này"],
@@ -529,31 +545,32 @@ const DICT = {"a":["/ə/","art.","một (mạo từ)"],
 "tired":["/ˈtaɪəd/","adj.","mệt mỏi"],
 "to":["/tuː/","prep.","để, đến, tới"],
 "today":["/təˈdeɪ/","adv.","ngày nay, hôm nay"],
-"too":["/tuː/","adv.","quá; cũng"],
-"touch":["/tʌtʃ/","v.","chạm vào, sờ"],
-"travellers":["/ˈtrævələz/","n.","những người đi du lịch","(Anh-Mỹ: travelers)"],
+"trouble":["/ˈtrʌbl/","n.","sự khó khăn, rắc rối","trouble breathing = khó thở"],
 "two":["/tuː/","num.","hai"],
+"type":["/taɪp/","n.","loại, kiểu"],
 "us":["/ʌs/","pron.","chúng tôi (làm tân ngữ)"],
+"usually":["/ˈjuːʒuəli/","adv.","thường thường"],
 "vaccine":["/ˈvæksiːn/","n.","vắc-xin","thuốc giúp cơ thể chống lại bệnh"],
 "vaccines":["/ˈvæksiːnz/","n.","các loại vắc-xin"],
 "very":["/ˈveri/","adv.","rất"],
 "virus":["/ˈvaɪrəs/","n.","vi-rút","sinh vật rất nhỏ gây bệnh"],
-"warm":["/wɔːm/","adj.","ấm áp"],
 "was":["/wɒz/","v.","thì, là, ở (quá khứ của is/am)"],
 "wash":["/wɒʃ/","v.","rửa, giặt","wash your hands = rửa tay"],
+"washing":["/ˈwɒʃɪŋ/","v.","rửa","washing our hands = việc rửa tay"],
 "water":["/ˈwɔːtə/","n.","nước"],
-"ways":["/weɪz/","n.","những cách","simple ways = những cách đơn giản"],
+"we":["/wiː/","pron.","chúng tôi, chúng ta"],
 "wear":["/weə/","v.","đeo, mặc","wear a mask = đeo khẩu trang"],
 "weeks":["/wiːks/","n.","các tuần"],
 "were":["/wɜː/","v.","thì, là, đang (quá khứ của are)"],
 "what":["/wɒt/","pron.","cái gì, điều mà"],
 "when":["/wen/","conj.","khi, lúc"],
+"why":["/waɪ/","adv.","tại sao"],
 "windows":["/ˈwɪndəʊz/","n.","các cửa sổ"],
 "with":["/wɪð/","prep.","với, cùng với"],
 "worked":["/wɜːkt/","v.","đã làm việc"],
 "world":["/wɜːld/","n.","thế giới"],
-"worse":["/wɜːs/","adj.","tệ hơn","bad – worse – worst · gets worse = trở nên tệ hơn"],
 "you":["/juː/","pron.","bạn, các bạn"],
+"young":["/jʌŋ/","adj.","trẻ, còn trẻ"],
 "your":["/jɔː/","det.","của bạn"]};
 
 </script>
@@ -562,7 +579,7 @@ const DICT = {"a":["/ə/","art.","một (mạo từ)"],
 'use strict';
 /* ================= CÀI ĐẶT CỦA GIÁO VIÊN ================= */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnf8X3_Xfk9F_8HQtBwSFU_s28sRjxKb0aFaHCA4ybmMJvgaztBAbdvaFzITdbVXBt/exec';
-const LESSON = 'Reading 3 - COVID-19 (A2-B1)';
+const LESSON = 'Reading 3 - Covid-19 (A2-B1)';
 const REC_WORDS = 10;       // số từ ghi âm
 const MAX_REC_SEC = 150;    // tối đa mỗi bản ghi âm
 
@@ -592,7 +609,7 @@ function el(tag, cls, html){ const e = document.createElement(tag); if (cls) e.c
 /* ================= TRẠNG THÁI ================= */
 const state = { name: store.get('rd_name') || '', marked: [], reached: 1, quiz: null, quizSig: '', rec: null };
 try { state.marked = JSON.parse(store.get('rd_marked_covid') || '[]').filter(k => DICT[k]); } catch(e){}
-const saveMarks = () => store.set('rd_marked_covid', JSON.stringify(state.marked));
+const saveMarks = () => store.set('rd_marked_autumn', JSON.stringify(state.marked));
 
 /* ================= ĐỌC TO (TTS) ================= */
 const synth = window.speechSynthesis;
@@ -799,7 +816,7 @@ function go(n){
   });
   window.scrollTo(0, 0);
   if (n === 2) renderQuiz();
-  if (n === 3) renderReview();
+  if (n === 3) renderTranslate();
   if (n === 4) renderRec();
 }
 $$('#stepper button').forEach(b => b.addEventListener('click', () => go(+b.dataset.go)));
@@ -849,9 +866,9 @@ function renderQuiz(){
   const card = el('div', 'card'); box.appendChild(card);
 
   if (!state.marked.length) {
-    card.innerHTML = '<h2>Em chưa chọn từ nào</h2><p>Hãy quay lại bài đọc và bấm vào những từ em chưa hiểu hoặc chưa biết đọc. Nếu em hiểu hết, em có thể sang bước ghi âm: máy sẽ gợi ý 10 từ khó trong bài để em luyện đọc.</p>';
+    card.innerHTML = '<h2>Em chưa chọn từ nào</h2><p>Hãy quay lại bài đọc và bấm vào những từ em chưa hiểu hoặc chưa biết đọc. Nếu em hiểu hết, em có thể sang bước dịch bài tóm tắt.</p>';
     const b1 = el('button', 'btn', '← Quay lại bài đọc'); b1.onclick = () => go(1);
-    const b2 = el('button', 'btn primary', 'Sang bước ghi âm →'); b2.onclick = () => { state.reached = 4; q.done = true; go(4); };
+    const b2 = el('button', 'btn primary', 'Sang bước dịch tóm tắt →'); b2.onclick = () => { state.reached = 3; q.done = true; go(3); };
     const row = el('div', 'sh-btns'); row.append(b1, b2); card.appendChild(row); return;
   }
   if (!q.started) {
@@ -904,40 +921,61 @@ function renderQuizResult(card, q){
   q.results.forEach(r => { const li = el('li', r.ok ? 'ok' : 'no', (r.ok ? '✅ ' : '❌ ') + '<b>' + disp(r.k) + '</b> <span class="muted">' + (r.ok ? '' : 'em chọn “' + r.chosen + '” · đúng là “' + r.correct + '”') + '</span>'); ul.appendChild(li); });
   card.appendChild(ul);
   const b1 = el('button', 'btn', '↻ Làm lại bài kiểm tra'); b1.onclick = () => { state.quiz = buildQuiz(); state.quiz.started = true; state.rec = null; renderQuiz(); window.scrollTo(0, 0); };
-  const b2 = el('button', 'btn primary big', 'Sang bước ôn từ →'); b2.onclick = () => { state.reached = Math.max(state.reached, 3); go(3); };
+  const b2 = el('button', 'btn primary big', 'Sang bước dịch tóm tắt →'); b2.onclick = () => { state.reached = Math.max(state.reached, 3); go(3); };
   const row = el('div', 'sh-btns'); row.append(b2, b1); card.appendChild(row);
 }
 
-/* ================= BƯỚC 3: ÔN TỪ BẰNG BÀI TÓM TẮT ================= */
+/* ================= BƯỚC 3: DỊCH BÀI TÓM TẮT (VIỆT → ANH) ================= */
 function buildSummary(){
   const p = el('p'); SUMMARY.forEach(t => addSentence(p, t)); $('#summary').appendChild(p);
 }
-function renderReview(){
-  const list = $('#reviewList'); list.innerHTML = '';
-  const own = state.marked.length > 0;
-  const keys = own ? state.marked.slice(0, 30) : SUGGEST.slice(0, 10);
-  $('#rvNote').textContent = own ? 'Đây là ' + keys.length + ' từ em đã chọn' + (state.marked.length > 30 ? ' (hiện 30 từ đầu)' : '') + '. Bấm 🔊 để nghe lại.' : 'Em chưa chọn từ nào, nên máy gợi ý một số từ khó trong bài.';
-  keys.forEach(k => {
-    const e = DICT[k], li = el('li');
-    li.innerHTML = '<div class="rw-main"><div class="rw-w"></div><div class="rw-ipa"></div><div class="rw-vi"></div></div>';
-    li.querySelector('.rw-w').textContent = disp(k);
-    li.querySelector('.rw-ipa').textContent = e[0];
-    li.querySelector('.rw-vi').textContent = e[2];
-    const sb = el('button', 'mini', '🔊'); sb.type = 'button'; sb.title = 'Nghe'; sb.onclick = () => speakNow(disp(k), 0.85);
-    li.appendChild(sb); list.appendChild(li);
+state.tr = { answers: SUMMARY_VI.map(() => ''), checked: false, hits: [] };
+function checkTranslation(){
+  const T = state.tr;
+  const rows = $$('#trBox .trrow');
+  T.hits = KEYCHECK.map((keys, i) => {
+    const txt = (T.answers[i] || '').toLowerCase();
+    return keys.map(k => ({ label: k[0], ok: new RegExp(k[1]).test(txt) }));
   });
-  const cov = $('#summary').classList.contains('cover');
-  $('#sumCover').textContent = cov ? '👁 Hiện lại các từ' : '🙈 Thử nhớ: che từ đã chọn';
-  $('#hideVi').textContent = list.classList.contains('hidevi') ? '👁 Hiện nghĩa' : '👁 Che nghĩa để tự nhớ';
+  T.checked = true;
+  rows.forEach((row, i) => {
+    const res = row.querySelector('.trres'); res.innerHTML = '';
+    const ch = el('div', 'kchips');
+    T.hits[i].forEach(h => ch.appendChild(el('span', 'kchip ' + (h.ok ? 'ok' : 'no'), (h.ok ? '✓ ' : '✗ ') + h.label)));
+    res.appendChild(ch);
+    res.appendChild(el('div', 'model', '<span class="muted" style="font-family:var(--ui);font-size:13px">Bản mẫu:</span><br>' + SUMMARY[i]));
+  });
 }
-$('#sumCover').addEventListener('click', () => {
-  if (!state.marked.length) { toast('Em chưa chọn từ nào để che'); return; }
-  $('#summary').classList.toggle('cover'); renderReview();
-});
-$('#hideVi').addEventListener('click', () => { $('#reviewList').classList.toggle('hidevi'); renderReview(); });
-$('#reviewList').addEventListener('click', e => { const v = e.target.closest('.rw-vi'); if (v && $('#reviewList').classList.contains('hidevi')) { v.style.filter = v.style.filter ? '' : 'none'; } });
-$('#toRec').addEventListener('click', () => { state.reached = 4; go(4); });
-$('#sumBack').addEventListener('click', () => go(2));
+function renderTranslate(){
+  const box = $('#trBox'); box.innerHTML = '';
+  const T = state.tr;
+  const card = el('div', 'card'); box.appendChild(card);
+  card.innerHTML = '<h2>Dịch bài tóm tắt sang tiếng Anh</h2><p class="muted">Đây là bản tóm tắt <b>tiếng Việt</b> của bài. Em dịch từng câu sang <b>tiếng Anh đơn giản</b>, dùng các từ trong khung gợi ý (bấm vào từ để xem IPA và nghĩa). Dịch xong bấm <b>Kiểm tra</b> để xem bản mẫu.</p>';
+  const bank = el('div', 'bank');
+  BANK.forEach(k => { const b = el('button', null, disp(k)); b.type = 'button'; b.onclick = () => openSheet(k, disp(k), null, false); bank.appendChild(b); });
+  card.appendChild(bank);
+  SUMMARY_VI.forEach((vi, i) => {
+    const row = el('div', 'trrow');
+    row.appendChild(el('div', 'trvi', (i + 1) + '. ' + vi));
+    const ta = document.createElement('textarea'); ta.rows = 2; ta.placeholder = 'Viết câu tiếng Anh của em…'; ta.value = T.answers[i];
+    ta.setAttribute('aria-label', 'Bản dịch câu ' + (i + 1)); ta.spellcheck = false; ta.autocapitalize = 'sentences';
+    ta.addEventListener('input', () => { T.answers[i] = ta.value; $('#trNext').disabled = !T.checked; });
+    row.appendChild(ta); row.appendChild(el('div', 'trres')); card.appendChild(row);
+  });
+  const btns = el('div', 'sh-btns'); btns.style.marginTop = '14px';
+  const chk = el('button', 'btn primary big', '✔ Kiểm tra bản dịch'); chk.id = 'trCheck';
+  const nxt = el('button', 'btn big', 'Sang bước đọc lại & ghi âm →'); nxt.id = 'trNext'; nxt.disabled = !T.checked;
+  const back = el('button', 'btn', '← Về bài kiểm tra'); back.onclick = () => go(2);
+  btns.append(chk, nxt, back); card.appendChild(btns);
+  card.appendChild(el('div', 'muted', 'Máy chỉ kiểm tra các từ khóa. Thầy/cô sẽ đọc kỹ bản dịch của em.')).style.marginTop = '8px';
+  chk.onclick = () => {
+    const empty = T.answers.findIndex(a => a.trim().split(/\s+/).filter(Boolean).length < 2);
+    if (empty >= 0) { toast('Em dịch đủ cả ' + SUMMARY_VI.length + ' câu rồi hãy kiểm tra nhé'); const tas = $$('#trBox textarea'); tas[empty].focus(); return; }
+    checkTranslation(); nxt.disabled = false; nxt.classList.add('primary'); $('#trBox .trres').scrollIntoView({ block: 'center', behavior: 'smooth' });
+  };
+  nxt.onclick = () => { state.reached = 4; go(4); };
+  if (T.checked) checkTranslation();
+}
 
 /* ================= BƯỚC 4: GHI ÂM 10 TỪ VÀ NỘP BÀI ================= */
 function pickRecWords(){
@@ -954,25 +992,10 @@ function pickRecWords(){
 let mediaStream = null, mr = null, chunks = [], recT0 = 0, recTimer = null, audioCtx = null, rafId = 0;
 function renderRec(){
   const box = $('#recBox'); box.innerHTML = '';
-  const words = pickRecWords();
-  const sig = words.map(w => w.k).join('|');
-  if (!state.rec || state.rec.sig !== sig) state.rec = { sig, words, blob: null, url: '', dur: 0, sent: false };
+  if (!state.rec || state.rec.sig !== 'sum') state.rec = { sig: 'sum', blob: null, url: '', dur: 0, sent: false };
   const R = state.rec;
   const card = el('div', 'card'); box.appendChild(card);
-  card.innerHTML = '<h2>Đọc to 10 từ và nộp bài</h2><p>Em bấm <b>Bắt đầu ghi âm</b>, đọc lần lượt 10 từ dưới đây (từ 1 đến 10), rồi bấm <b>Dừng</b>. Chỉ cần <b>một bản ghi âm</b> cho cả 10 từ. Nghe lại; chưa ưng thì ghi lại. Cuối cùng bấm <b>Nộp bài</b>.</p>';
-  const ul = el('ul', 'rwords');
-  R.words.forEach(w => {
-    const e = DICT[w.k], li = el('li');
-    li.innerHTML = '<div class="rw-main"><div class="rw-w"></div><div class="rw-ipa"></div><div class="rw-vi"></div>' + (w.own ? '' : '<div class="rw-tag">Từ gợi ý</div>') + '</div>';
-    li.querySelector('.rw-w').textContent = disp(w.k);
-    li.querySelector('.rw-ipa').textContent = e[0];
-    li.querySelector('.rw-vi').textContent = e[2];
-    const sb = el('button', 'mini', '🔊'); sb.type = 'button'; sb.title = 'Nghe mẫu'; sb.onclick = () => speakNow(disp(w.k), 0.85);
-    li.appendChild(sb); ul.appendChild(li);
-  });
-  card.appendChild(ul);
-  if (state.marked.length < REC_WORDS) card.appendChild(el('div', 'note warn', 'Em chọn ' + state.marked.length + ' từ nên máy bổ sung thêm ' + (REC_WORDS - state.marked.length) + ' từ khó trong bài (đánh dấu “Từ gợi ý”).'));
-
+  card.innerHTML = '<h2>Ghi âm bản tóm tắt</h2><p>Em bấm <b>Bắt đầu ghi âm</b>, đọc <b>cả ' + SUMMARY.length + ' câu</b> của bản tóm tắt ở trên, rồi bấm <b>Dừng</b>. Chỉ cần <b>một bản ghi âm</b>. Nghe lại; chưa ưng thì ghi lại. Cuối cùng bấm <b>Nộp bài</b>.</p>';
   const bar = el('div', 'recbar');
   const recBtn = el('button', 'btn rec big', '🎙 Bắt đầu ghi âm'); recBtn.id = 'recBtn';
   const tm = el('span', 'timer', '0:00'); tm.id = 'recTime';
@@ -982,7 +1005,7 @@ function renderRec(){
   const play = el('div'); play.id = 'recPlay'; card.appendChild(play);
   const sub = el('div', 'sh-btns'); sub.style.marginTop = '14px';
   const subBtn = el('button', 'btn primary big', '📨 Nộp bài cho thầy/cô'); subBtn.id = 'subBtn'; subBtn.disabled = true;
-  const back = el('button', 'btn', '← Về bước ôn từ'); back.onclick = () => go(3);
+  const back = el('button', 'btn', '← Về bước dịch'); back.onclick = () => go(3);
   sub.append(subBtn, back); card.appendChild(sub);
   const sm = el('div'); sm.id = 'subMsg'; card.appendChild(sm);
 
@@ -1081,15 +1104,21 @@ async function submitAll(){
     if (!R.wav) { try { R.wav = await toWav(R.blob); } catch (e) { R.wav = R.blob; } }
     const isWav = R.wav.type === 'audio/wav';
     const ext = isWav ? 'wav' : (/mp4/.test(R.wav.type) ? 'm4a' : (/ogg/.test(R.wav.type) ? 'ogg' : 'webm'));
-    const words = R.words.map(w => disp(w.k));
-    const okAudio = await post({ type: 'audio', name: state.name, lesson: LESSON, file: 'doc-10-tu.' + ext, label: 'Đọc to 10 từ', score: null, dur: Math.round(R.dur), target: words.join(', '), transcript: '', audio: await blobToB64(R.wav), mime: R.wav.type || 'audio/wav' });
+    const okAudio = await post({ type: 'audio', name: state.name, lesson: LESSON, file: 'tom-tat.' + ext, label: 'Đọc lại bản tóm tắt', score: null, dur: Math.round(R.dur), target: SUMMARY.join(' '), transcript: '', audio: await blobToB64(R.wav), mime: R.wav.type || 'audio/wav' });
     if (!okAudio) throw new Error('audio');
     const qr = state.quiz ? state.quiz.results : [];
     const good = qr.filter(r => r.ok).length;
+    const T = state.tr;
+    let kOk = 0, kAll = 0;
     const details = [{ part: 'Từ em chọn là chưa biết', question: 'Danh sách (' + state.marked.length + ' từ)', answer: state.marked.map(disp).join(', ') || '(không chọn từ nào)', correct: '', result: '' }];
     qr.forEach(r => details.push({ part: 'Kiểm tra từ', question: r.prompt, answer: r.chosen, correct: r.correct, result: r.ok ? '✅ Đúng' : '❌ Sai' }));
-    details.push({ part: 'Ghi âm 10 từ', question: 'Các từ phải đọc', answer: words.join(', '), correct: '', result: 'Đã ghi âm ' + Math.round(R.dur) + ' giây' });
-    const okSub = await post({ type: 'submit', name: state.name, lesson: LESSON, summary: { recordings: 1, avg: null, full: null, writes: '', quiz: qr.length ? good + '/' + qr.length : '' }, details });
+    SUMMARY_VI.forEach((vi, i) => {
+      const h = (T.hits && T.hits[i]) || [], n = h.filter(x => x.ok).length;
+      kOk += n; kAll += h.length;
+      details.push({ part: 'Dịch tóm tắt', question: vi, answer: T.answers[i] || '', correct: SUMMARY[i], result: h.length ? n + '/' + h.length + ' từ khóa' : 'chưa kiểm tra' });
+    });
+    details.push({ part: 'Ghi âm tóm tắt', question: 'Đọc lại bản tóm tắt (' + SUMMARY.length + ' câu)', answer: '', correct: SUMMARY.join(' '), result: 'Đã ghi âm ' + Math.round(R.dur) + ' giây' });
+    const okSub = await post({ type: 'submit', name: state.name, lesson: LESSON, summary: { recordings: 1, avg: null, full: null, writes: kAll ? kOk + '/' + kAll + ' từ khóa dịch' : '', quiz: qr.length ? good + '/' + qr.length : '' }, details });
     if (!okSub) throw new Error('submit');
     R.sent = true; showRecorded();
     sm.innerHTML = '<div class="note ok">✅ Đã nộp bài cho thầy/cô. Em làm tốt lắm!</div>';
