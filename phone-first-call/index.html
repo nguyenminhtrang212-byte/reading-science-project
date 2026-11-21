@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who Made the First Phone Call?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one centered reading column; sticky listening toolbar on top; clicked-word list and a quiz below the text. */
+:root {
+  --bg: #f2f5f9;
+  --surface: #ffffff;
+  --ink: #14202e;
+  --muted: #55667a;
+  --line: #d9e1ea;
+  --accent: #0e7a70;
+  --accent-ink: #ffffff;
+  --mark: #ffe27a;
+  --mark-ink: #3b2f00;
+  --now: #d7efe9;
+  --bad: #b8400d;
+  --good: #11713b;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1620; --surface: #162130; --ink: #e8eef6; --muted: #9db0c6; --line: #2a3a50;
+    --accent: #4fd1c5; --accent-ink: #06201d; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #1c4a46;
+    --bad: #ff9a66; --good: #6fe0a0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1620; --surface: #162130; --ink: #e8eef6; --muted: #9db0c6; --line: #2a3a50;
+  --accent: #4fd1c5; --accent-ink: #06201d; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #1c4a46;
+  --bad: #ff9a66; --good: #6fe0a0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 140px; }
+
+header.top { padding: 28px 0 8px; }
+.kicker { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: .02em; }
+h1 { font-family: var(--font-display); font-size: clamp(30px, 6vw, 44px); line-height: 1.1; margin: 6px 0 10px; text-wrap: balance; }
+.how { color: var(--muted); margin: 0; font-size: 15px; }
+.how b { color: var(--ink); font-weight: 500; background: var(--mark); color: var(--mark-ink); padding: 0 5px; border-radius: 4px; }
+
+.toolbar { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); margin-top: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 9px 14px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 44px; }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .w:focus-visible, .ico:focus-visible, .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn svg, .ico svg { width: 18px; height: 18px; flex: none; }
+.speed { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.speed button { border: 0; background: transparent; padding: 0 12px; min-height: 42px; cursor: pointer; font-size: 14px; }
+.speed button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.spacer { flex: 1; }
+.count { background: var(--mark); color: var(--mark-ink); border-radius: 999px; padding: 0 9px; font-size: 13px; font-weight: 600; }
+
+article.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 8px 20px 20px; margin-top: 16px; }
+.para { padding: 16px 0; border-bottom: 1px dashed var(--line); }
+.para:last-child { border-bottom: 0; }
+.para-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.tag { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+.ico { border: 1px solid var(--line); background: transparent; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; color: var(--muted); }
+.ico:hover { color: var(--accent); border-color: var(--accent); }
+.text { font-size: 21px; line-height: 1.95; margin: 0; }
+.s { border-radius: 6px; transition: background .15s; }
+.s.now { background: var(--now); }
+.w { cursor: pointer; border-radius: 5px; padding: 1px 1px; border-bottom: 2px dotted transparent; }
+.w:hover { border-bottom-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.w.seen { background: var(--mark); color: var(--mark-ink); }
+.w.open { outline: 2px solid var(--accent); }
+
+section.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-top: 20px; }
+h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 4px; }
+.sub { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+.empty { color: var(--muted); padding: 12px 0; font-size: 15px; }
+.list { display: grid; gap: 8px; }
+.item { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.item .wd { font-weight: 600; font-size: 18px; }
+.item .base { font-size: 13px; color: var(--muted); margin-left: 6px; font-weight: 400; }
+.item .mn { grid-column: 1; color: var(--muted); font-size: 15px; }
+.item .acts { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 6px; align-items: center; }
+.pill { font-size: 12px; border-radius: 999px; padding: 1px 8px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
+.pill.miss { color: var(--bad); border-color: var(--bad); }
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.quiet { background: transparent; color: var(--muted); }
+
+#quiz .q-word { font-family: var(--font-display); font-size: 38px; font-weight: 700; margin: 6px 0 2px; }
+#quiz .q-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; }
+.opts { display: grid; gap: 8px; margin: 14px 0; }
+.opt { text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 17px; min-height: 48px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+.score { font-family: var(--font-display); font-size: 40px; font-weight: 700; margin: 4px 0; }
+
+#sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: none; padding: 0 12px 12px; pointer-events: none; }
+#sheet.show { display: block; }
+.sheet-in { pointer-events: auto; max-width: 640px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(10, 20, 35, .28); }
+.sheet-top { display: flex; align-items: center; gap: 10px; }
+.sheet-word { font-family: var(--font-display); font-size: 30px; font-weight: 700; line-height: 1.1; }
+.sheet-base { color: var(--muted); font-size: 14px; }
+.sheet-mean { font-size: 20px; margin: 8px 0 4px; }
+.sheet-note { color: var(--muted); font-size: 14px; margin: 0; }
+.sheet-acts { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.nospeech .listen { display: none; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 30; display: none; }
+textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); padding: 10px; font: 15px/1.5 var(--font-body); }
+@media (max-width: 480px) { .text { font-size: 19px; } article.card { padding: 4px 14px 14px; } .spacer { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="kicker">Reading · Lớp 7 · Thì quá khứ đơn</div>
+    <h1>Who Made the First Phone Call?</h1>
+    <p class="how">Bấm <b>Nghe cả bài</b> để nghe cô đọc. Chạm vào từ bạn chưa hiểu để xem nghĩa. Từ bạn chạm sẽ được lưu lại để ôn tập.</p>
+  </header>
+
+  <div class="toolbar" role="toolbar" aria-label="Điều khiển nghe">
+    <button class="btn primary listen" id="playAll" type="button">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span id="playLabel">Nghe cả bài</span>
+    </button>
+    <div class="speed listen" role="group" aria-label="Tốc độ đọc">
+      <button type="button" data-rate="0.7" aria-pressed="false">Chậm</button>
+      <button type="button" data-rate="0.9" aria-pressed="true">Vừa</button>
+      <button type="button" data-rate="1.1" aria-pressed="false">Nhanh</button>
+    </div>
+    <span class="spacer"></span>
+    <button class="btn" id="goList" type="button">Từ của tôi <span class="count" id="cnt">0</span></button>
+  </div>
+
+  <article class="card" id="reading" aria-label="Bài đọc"></article>
+
+  <section class="panel" id="mine">
+    <h2>Từ tôi đã chạm</h2>
+    <p class="sub">Những từ bạn chưa hiểu khi đọc. Nghe lại, đọc nghĩa, rồi kiểm tra bằng bài quiz.</p>
+    <div id="wordList" class="list"></div>
+    <div class="row-actions" id="listActions"></div>
+    <div id="copyArea"></div>
+  </section>
+
+  <section class="panel" id="quiz" hidden>
+    <h2>Kiểm tra từ của tôi</h2>
+    <div id="quizBody"></div>
+  </section>
+</div>
+
+<div id="sheet" role="dialog" aria-label="Nghĩa của từ"><div class="sheet-in" id="sheetIn"></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Reading text (one array of sentences per paragraph) ---------- */
+  var PARAS = [
+    { tag: "Mở bài · Introduction", s: [
+      "Every day, you use your phone to send messages, call your family, and talk to your friends.",
+      "It is so easy!",
+      "But 150 years ago, there were no phones.",
+      "People wrote letters and waited many days for an answer.",
+      "So who changed this?",
+      "Let's find out!" ] },
+    { tag: "Thân bài 1 · Who was Bell?", s: [
+      "The man was Alexander Graham Bell.",
+      "He was born in Scotland in 1847.",
+      "Later, he moved to the United States and became a teacher.",
+      "He taught deaf students, because his mother and his wife were deaf.",
+      "Bell wanted to help them hear, so he tried to send the human voice through a wire.",
+      "Many people laughed at him.",
+      "They said, \"That's crazy!\"",
+      "But Bell never stopped." ] },
+    { tag: "Thân bài 2 · The first call", s: [
+      "Then, on March 10, 1876, something surprising happened.",
+      "Bell was in his room in Boston, and his helper, Thomas Watson, was in the next room.",
+      "Suddenly, Bell spilled some acid on his clothes.",
+      "He shouted, \"Mr. Watson, come here! I need you!\"",
+      "Watson heard Bell's voice through the machine.",
+      "He ran to Bell and said, \"I heard you! I heard every word!\"",
+      "It was the first phone call in history, and it was an accident!" ] },
+    { tag: "Thân bài 3 · After the call", s: [
+      "One year later, in 1877, Bell started a phone company.",
+      "At first, some people were afraid of the telephone, and others thought it was a toy.",
+      "But soon, many families had a phone at home." ] },
+    { tag: "Kết bài · Conclusion", s: [
+      "In conclusion, the first phone call was not planned.",
+      "It began with a mistake and a cry for help, but it changed the world.",
+      "So next time you use your phone, remember Bell and his big dream." ] }
+  ];
+
+  /* ---------- Dictionary: word | nghĩa tiếng Việt | dạng gốc (nếu có) ---------- */
+  var RAW = [
+  "every|mỗi, mọi (adj)|","day|ngày (n)|","days|những ngày (n)|day","you|bạn (pron)|","use|sử dụng (v)|","your|của bạn (adj)|",
+  "phone|điện thoại (n)|","phones|những chiếc điện thoại (n)|phone","send|gửi (v)|","messages|tin nhắn (n)|message","call|gọi điện; cuộc gọi (v, n)|",
+  "family|gia đình (n)|","families|các gia đình (n)|family","and|và|","talk|nói chuyện (v)|","to|để; đến|","friends|bạn bè (n)|friend",
+  "it|nó, điều đó|","is|thì, là|be","so|rất; vì vậy|","easy|dễ dàng (adj)|","but|nhưng|","years|năm (n)|year","year|năm (n)|",
+  "ago|cách đây (adv)|","there|có (there were = đã có)|","were|đã là, đã ở (quá khứ của are)|be","was|đã là, đã ở (quá khứ của is)|be",
+  "no|không có|","people|mọi người (n)|","wrote|đã viết (v)|write","letters|những lá thư (n)|letter","waited|đã chờ (v)|wait","many|nhiều|",
+  "for|cho; trong (một khoảng thời gian)|","an|một|","a|một|","answer|câu trả lời (n)|","who|ai|","changed|đã thay đổi (v)|change","change|thay đổi (v)|",
+  "this|điều này, này|","let's|chúng ta hãy|let us","find|tìm (find out = tìm ra, khám phá)|","out|ra (find out = tìm ra, khám phá)|","the|(mạo từ, không dịch)|",
+  "man|người đàn ông (n)|","alexander|Alexander (tên riêng)|","graham|Graham (tên riêng)|","bell|Bell, nhà phát minh điện thoại (tên riêng)|",
+  "he|anh ấy, ông ấy|","born|được sinh ra (be born)|","in|ở, trong, vào (năm)|","scotland|nước Scotland (thuộc Vương quốc Anh)|","later|sau đó (adv)|",
+  "moved|đã chuyển đến (v)|move","united|thống nhất (the United States = nước Mỹ)|","states|các bang (the United States = nước Mỹ)|","became|đã trở thành (v)|become",
+  "teacher|giáo viên (n)|","taught|đã dạy (v)|teach","deaf|điếc, không nghe được (adj)|","students|học sinh (n)|student","because|bởi vì|","his|của anh ấy|",
+  "mother|mẹ (n)|","wife|vợ (n)|","wanted|đã muốn (v)|want","help|giúp đỡ (v)|","them|họ, chúng|","hear|nghe thấy (v)|","tried|đã cố gắng (v)|try",
+  "human|thuộc về con người (adj)|","voice|giọng nói (n)|","through|qua, xuyên qua|","wire|dây điện (n)|","laughed|đã cười, cười nhạo (v)|laugh",
+  "at|ở; vào (laugh at = cười nhạo)|","him|anh ấy (tân ngữ)|","they|họ|","said|đã nói (v)|say","that's|đó là|that is","crazy|điên rồ (adj)|",
+  "never|không bao giờ|","stopped|đã dừng lại (v)|stop","then|sau đó, rồi|","on|vào (ngày)|","march|tháng Ba (n)|","something|một điều gì đó|",
+  "surprising|gây ngạc nhiên (adj)|","happened|đã xảy ra (v)|happen","room|căn phòng (n)|","boston|thành phố Boston (nước Mỹ)|","helper|người trợ giúp (n)|",
+  "thomas|Thomas (tên riêng)|","watson|Watson, trợ lý của Bell (tên riêng)|","next|bên cạnh, kế bên (adj); lần tới (next time)|","suddenly|đột nhiên (adv)|",
+  "spilled|đã làm đổ (v)|spill","some|một vài, một ít|","acid|a-xít (n)|","clothes|quần áo (n)|","shouted|đã hét lên (v)|shout","mr|ông (cách gọi nam giới)|",
+  "come|đến, lại đây (v)|","here|ở đây|","i|tôi|","need|cần (v)|","heard|đã nghe thấy (v)|hear","machine|cái máy (n)|","ran|đã chạy (v)|run","word|từ (n)|",
+  "first|đầu tiên (adj); lúc đầu (at first)|","history|lịch sử (n)|","accident|tai nạn, sự cố bất ngờ (n)|","one|một|","started|đã bắt đầu; đã thành lập (v)|start",
+  "company|công ty (n)|","afraid|sợ (adj)|","telephone|điện thoại (n)|","others|những người khác|","thought|đã nghĩ (v)|think","toy|đồ chơi (n)|",
+  "soon|chẳng bao lâu nữa|","had|đã có (v)|have","home|nhà (n)|","conclusion|kết luận (in conclusion = tóm lại)|","not|không|","planned|được lên kế hoạch (v)|plan",
+  "began|đã bắt đầu (v)|begin","with|với|","mistake|lỗi lầm (n)|","cry|tiếng kêu (n)|","world|thế giới (n)|","time|lần; thời gian (n)|","remember|nhớ (v)|",
+  "big|lớn (adj)|","dream|ước mơ (n)|","of|của|"
+  ];
+  var DICT = {};
+  RAW.forEach(function (line) { var p = line.split("|"); DICT[p[0]] = { m: p[1], base: p[2] || "" }; });
+
+  function lookupKey(raw) {
+    var k = raw.toLowerCase().replace(/’/g, "'");
+    if (DICT[k]) return k;
+    var b = k.replace(/'s$/, "");
+    if (DICT[b]) return b;
+    return k;
+  }
+  function shortMeaning(m) {
+    return m.replace(/\s*\((?:n|v|adj|adv|pron)(?:,\s*(?:n|v|adj|adv))?\)\s*$/, "")
+            .replace(/\s*\([^)]*=[^)]*\)/g, "")
+            .replace(/;.*$/, "").trim();
+  }
+
+  /* ---------- Saved clicks (this student's browser only) ---------- */
+  var KEY = "phone-reader-clicked-v1";
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  /* ---------- Speech ---------- */
+  var synth = window.speechSynthesis || null;
+  var voice = null, rate = 0.9, run = 0, playing = false;
+  if (!synth || typeof SpeechSynthesisUtterance === "undefined") { document.body.classList.add("nospeech"); synth = null; }
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    voice = vs.filter(function (v) { return /^en[-_]US/i.test(v.lang) && /Google|Samantha|Microsoft|Aria|Jenny/i.test(v.name); })[0]
+         || vs.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
+  }
+  if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+  function utter(text, r) {
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; if (voice) u.voice = voice; u.rate = r || rate; return u;
+  }
+  function clearNow() { document.querySelectorAll(".s.now").forEach(function (e) { e.classList.remove("now"); }); }
+  function setPlaying(v) {
+    playing = v;
+    document.getElementById("playLabel").textContent = v ? "Dừng nghe" : "Nghe cả bài";
+    document.getElementById("playAll").querySelector("svg").innerHTML = v ? '<path d="M6 6h12v12H6z"/>' : '<path d="M8 5v14l11-7z"/>';
+  }
+  function stopAll() { run++; if (synth) synth.cancel(); clearNow(); setPlaying(false); }
+  function playSentences(list) {
+    if (!synth || !list.length) return;
+    stopAll();
+    var my = ++run, i = 0;
+    setPlaying(true);
+    (function next() {
+      if (my !== run) return;
+      if (i >= list.length) { clearNow(); setPlaying(false); return; }
+      var el = list[i++];
+      clearNow(); el.classList.add("now");
+      try { el.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+      var u = utter(el.getAttribute("data-text"));
+      u.onend = next;
+      u.onerror = function () { if (my === run) { clearNow(); setPlaying(false); } };
+      synth.speak(u);
+    })();
+  }
+  function sayWord(w) {
+    if (!synth) return;
+    stopAll();
+    synth.speak(utter(w, 0.8));
+  }
+
+  /* ---------- Render reading ---------- */
+  var reading = document.getElementById("reading");
+  var WORD_RE = /([A-Za-z]+(?:['’][A-Za-z]+)?)/;
+  PARAS.forEach(function (p, pi) {
+    var box = document.createElement("div"); box.className = "para";
+    var head = document.createElement("div"); head.className = "para-head";
+    var tag = document.createElement("span"); tag.className = "tag"; tag.textContent = p.tag;
+    var btn = document.createElement("button"); btn.className = "ico listen"; btn.type = "button";
+    btn.setAttribute("aria-label", "Nghe đoạn " + (pi + 1));
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+    head.appendChild(tag); head.appendChild(btn);
+    var para = document.createElement("p"); para.className = "text";
+    p.s.forEach(function (sentence, si) {
+      var sp = document.createElement("span"); sp.className = "s"; sp.setAttribute("data-text", sentence);
+      sentence.split(WORD_RE).forEach(function (part) {
+        if (!part) return;
+        if (WORD_RE.test(part) && /^[A-Za-z]/.test(part)) {
+          var w = document.createElement("span"); w.className = "w"; w.tabIndex = 0; w.setAttribute("role", "button");
+          w.setAttribute("data-k", lookupKey(part)); w.textContent = part; sp.appendChild(w);
+        } else { sp.appendChild(document.createTextNode(part)); }
+      });
+      para.appendChild(sp);
+      if (si < p.s.length - 1) para.appendChild(document.createTextNode(" "));
+    });
+    btn.addEventListener("click", function () { playSentences(Array.prototype.slice.call(para.querySelectorAll(".s"))); });
+    box.appendChild(head); box.appendChild(para); reading.appendChild(box);
+  });
+
+  function paintSeen() {
+    document.querySelectorAll(".w").forEach(function (w) { w.classList.toggle("seen", !!state[w.getAttribute("data-k")]); });
+  }
+
+  /* ---------- Word sheet ---------- */
+  var sheet = document.getElementById("sheet"), sheetIn = document.getElementById("sheetIn"), openEl = null;
+  function toast(msg) {
+    var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block";
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, 2200);
+  }
+  function closeSheet() { sheet.classList.remove("show"); if (openEl) openEl.classList.remove("open"); openEl = null; }
+  function openSheet(el) {
+    var k = el.getAttribute("data-k"), entry = DICT[k];
+    if (openEl) openEl.classList.remove("open");
+    openEl = el; el.classList.add("open");
+    if (!state[k]) state[k] = { n: 0, miss: 0 };
+    state[k].n += 1; state[k].t = Date.now(); save(); paintSeen(); renderList();
+    var base = entry && entry.base ? "Dạng gốc: " + entry.base : "";
+    sheetIn.innerHTML = "";
+    var top = document.createElement("div"); top.className = "sheet-top";
+    var wd = document.createElement("div");
+    var h = document.createElement("div"); h.className = "sheet-word"; h.textContent = el.textContent.toLowerCase();
+    wd.appendChild(h);
+    if (base) { var b = document.createElement("div"); b.className = "sheet-base"; b.textContent = base; wd.appendChild(b); }
+    top.appendChild(wd);
+    var sp = document.createElement("span"); sp.style.flex = "1"; top.appendChild(sp);
+    var say = document.createElement("button"); say.type = "button"; say.className = "ico listen"; say.setAttribute("aria-label", "Nghe phát âm");
+    say.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>';
+    say.addEventListener("click", function () { sayWord(el.textContent); });
+    top.appendChild(say);
+    sheetIn.appendChild(top);
+    var mean = document.createElement("div"); mean.className = "sheet-mean";
+    mean.textContent = entry ? entry.m : "Chưa có nghĩa trong từ điển của bài này.";
+    sheetIn.appendChild(mean);
+    var note = document.createElement("p"); note.className = "sheet-note";
+    note.textContent = entry ? "Từ này đã được lưu vào danh sách \"Từ của tôi\"." : "Từ đã được lưu. Hãy hỏi giáo viên nghĩa của từ này.";
+    sheetIn.appendChild(note);
+    var acts = document.createElement("div"); acts.className = "sheet-acts";
+    var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn primary"; ok.textContent = "Đã hiểu, đọc tiếp";
+    ok.addEventListener("click", closeSheet);
+    var del = document.createElement("button"); del.type = "button"; del.className = "btn quiet"; del.textContent = "Bấm nhầm, bỏ khỏi danh sách";
+    del.addEventListener("click", function () { delete state[k]; save(); paintSeen(); renderList(); closeSheet(); });
+    acts.appendChild(ok); acts.appendChild(del); sheetIn.appendChild(acts);
+    sheet.classList.add("show");
+    if (synth) sayWord(el.textContent);
+  }
+  reading.addEventListener("click", function (e) { var w = e.target.closest && e.target.closest(".w"); if (w) openSheet(w); });
+  reading.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("w")) { e.preventDefault(); openSheet(e.target); }
+  });
+  document.addEventListener("click", function (e) {
+    if (!sheet.classList.contains("show")) return;
+    if (e.target.closest("#sheetIn") || e.target.closest(".w")) return;
+    closeSheet();
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+
+  /* ---------- Toolbar ---------- */
+  document.getElementById("playAll").addEventListener("click", function () {
+    if (playing) { stopAll(); return; }
+    playSentences(Array.prototype.slice.call(document.querySelectorAll(".s")));
+  });
+  document.querySelectorAll(".speed button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      rate = parseFloat(b.getAttribute("data-rate"));
+      document.querySelectorAll(".speed button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      toast("Tốc độ đọc: " + b.textContent);
+    });
+  });
+  document.getElementById("goList").addEventListener("click", function () {
+    document.getElementById("mine").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  /* ---------- My words list ---------- */
+  function sortedWords() {
+    return Object.keys(state).sort(function (a, b) { return (state[b].t || 0) - (state[a].t || 0); });
+  }
+  function renderList() {
+    var words = sortedWords();
+    document.getElementById("cnt").textContent = words.length;
+    var list = document.getElementById("wordList"); list.innerHTML = "";
+    var actions = document.getElementById("listActions"); actions.innerHTML = "";
+    if (!words.length) {
+      var em = document.createElement("div"); em.className = "empty";
+      em.textContent = "Bạn chưa chạm từ nào. Hãy chạm vào một từ trong bài đọc ở trên để bắt đầu."; list.appendChild(em);
+      document.getElementById("quiz").hidden = true; return;
+    }
+    words.forEach(function (k) {
+      var e = DICT[k], s = state[k];
+      var it = document.createElement("div"); it.className = "item";
+      var wd = document.createElement("div"); wd.className = "wd"; wd.textContent = k;
+      if (e && e.base) { var b = document.createElement("span"); b.className = "base"; b.textContent = "(" + e.base + ")"; wd.appendChild(b); }
+      var mn = document.createElement("div"); mn.className = "mn"; mn.textContent = e ? e.m : "Chưa có nghĩa. Hãy hỏi giáo viên.";
+      var acts = document.createElement("div"); acts.className = "acts";
+      var pill = document.createElement("span"); pill.className = "pill"; pill.textContent = "chạm " + s.n + " lần"; acts.appendChild(pill);
+      if (s.miss) { var m = document.createElement("span"); m.className = "pill miss"; m.textContent = "quiz sai " + s.miss; acts.appendChild(m); }
+      var sb = document.createElement("button"); sb.type = "button"; sb.className = "ico listen"; sb.setAttribute("aria-label", "Nghe từ " + k);
+      sb.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>';
+      sb.addEventListener("click", function () { sayWord(k); });
+      var rb = document.createElement("button"); rb.type = "button"; rb.className = "ico"; rb.setAttribute("aria-label", "Xoá từ " + k);
+      rb.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>';
+      rb.addEventListener("click", function () { delete state[k]; save(); paintSeen(); renderList(); });
+      acts.appendChild(sb); acts.appendChild(rb);
+      it.appendChild(wd); it.appendChild(acts); it.appendChild(mn); list.appendChild(it);
+    });
+    var q = document.createElement("button"); q.type = "button"; q.className = "btn primary"; q.textContent = "Kiểm tra các từ này";
+    q.addEventListener("click", function () { startQuiz(words); });
+    var c = document.createElement("button"); c.type = "button"; c.className = "btn"; c.textContent = "Sao chép danh sách gửi giáo viên";
+    c.addEventListener("click", copyList);
+    var x = document.createElement("button"); x.type = "button"; x.className = "btn quiet"; x.textContent = "Xoá hết";
+    x.addEventListener("click", function () { state = {}; save(); paintSeen(); renderList(); document.getElementById("copyArea").innerHTML = ""; });
+    actions.appendChild(q); actions.appendChild(c); actions.appendChild(x);
+  }
+
+  function copyList() {
+    var lines = sortedWords().map(function (k) {
+      var e = DICT[k]; return k + " - " + (e ? shortMeaning(e.m) : "(chưa có nghĩa)") + " - chạm " + state[k].n + " lần" + (state[k].miss ? ", quiz sai " + state[k].miss : "");
+    });
+    var text = "Từ em chưa hiểu trong bài \"Who Made the First Phone Call?\":\n" + lines.join("\n");
+    var area = document.getElementById("copyArea");
+    function showBox() {
+      area.innerHTML = ""; var ta = document.createElement("textarea"); ta.className = "copybox"; ta.readOnly = true; ta.value = text;
+      area.appendChild(ta); ta.focus(); ta.select();
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { toast("Đã sao chép danh sách"); showBox(); }, showBox);
+    } catch (e) { showBox(); }
+  }
+
+  /* ---------- Quiz ---------- */
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  var quiz = null;
+  function startQuiz(words) {
+    var items = shuffle(words.filter(function (k) { return DICT[k] && !/tên riêng|không dịch/.test(DICT[k].m); }));
+    var panel = document.getElementById("quiz"); panel.hidden = false;
+    if (!items.length) {
+      document.getElementById("quizBody").innerHTML = "";
+      var p = document.createElement("p"); p.className = "empty"; p.textContent = "Chưa có từ nào đủ nghĩa để kiểm tra. Hãy chạm thêm từ trong bài đọc.";
+      document.getElementById("quizBody").appendChild(p);
+    } else { quiz = { items: items, i: 0, score: 0, wrong: [] }; renderQ(); }
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function renderQ() {
+    var body = document.getElementById("quizBody"); body.innerHTML = "";
+    if (quiz.i >= quiz.items.length) { renderResult(); return; }
+    var k = quiz.items[quiz.i], right = shortMeaning(DICT[k].m);
+    var pool = Object.keys(DICT).filter(function (x) {
+      var s = shortMeaning(DICT[x].m); return x !== k && s !== right && !/tên riêng|không dịch/.test(DICT[x].m) && x.length > 2;
+    });
+    var options = shuffle([right].concat(shuffle(pool).slice(0, 3).map(function (x) { return shortMeaning(DICT[x].m); })));
+    var top = document.createElement("div"); top.className = "q-top";
+    var l = document.createElement("span"); l.textContent = "Câu " + (quiz.i + 1) + "/" + quiz.items.length;
+    var r = document.createElement("span"); r.textContent = "Đúng: " + quiz.score; top.appendChild(l); top.appendChild(r);
+    var row = document.createElement("div"); row.style.display = "flex"; row.style.alignItems = "center"; row.style.gap = "10px";
+    var w = document.createElement("div"); w.className = "q-word"; w.textContent = k; row.appendChild(w);
+    var sb = document.createElement("button"); sb.type = "button"; sb.className = "ico listen"; sb.setAttribute("aria-label", "Nghe từ");
+    sb.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>';
+    sb.addEventListener("click", function () { sayWord(k); }); row.appendChild(sb);
+    var ask = document.createElement("div"); ask.className = "sub"; ask.textContent = "Chọn nghĩa đúng của từ này:";
+    var opts = document.createElement("div"); opts.className = "opts";
+    var next = document.createElement("button"); next.type = "button"; next.className = "btn primary"; next.style.display = "none";
+    next.textContent = quiz.i + 1 >= quiz.items.length ? "Xem kết quả" : "Câu tiếp theo";
+    next.addEventListener("click", function () { quiz.i++; renderQ(); });
+    options.forEach(function (o) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = o;
+      b.addEventListener("click", function () {
+        opts.querySelectorAll("button").forEach(function (x) { x.disabled = true; if (x.textContent === right) x.classList.add("right"); });
+        if (o === right) { quiz.score++; } else { b.classList.add("wrong"); quiz.wrong.push(k); if (state[k]) { state[k].miss = (state[k].miss || 0) + 1; save(); renderList(); document.getElementById("quiz").hidden = false; } }
+        r.textContent = "Đúng: " + quiz.score; next.style.display = "inline-flex"; next.focus();
+      });
+      opts.appendChild(b);
+    });
+    body.appendChild(top); body.appendChild(row); body.appendChild(ask); body.appendChild(opts); body.appendChild(next);
+  }
+  function renderResult() {
+    var body = document.getElementById("quizBody"); body.innerHTML = "";
+    var total = quiz.items.length;
+    var s = document.createElement("div"); s.className = "score"; s.textContent = quiz.score + "/" + total; body.appendChild(s);
+    var msg = document.createElement("p"); msg.className = "sub";
+    msg.textContent = quiz.wrong.length ? "Những từ cần ôn lại:" : "Tuyệt vời! Bạn nhớ hết các từ đã chạm.";
+    body.appendChild(msg);
+    if (quiz.wrong.length) {
+      var list = document.createElement("div"); list.className = "list";
+      quiz.wrong.forEach(function (k) {
+        var it = document.createElement("div"); it.className = "item";
+        var wd = document.createElement("div"); wd.className = "wd"; wd.textContent = k;
+        var mn = document.createElement("div"); mn.className = "mn"; mn.textContent = DICT[k].m;
+        it.appendChild(wd); it.appendChild(mn); list.appendChild(it);
+      });
+      body.appendChild(list);
+    }
+    var acts = document.createElement("div"); acts.className = "row-actions";
+    if (quiz.wrong.length) {
+      var again = document.createElement("button"); again.type = "button"; again.className = "btn primary"; again.textContent = "Ôn lại các từ sai";
+      again.addEventListener("click", function () { startQuiz(quiz.wrong.slice()); }); acts.appendChild(again);
+    }
+    var all = document.createElement("button"); all.type = "button"; all.className = "btn"; all.textContent = "Làm lại tất cả";
+    all.addEventListener("click", function () { startQuiz(sortedWords()); }); acts.appendChild(all);
+    body.appendChild(acts);
+  }
+
+  paintSeen(); renderList();
+})();
+</script>
+</body>
+</html>
