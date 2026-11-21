@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: one centered reading column; sticky listening toolbar on top; clicked-word list and a quiz below the text. */
+/* Layout idea: one centered column. Part 1 read + listen + tap phrases, Part 2 five questions, Part 3 record a summary. */
 :root {
   --bg: #f2f5f9;
   --surface: #ffffff;
@@ -40,20 +40,26 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
-button { font: inherit; color: inherit; }
+button, select, textarea { font: inherit; color: inherit; }
 .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 140px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-header.top { padding: 28px 0 8px; }
+header.top { padding: 24px 0 8px; }
+.kicker-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
 .kicker { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: .02em; }
-h1 { font-family: var(--font-display); font-size: clamp(30px, 6vw, 44px); line-height: 1.1; margin: 6px 0 10px; text-wrap: balance; }
+.voice { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.voice select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 10px; min-height: 40px; max-width: 230px; font-size: 14px; color: var(--ink); }
+h1 { font-family: var(--font-display); font-size: clamp(30px, 6vw, 44px); line-height: 1.1; margin: 8px 0 10px; text-wrap: balance; }
 .how { color: var(--muted); margin: 0; font-size: 15px; }
-.how b { color: var(--ink); font-weight: 500; background: var(--mark); color: var(--mark-ink); padding: 0 5px; border-radius: 4px; }
+.how b { font-weight: 500; background: var(--mark); color: var(--mark-ink); padding: 0 5px; border-radius: 4px; }
 
 .toolbar { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); margin-top: 12px; }
-.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 9px 14px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 44px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 9px 14px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 44px; text-decoration: none; color: var(--ink); }
 .btn:hover { border-color: var(--accent); }
-.btn:focus-visible, .w:focus-visible, .ico:focus-visible, .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn:focus-visible, .c:focus-visible, .ico:focus-visible, .opt:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.recording { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn svg, .ico svg { width: 18px; height: 18px; flex: none; }
 .speed { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
 .speed button { border: 0; background: transparent; padding: 0 12px; min-height: 42px; cursor: pointer; font-size: 14px; }
@@ -61,37 +67,40 @@ h1 { font-family: var(--font-display); font-size: clamp(30px, 6vw, 44px); line-h
 .spacer { flex: 1; }
 .count { background: var(--mark); color: var(--mark-ink); border-radius: 999px; padding: 0 9px; font-size: 13px; font-weight: 600; }
 
-article.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 8px 20px 20px; margin-top: 16px; }
+.part-head { display: flex; align-items: center; gap: 10px; margin: 20px 0 0; font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.part-tag { font-family: var(--font-body); font-size: 12px; font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 999px; padding: 2px 10px; letter-spacing: .04em; text-transform: uppercase; }
+
+article.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 8px 20px 20px; margin-top: 12px; }
 .para { padding: 16px 0; border-bottom: 1px dashed var(--line); }
 .para:last-child { border-bottom: 0; }
 .para-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
 .tag { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
-.ico { border: 1px solid var(--line); background: transparent; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; color: var(--muted); }
+.ico { border: 1px solid var(--line); background: transparent; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; color: var(--muted); flex: none; }
 .ico:hover { color: var(--accent); border-color: var(--accent); }
-.text { font-size: 21px; line-height: 1.95; margin: 0; }
+.text { font-size: 21px; line-height: 2.1; margin: 0; }
 .s { border-radius: 6px; transition: background .15s; }
 .s.now { background: var(--now); }
-.w { cursor: pointer; border-radius: 5px; padding: 1px 1px; border-bottom: 2px dotted transparent; }
-.w:hover { border-bottom-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
-.w.seen { background: var(--mark); color: var(--mark-ink); }
-.w.open { outline: 2px solid var(--accent); }
+.c { cursor: pointer; border-radius: 6px; padding: 2px 3px; border-bottom: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.c:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.c.seen { background: var(--mark); color: var(--mark-ink); border-bottom-color: transparent; }
+.c.open { outline: 2px solid var(--accent); }
 
 section.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-top: 20px; }
 h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 4px; }
+.panel .part-tag { display: inline-block; margin-bottom: 8px; }
 .sub { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
 .empty { color: var(--muted); padding: 12px 0; font-size: 15px; }
 .list { display: grid; gap: 8px; }
 .item { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
-.item .wd { font-weight: 600; font-size: 18px; }
-.item .base { font-size: 13px; color: var(--muted); margin-left: 6px; font-weight: 400; }
+.item .wd { font-weight: 600; font-size: 17px; }
 .item .mn { grid-column: 1; color: var(--muted); font-size: 15px; }
-.item .acts { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 6px; align-items: center; }
+.item .acts { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 .pill { font-size: 12px; border-radius: 999px; padding: 1px 8px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
 .pill.miss { color: var(--bad); border-color: var(--bad); }
 .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .quiet { background: transparent; color: var(--muted); }
 
-#quiz .q-word { font-family: var(--font-display); font-size: 38px; font-weight: 700; margin: 6px 0 2px; }
+#quiz .q-word { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin: 6px 0 2px; line-height: 1.25; }
 #quiz .q-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; }
 .opts { display: grid; gap: 8px; margin: 14px 0; }
 .opt { text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 17px; min-height: 48px; }
@@ -100,18 +109,55 @@ h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 4px; }
 .opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
 .score { font-family: var(--font-display); font-size: 40px; font-weight: 700; margin: 4px 0; }
 
+/* Part 2 */
+.qcard { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-top: 12px; }
+.qhead { display: flex; align-items: center; gap: 8px; }
+.num { font-weight: 600; }
+.lvl { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px; border: 1px solid currentColor; }
+.lvl.easy { color: var(--good); }
+.lvl.mid { color: var(--muted); }
+.lvl.hard { color: var(--bad); }
+.lvl.open { color: var(--accent); }
+.qtext { font-size: 19px; font-weight: 500; margin: 8px 0 0; }
+.qvi { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); padding: 10px 12px; line-height: 1.5; resize: vertical; }
+.qacts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.hint { margin: 10px 0 0; padding: 8px 12px; border-left: 4px solid var(--mark); background: var(--bg); border-radius: 6px; font-size: 15px; }
+.fb { margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; }
+.fb p { margin: 0 0 6px; }
+.fb p:last-child { margin: 0; }
+.fb.ok { border-color: var(--good); }
+.fb.try { border-color: var(--bad); }
+.fbmsg { font-weight: 600; }
+
+/* Part 3 */
+.frame { margin: 0 0 14px; padding-left: 22px; display: grid; gap: 6px; font-size: 17px; }
+.frame i { color: var(--muted); font-style: normal; letter-spacing: .1em; }
+.checks { display: grid; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; font-size: 15px; }
+.checks label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.checks input { width: 20px; height: 20px; accent-color: var(--accent); }
+.recbox { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--bg); }
+.rec-top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.rec-time { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 110px; }
+.meter { flex: 1; min-width: 100px; height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .08s linear; }
+.recbox audio { width: 100%; margin-top: 12px; }
+#recMsg { margin: 10px 0 0; }
+
 #sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: none; padding: 0 12px 12px; pointer-events: none; }
 #sheet.show { display: block; }
-.sheet-in { pointer-events: auto; max-width: 640px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(10, 20, 35, .28); }
+.sheet-in { pointer-events: auto; max-width: 640px; max-height: 72vh; overflow: auto; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(10, 20, 35, .28); }
 .sheet-top { display: flex; align-items: center; gap: 10px; }
-.sheet-word { font-family: var(--font-display); font-size: 30px; font-weight: 700; line-height: 1.1; }
-.sheet-base { color: var(--muted); font-size: 14px; }
+.sheet-word { font-family: var(--font-display); font-size: 26px; font-weight: 700; line-height: 1.2; }
 .sheet-mean { font-size: 20px; margin: 8px 0 4px; }
-.sheet-note { color: var(--muted); font-size: 14px; margin: 0; }
+.sheet-note { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
+.sheet-words { margin: 10px 0 0; padding: 10px 12px; background: var(--bg); border-radius: 10px; font-size: 15px; display: grid; gap: 2px; }
+.sheet-words b { font-weight: 600; }
+.sheet-words .lab { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .sheet-acts { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 .nospeech .listen { display: none; }
 .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 30; display: none; }
-textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); padding: 10px; font: 15px/1.5 var(--font-body); }
+textarea.copybox { margin-top: 10px; min-height: 110px; }
 @media (max-width: 480px) { .text { font-size: 19px; } article.card { padding: 4px 14px 14px; } .spacer { display: none; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -119,9 +165,12 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="kicker">Reading · Lớp 7 · Thì quá khứ đơn</div>
+    <div class="kicker-row">
+      <div class="kicker">Reading · Lớp 7 · Thì quá khứ đơn</div>
+      <label class="voice listen" id="voiceBox" for="voiceSel"><span>Giọng đọc</span><select id="voiceSel"></select></label>
+    </div>
     <h1>Who Made the First Phone Call?</h1>
-    <p class="how">Bấm <b>Nghe cả bài</b> để nghe cô đọc. Chạm vào từ bạn chưa hiểu để xem nghĩa. Từ bạn chạm sẽ được lưu lại để ôn tập.</p>
+    <p class="how">Bấm <b>Nghe cả bài</b> để nghe đọc. Chạm vào một <b>cụm từ</b> (đoạn có gạch chân) để xem nghĩa của cả cụm. Cụm bạn chạm sẽ được lưu lại để ôn tập.</p>
   </header>
 
   <div class="toolbar" role="toolbar" aria-label="Điều khiển nghe">
@@ -134,132 +183,217 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
       <button type="button" data-rate="1.1" aria-pressed="false">Nhanh</button>
     </div>
     <span class="spacer"></span>
-    <button class="btn" id="goList" type="button">Từ của tôi <span class="count" id="cnt">0</span></button>
+    <button class="btn" id="goList" type="button">Cụm từ của tôi <span class="count" id="cnt">0</span></button>
   </div>
 
+  <div class="part-head"><span class="part-tag">Phần 1</span><span>Đọc và nghe</span></div>
   <article class="card" id="reading" aria-label="Bài đọc"></article>
 
   <section class="panel" id="mine">
-    <h2>Từ tôi đã chạm</h2>
-    <p class="sub">Những từ bạn chưa hiểu khi đọc. Nghe lại, đọc nghĩa, rồi kiểm tra bằng bài quiz.</p>
+    <h2>Cụm từ tôi đã chạm</h2>
+    <p class="sub">Những cụm bạn chưa hiểu khi đọc. Nghe lại, đọc nghĩa, rồi kiểm tra bằng bài quiz.</p>
     <div id="wordList" class="list"></div>
     <div class="row-actions" id="listActions"></div>
     <div id="copyArea"></div>
   </section>
 
   <section class="panel" id="quiz" hidden>
-    <h2>Kiểm tra từ của tôi</h2>
+    <h2>Kiểm tra cụm từ của tôi</h2>
     <div id="quizBody"></div>
+  </section>
+
+  <section class="panel" id="part2">
+    <span class="part-tag">Phần 2</span>
+    <h2>Trả lời 5 câu hỏi</h2>
+    <p class="sub">Các câu đi từ dễ đến khó. Câu cuối là câu hỏi mở, hãy nói ý kiến của bạn. Câu trả lời được lưu trong trình duyệt này.</p>
+    <div id="qList"></div>
+  </section>
+
+  <section class="panel" id="part3">
+    <span class="part-tag">Phần 3</span>
+    <h2>Ghi âm bản tóm tắt</h2>
+    <p class="sub">Kể lại câu chuyện bằng lời của bạn trong khoảng 30 đến 60 giây. Nói chậm và rõ. Bạn có thể dùng khung câu bên dưới.</p>
+    <ol class="frame">
+      <li>Alexander Graham Bell was a <i>……</i>. He wanted to <i>……</i>.</li>
+      <li>On March 10, 1876, he <i>……</i> and he shouted, <i>……</i>.</li>
+      <li>Watson <i>……</i>. It was the first <i>……</i>, and it was an <i>……</i>.</li>
+      <li>In 1877, Bell <i>……</i>. Today, the telephone <i>……</i>.</li>
+    </ol>
+    <ul class="checks" aria-label="Kiểm tra trước khi nộp">
+      <li><label><input type="checkbox"> Mình nói Bell là ai và ước mơ của ông</label></li>
+      <li><label><input type="checkbox"> Mình kể điều gì xảy ra ngày 10 tháng 3 năm 1876</label></li>
+      <li><label><input type="checkbox"> Mình dùng thì quá khứ đơn (was, wanted, shouted, heard...)</label></li>
+      <li><label><input type="checkbox"> Mình nói điều gì đã thay đổi sau cuộc gọi đầu tiên</label></li>
+    </ul>
+    <div class="recbox">
+      <div class="rec-top">
+        <button class="btn primary" id="recBtn" type="button">Bắt đầu ghi âm</button>
+        <span class="rec-time" id="recTime">00:00 / 01:30</span>
+        <div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
+      </div>
+      <p class="sub" id="recMsg" role="status"></p>
+      <div id="recDone" hidden>
+        <audio id="recAudio" controls></audio>
+        <div class="row-actions">
+          <a class="btn" id="recDl" href="#" download="tom-tat.webm">Tải file ghi âm</a>
+          <button class="btn quiet" id="recAgain" type="button">Ghi lại</button>
+        </div>
+      </div>
+    </div>
+    <div class="row-actions">
+      <button class="btn" id="copyAll" type="button">Sao chép bài làm gửi giáo viên</button>
+    </div>
+    <div id="reportArea"></div>
   </section>
 </div>
 
-<div id="sheet" role="dialog" aria-label="Nghĩa của từ"><div class="sheet-in" id="sheetIn"></div></div>
+<div id="sheet" role="dialog" aria-label="Nghĩa của cụm từ"><div class="sheet-in" id="sheetIn"></div></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
 (function () {
   "use strict";
 
-  /* ---------- Reading text (one array of sentences per paragraph) ---------- */
+  var SPK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+
+  /* ---------- Reading text: paragraph > sentence > chunk [English, Vietnamese, optional note] ---------- */
   var PARAS = [
     { tag: "Mở bài · Introduction", s: [
-      "Every day, you use your phone to send messages, call your family, and talk to your friends.",
-      "It is so easy!",
-      "But 150 years ago, there were no phones.",
-      "People wrote letters and waited many days for an answer.",
-      "So who changed this?",
-      "Let's find out!" ] },
+      [ ["Every day,", "Mỗi ngày,"], ["you use your phone", "bạn dùng điện thoại của bạn"], ["to send messages,", "để gửi tin nhắn,"], ["call your family,", "gọi điện cho gia đình,"], ["and talk to your friends.", "và nói chuyện với bạn bè."] ],
+      [ ["It is so easy!", "Điều đó thật dễ dàng!"] ],
+      [ ["But 150 years ago,", "Nhưng cách đây 150 năm,"], ["there were no phones.", "đã không có điện thoại."] ],
+      [ ["People wrote letters", "Mọi người viết thư"], ["and waited many days", "và chờ nhiều ngày"], ["for an answer.", "để nhận được câu trả lời."] ],
+      [ ["So who", "Vậy ai"], ["changed this?", "đã thay đổi điều này?"] ],
+      [ ["Let's find out!", "Chúng ta cùng tìm hiểu nhé!", "find out = tìm ra, khám phá"] ] ] },
     { tag: "Thân bài 1 · Who was Bell?", s: [
-      "The man was Alexander Graham Bell.",
-      "He was born in Scotland in 1847.",
-      "Later, he moved to the United States and became a teacher.",
-      "He taught deaf students, because his mother and his wife were deaf.",
-      "Bell wanted to help them hear, so he tried to send the human voice through a wire.",
-      "Many people laughed at him.",
-      "They said, \"That's crazy!\"",
-      "But Bell never stopped." ] },
+      [ ["The man", "Người đàn ông đó"], ["was Alexander Graham Bell.", "là Alexander Graham Bell."] ],
+      [ ["He was born", "Ông ấy được sinh ra", "be born = được sinh ra"], ["in Scotland", "ở Scotland"], ["in 1847.", "vào năm 1847."] ],
+      [ ["Later,", "Sau đó,"], ["he moved to the United States", "ông chuyển đến nước Mỹ"], ["and became a teacher.", "và trở thành giáo viên."] ],
+      [ ["He taught deaf students,", "Ông dạy học sinh khiếm thính,"], ["because his mother and his wife", "vì mẹ và vợ của ông"], ["were deaf.", "đều bị điếc."] ],
+      [ ["Bell wanted to help them hear,", "Bell muốn giúp họ nghe được,"], ["so he tried to send", "nên ông cố gắng truyền"], ["the human voice", "giọng nói của con người"], ["through a wire.", "qua một sợi dây."] ],
+      [ ["Many people", "Nhiều người"], ["laughed at him.", "cười nhạo ông.", "laugh at = cười nhạo"] ],
+      [ ["They said,", "Họ nói,"], ["“That's crazy!”", "“Thật điên rồ!”"] ],
+      [ ["But Bell never stopped.", "Nhưng Bell không bao giờ bỏ cuộc."] ] ] },
     { tag: "Thân bài 2 · The first call", s: [
-      "Then, on March 10, 1876, something surprising happened.",
-      "Bell was in his room in Boston, and his helper, Thomas Watson, was in the next room.",
-      "Suddenly, Bell spilled some acid on his clothes.",
-      "He shouted, \"Mr. Watson, come here! I need you!\"",
-      "Watson heard Bell's voice through the machine.",
-      "He ran to Bell and said, \"I heard you! I heard every word!\"",
-      "It was the first phone call in history, and it was an accident!" ] },
+      [ ["Then, on March 10, 1876,", "Rồi, vào ngày 10 tháng 3 năm 1876,"], ["something surprising happened.", "một điều bất ngờ đã xảy ra."] ],
+      [ ["Bell was in his room in Boston,", "Bell đang ở trong phòng của ông ở Boston,"], ["and his helper, Thomas Watson,", "và người trợ lý của ông, Thomas Watson,"], ["was in the next room.", "đang ở phòng bên cạnh."] ],
+      [ ["Suddenly,", "Đột nhiên,"], ["Bell spilled some acid", "Bell làm đổ một ít a-xít"], ["on his clothes.", "lên quần áo của ông."] ],
+      [ ["He shouted,", "Ông hét lên,"], ["“Mr. Watson, come here!", "“Ông Watson, lại đây!"], ["I need you!”", "Tôi cần ông!”"] ],
+      [ ["Watson heard", "Watson nghe thấy"], ["Bell's voice", "giọng của Bell"], ["through the machine.", "qua chiếc máy."] ],
+      [ ["He ran to Bell", "Ông chạy đến chỗ Bell"], ["and said,", "và nói,"], ["“I heard you!", "“Tôi nghe thấy ông rồi!"], ["I heard every word!”", "Tôi nghe thấy từng từ một!”"] ],
+      [ ["It was the first phone call in history,", "Đó là cuộc gọi điện thoại đầu tiên trong lịch sử,"], ["and it was an accident!", "và đó là một sự cố bất ngờ!"] ] ] },
     { tag: "Thân bài 3 · After the call", s: [
-      "One year later, in 1877, Bell started a phone company.",
-      "At first, some people were afraid of the telephone, and others thought it was a toy.",
-      "But soon, many families had a phone at home." ] },
+      [ ["One year later, in 1877,", "Một năm sau, vào năm 1877,"], ["Bell started a phone company.", "Bell thành lập một công ty điện thoại."] ],
+      [ ["At first,", "Lúc đầu,", "at first = lúc đầu"], ["some people were afraid of the telephone,", "một số người sợ chiếc điện thoại,"], ["and others thought it was a toy.", "còn những người khác nghĩ nó là đồ chơi."] ],
+      [ ["But soon,", "Nhưng chẳng bao lâu sau,"], ["many families had a phone at home.", "nhiều gia đình đã có điện thoại ở nhà."] ] ] },
     { tag: "Kết bài · Conclusion", s: [
-      "In conclusion, the first phone call was not planned.",
-      "It began with a mistake and a cry for help, but it changed the world.",
-      "So next time you use your phone, remember Bell and his big dream." ] }
+      [ ["In conclusion,", "Tóm lại,", "in conclusion = tóm lại"], ["the first phone call was not planned.", "cuộc gọi điện thoại đầu tiên không được lên kế hoạch."] ],
+      [ ["It began with a mistake", "Nó bắt đầu từ một sai lầm"], ["and a cry for help,", "và một tiếng kêu cứu,"], ["but it changed the world.", "nhưng nó đã thay đổi thế giới."] ],
+      [ ["So next time you use your phone,", "Vậy nên lần tới khi bạn dùng điện thoại,", "next time = lần tới"], ["remember Bell and his big dream.", "hãy nhớ đến Bell và ước mơ lớn của ông."] ] ] }
   ];
 
-  /* ---------- Dictionary: word | nghĩa tiếng Việt | dạng gốc (nếu có) ---------- */
+  /* ---------- Word dictionary (used for the small breakdown inside a phrase) ---------- */
   var RAW = [
   "every|mỗi, mọi (adj)|","day|ngày (n)|","days|những ngày (n)|day","you|bạn (pron)|","use|sử dụng (v)|","your|của bạn (adj)|",
   "phone|điện thoại (n)|","phones|những chiếc điện thoại (n)|phone","send|gửi (v)|","messages|tin nhắn (n)|message","call|gọi điện; cuộc gọi (v, n)|",
-  "family|gia đình (n)|","families|các gia đình (n)|family","and|và|","talk|nói chuyện (v)|","to|để; đến|","friends|bạn bè (n)|friend",
-  "it|nó, điều đó|","is|thì, là|be","so|rất; vì vậy|","easy|dễ dàng (adj)|","but|nhưng|","years|năm (n)|year","year|năm (n)|",
-  "ago|cách đây (adv)|","there|có (there were = đã có)|","were|đã là, đã ở (quá khứ của are)|be","was|đã là, đã ở (quá khứ của is)|be",
+  "family|gia đình (n)|","families|các gia đình (n)|family","talk|nói chuyện (v)|","friends|bạn bè (n)|friend",
+  "easy|dễ dàng (adj)|","years|năm (n)|year","year|năm (n)|","ago|cách đây (adv)|","there|có (there were = đã có)|",
   "no|không có|","people|mọi người (n)|","wrote|đã viết (v)|write","letters|những lá thư (n)|letter","waited|đã chờ (v)|wait","many|nhiều|",
-  "for|cho; trong (một khoảng thời gian)|","an|một|","a|một|","answer|câu trả lời (n)|","who|ai|","changed|đã thay đổi (v)|change","change|thay đổi (v)|",
-  "this|điều này, này|","let's|chúng ta hãy|let us","find|tìm (find out = tìm ra, khám phá)|","out|ra (find out = tìm ra, khám phá)|","the|(mạo từ, không dịch)|",
-  "man|người đàn ông (n)|","alexander|Alexander (tên riêng)|","graham|Graham (tên riêng)|","bell|Bell, nhà phát minh điện thoại (tên riêng)|",
-  "he|anh ấy, ông ấy|","born|được sinh ra (be born)|","in|ở, trong, vào (năm)|","scotland|nước Scotland (thuộc Vương quốc Anh)|","later|sau đó (adv)|",
-  "moved|đã chuyển đến (v)|move","united|thống nhất (the United States = nước Mỹ)|","states|các bang (the United States = nước Mỹ)|","became|đã trở thành (v)|become",
-  "teacher|giáo viên (n)|","taught|đã dạy (v)|teach","deaf|điếc, không nghe được (adj)|","students|học sinh (n)|student","because|bởi vì|","his|của anh ấy|",
-  "mother|mẹ (n)|","wife|vợ (n)|","wanted|đã muốn (v)|want","help|giúp đỡ (v)|","them|họ, chúng|","hear|nghe thấy (v)|","tried|đã cố gắng (v)|try",
+  "answer|câu trả lời (n)|","who|ai|","changed|đã thay đổi (v)|change","change|thay đổi (v)|","this|điều này, này|","let's|chúng ta hãy|let us",
+  "find|tìm (find out = tìm ra, khám phá)|","out|ra (find out = tìm ra, khám phá)|","man|người đàn ông (n)|",
+  "alexander|Alexander (tên riêng)|","graham|Graham (tên riêng)|","bell|Bell, nhà phát minh điện thoại (tên riêng)|",
+  "born|được sinh ra (be born)|","scotland|nước Scotland (thuộc Vương quốc Anh)|","later|sau đó (adv)|","moved|đã chuyển đến (v)|move",
+  "united|thống nhất (the United States = nước Mỹ)|","states|các bang (the United States = nước Mỹ)|","became|đã trở thành (v)|become",
+  "teacher|giáo viên (n)|","taught|đã dạy (v)|teach","deaf|điếc, không nghe được (adj)|","students|học sinh (n)|student","because|bởi vì|",
+  "mother|mẹ (n)|","wife|vợ (n)|","wanted|đã muốn (v)|want","help|giúp đỡ (v)|","hear|nghe thấy (v)|","tried|đã cố gắng (v)|try",
   "human|thuộc về con người (adj)|","voice|giọng nói (n)|","through|qua, xuyên qua|","wire|dây điện (n)|","laughed|đã cười, cười nhạo (v)|laugh",
-  "at|ở; vào (laugh at = cười nhạo)|","him|anh ấy (tân ngữ)|","they|họ|","said|đã nói (v)|say","that's|đó là|that is","crazy|điên rồ (adj)|",
-  "never|không bao giờ|","stopped|đã dừng lại (v)|stop","then|sau đó, rồi|","on|vào (ngày)|","march|tháng Ba (n)|","something|một điều gì đó|",
-  "surprising|gây ngạc nhiên (adj)|","happened|đã xảy ra (v)|happen","room|căn phòng (n)|","boston|thành phố Boston (nước Mỹ)|","helper|người trợ giúp (n)|",
-  "thomas|Thomas (tên riêng)|","watson|Watson, trợ lý của Bell (tên riêng)|","next|bên cạnh, kế bên (adj); lần tới (next time)|","suddenly|đột nhiên (adv)|",
-  "spilled|đã làm đổ (v)|spill","some|một vài, một ít|","acid|a-xít (n)|","clothes|quần áo (n)|","shouted|đã hét lên (v)|shout","mr|ông (cách gọi nam giới)|",
-  "come|đến, lại đây (v)|","here|ở đây|","i|tôi|","need|cần (v)|","heard|đã nghe thấy (v)|hear","machine|cái máy (n)|","ran|đã chạy (v)|run","word|từ (n)|",
+  "said|đã nói (v)|say","that's|đó là|that is","crazy|điên rồ (adj)|","never|không bao giờ|","stopped|đã dừng lại (v)|stop","then|sau đó, rồi|",
+  "march|tháng Ba (n)|","something|một điều gì đó|","surprising|gây ngạc nhiên (adj)|","happened|đã xảy ra (v)|happen","room|căn phòng (n)|",
+  "boston|thành phố Boston (nước Mỹ)|","helper|người trợ giúp (n)|","thomas|Thomas (tên riêng)|","watson|Watson, trợ lý của Bell (tên riêng)|",
+  "next|bên cạnh, kế bên (adj); lần tới (next time)|","suddenly|đột nhiên (adv)|","spilled|đã làm đổ (v)|spill","some|một vài, một ít|",
+  "acid|a-xít (n)|","clothes|quần áo (n)|","shouted|đã hét lên (v)|shout","mr|ông (cách gọi nam giới)|","come|đến, lại đây (v)|","here|ở đây|",
+  "need|cần (v)|","heard|đã nghe thấy (v)|hear","machine|cái máy (n)|","ran|đã chạy (v)|run","word|từ (n)|",
   "first|đầu tiên (adj); lúc đầu (at first)|","history|lịch sử (n)|","accident|tai nạn, sự cố bất ngờ (n)|","one|một|","started|đã bắt đầu; đã thành lập (v)|start",
   "company|công ty (n)|","afraid|sợ (adj)|","telephone|điện thoại (n)|","others|những người khác|","thought|đã nghĩ (v)|think","toy|đồ chơi (n)|",
-  "soon|chẳng bao lâu nữa|","had|đã có (v)|have","home|nhà (n)|","conclusion|kết luận (in conclusion = tóm lại)|","not|không|","planned|được lên kế hoạch (v)|plan",
-  "began|đã bắt đầu (v)|begin","with|với|","mistake|lỗi lầm (n)|","cry|tiếng kêu (n)|","world|thế giới (n)|","time|lần; thời gian (n)|","remember|nhớ (v)|",
-  "big|lớn (adj)|","dream|ước mơ (n)|","of|của|"
+  "soon|chẳng bao lâu nữa|","had|đã có (v)|have","home|nhà (n)|","conclusion|kết luận (in conclusion = tóm lại)|","planned|được lên kế hoạch (v)|plan",
+  "began|đã bắt đầu (v)|begin","mistake|lỗi lầm (n)|","cry|tiếng kêu (n)|","world|thế giới (n)|","time|lần; thời gian (n)|","remember|nhớ (v)|",
+  "big|lớn (adj)|","dream|ước mơ (n)|"
   ];
   var DICT = {};
   RAW.forEach(function (line) { var p = line.split("|"); DICT[p[0]] = { m: p[1], base: p[2] || "" }; });
+  var STOP = {};
+  "the a an and to of i it he his him they them you your is was were but so at in on for with not that".split(" ").forEach(function (w) { STOP[w] = 1; });
 
   function lookupKey(raw) {
     var k = raw.toLowerCase().replace(/’/g, "'");
     if (DICT[k]) return k;
     var b = k.replace(/'s$/, "");
-    if (DICT[b]) return b;
-    return k;
+    return DICT[b] ? b : k;
   }
   function shortMeaning(m) {
     return m.replace(/\s*\((?:n|v|adj|adv|pron)(?:,\s*(?:n|v|adj|adv))?\)\s*$/, "")
-            .replace(/\s*\([^)]*=[^)]*\)/g, "")
-            .replace(/;.*$/, "").trim();
+            .replace(/\s*\([^)]*=[^)]*\)/g, "").replace(/;.*$/, "").trim();
+  }
+  function cleanEdge(s) { return s.replace(/^[\s“”"‘’'.,!?;:]+|[\s“”"‘’'.,!?;:]+$/g, ""); }
+  function keyOf(en) { return cleanEdge(en).toLowerCase().replace(/’/g, "'"); }
+
+  var CH = {};
+  PARAS.forEach(function (p) { p.s.forEach(function (sen) { sen.forEach(function (c) {
+    CH[keyOf(c[0])] = { en: cleanEdge(c[0]), vi: cleanEdge(c[1]), note: c[2] || "" };
+  }); }); });
+
+  /* ---------- Saved data (this browser only) ---------- */
+  var KEY = "phone-reader-chunks-v2", AKEY = "phone-reader-answers-v1", VKEY = "phone-reader-voice-v1";
+  var state = {}, answers = {}, voiceURI = "";
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+  try { answers = JSON.parse(localStorage.getItem(AKEY) || "{}") || {}; } catch (e) { answers = {}; }
+  try { voiceURI = localStorage.getItem(VKEY) || ""; } catch (e) { voiceURI = ""; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function saveAnswers() { try { localStorage.setItem(AKEY, JSON.stringify(answers)); } catch (e) {} }
+
+  function toast(msg) {
+    var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block";
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, 2200);
   }
 
-  /* ---------- Saved clicks (this student's browser only) ---------- */
-  var KEY = "phone-reader-clicked-v1";
-  var state = {};
-  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-
-  /* ---------- Speech ---------- */
+  /* ---------- Speech and voice choice ---------- */
   var synth = window.speechSynthesis || null;
   var voice = null, rate = 0.9, run = 0, playing = false;
   if (!synth || typeof SpeechSynthesisUtterance === "undefined") { document.body.classList.add("nospeech"); synth = null; }
+  var voiceSel = document.getElementById("voiceSel"), voiceBox = document.getElementById("voiceBox");
+
+  function enVoices() {
+    var vs = (synth && synth.getVoices()) || [];
+    return vs.filter(function (v) { return /^en/i.test(v.lang); }).sort(function (a, b) {
+      var au = /^en[-_]US/i.test(a.lang) ? 0 : 1, bu = /^en[-_]US/i.test(b.lang) ? 0 : 1;
+      return au - bu || a.name.localeCompare(b.name);
+    });
+  }
+  function voiceLabel(v) { return v.name.replace(/^(Microsoft|Google)\s+/i, "") + " (" + v.lang.replace("_", "-") + ")"; }
   function pickVoice() {
     if (!synth) return;
-    var vs = synth.getVoices() || [];
-    voice = vs.filter(function (v) { return /^en[-_]US/i.test(v.lang) && /Google|Samantha|Microsoft|Aria|Jenny/i.test(v.name); })[0]
-         || vs.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
+    var vs = enVoices();
+    voice = null;
+    if (voiceURI) voice = vs.filter(function (v) { return v.voiceURI === voiceURI; })[0] || null;
+    if (!voice) voice = vs.filter(function (v) { return /^en[-_]US/i.test(v.lang) && /Google|Samantha|Microsoft|Aria|Jenny/i.test(v.name); })[0] || vs[0] || null;
+    voiceBox.style.display = vs.length ? "" : "none";
+    voiceSel.innerHTML = "";
+    var auto = document.createElement("option"); auto.value = ""; auto.textContent = "Tự động"; voiceSel.appendChild(auto);
+    vs.forEach(function (v) { var o = document.createElement("option"); o.value = v.voiceURI; o.textContent = voiceLabel(v); voiceSel.appendChild(o); });
+    voiceSel.value = voiceURI && vs.some(function (v) { return v.voiceURI === voiceURI; }) ? voiceURI : "";
   }
   if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+  voiceSel.addEventListener("change", function () {
+    voiceURI = voiceSel.value;
+    try { localStorage.setItem(VKEY, voiceURI); } catch (e) {}
+    pickVoice();
+    stopAll();
+    if (synth) synth.speak(utter("Hello! I will read the story for you."));
+  });
+
   function utter(text, r) {
     var u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US"; if (voice) u.voice = voice; u.rate = r || rate; return u;
+    u.lang = "en-US"; if (voice) { u.voice = voice; u.lang = voice.lang; } u.rate = r || rate; return u;
   }
   function clearNow() { document.querySelectorAll(".s.now").forEach(function (e) { e.classList.remove("now"); }); }
   function setPlaying(v) {
@@ -285,32 +419,29 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
       synth.speak(u);
     })();
   }
-  function sayWord(w) {
+  function sayText(t) {
     if (!synth) return;
     stopAll();
-    synth.speak(utter(w, 0.8));
+    synth.speak(utter(t, Math.max(0.6, rate - 0.1)));
   }
 
   /* ---------- Render reading ---------- */
   var reading = document.getElementById("reading");
-  var WORD_RE = /([A-Za-z]+(?:['’][A-Za-z]+)?)/;
   PARAS.forEach(function (p, pi) {
-    var box = document.createElement("div"); box.className = "para";
+    var box = document.createElement("div"); box.className = "para"; box.id = "para" + (pi + 1);
     var head = document.createElement("div"); head.className = "para-head";
     var tag = document.createElement("span"); tag.className = "tag"; tag.textContent = p.tag;
     var btn = document.createElement("button"); btn.className = "ico listen"; btn.type = "button";
-    btn.setAttribute("aria-label", "Nghe đoạn " + (pi + 1));
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+    btn.setAttribute("aria-label", "Nghe đoạn " + (pi + 1)); btn.innerHTML = SPK;
     head.appendChild(tag); head.appendChild(btn);
     var para = document.createElement("p"); para.className = "text";
-    p.s.forEach(function (sentence, si) {
-      var sp = document.createElement("span"); sp.className = "s"; sp.setAttribute("data-text", sentence);
-      sentence.split(WORD_RE).forEach(function (part) {
-        if (!part) return;
-        if (WORD_RE.test(part) && /^[A-Za-z]/.test(part)) {
-          var w = document.createElement("span"); w.className = "w"; w.tabIndex = 0; w.setAttribute("role", "button");
-          w.setAttribute("data-k", lookupKey(part)); w.textContent = part; sp.appendChild(w);
-        } else { sp.appendChild(document.createTextNode(part)); }
+    p.s.forEach(function (sen, si) {
+      var sp = document.createElement("span"); sp.className = "s";
+      sp.setAttribute("data-text", sen.map(function (c) { return c[0]; }).join(" "));
+      sen.forEach(function (c, ci) {
+        var el = document.createElement("span"); el.className = "c"; el.tabIndex = 0; el.setAttribute("role", "button");
+        el.setAttribute("data-k", keyOf(c[0])); el.textContent = c[0]; sp.appendChild(el);
+        if (ci < sen.length - 1) sp.appendChild(document.createTextNode(" "));
       });
       para.appendChild(sp);
       if (si < p.s.length - 1) para.appendChild(document.createTextNode(" "));
@@ -318,44 +449,48 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
     btn.addEventListener("click", function () { playSentences(Array.prototype.slice.call(para.querySelectorAll(".s"))); });
     box.appendChild(head); box.appendChild(para); reading.appendChild(box);
   });
-
   function paintSeen() {
-    document.querySelectorAll(".w").forEach(function (w) { w.classList.toggle("seen", !!state[w.getAttribute("data-k")]); });
+    document.querySelectorAll(".c").forEach(function (c) { c.classList.toggle("seen", !!state[c.getAttribute("data-k")]); });
   }
 
-  /* ---------- Word sheet ---------- */
+  /* ---------- Phrase sheet ---------- */
   var sheet = document.getElementById("sheet"), sheetIn = document.getElementById("sheetIn"), openEl = null;
-  function toast(msg) {
-    var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block";
-    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, 2200);
-  }
   function closeSheet() { sheet.classList.remove("show"); if (openEl) openEl.classList.remove("open"); openEl = null; }
+  function wordsIn(en) {
+    var out = [], seen = {};
+    (en.match(/[A-Za-z]+(?:['’][A-Za-z]+)?/g) || []).forEach(function (w) {
+      var lk = lookupKey(w);
+      if (STOP[lk] || seen[lk] || !DICT[lk] || /tên riêng/.test(DICT[lk].m)) return;
+      seen[lk] = 1; out.push({ w: w, base: DICT[lk].base, m: shortMeaning(DICT[lk].m) });
+    });
+    return out.slice(0, 6);
+  }
   function openSheet(el) {
-    var k = el.getAttribute("data-k"), entry = DICT[k];
+    var k = el.getAttribute("data-k"), e = CH[k];
+    if (!e) return;
     if (openEl) openEl.classList.remove("open");
     openEl = el; el.classList.add("open");
     if (!state[k]) state[k] = { n: 0, miss: 0 };
     state[k].n += 1; state[k].t = Date.now(); save(); paintSeen(); renderList();
-    var base = entry && entry.base ? "Dạng gốc: " + entry.base : "";
     sheetIn.innerHTML = "";
     var top = document.createElement("div"); top.className = "sheet-top";
-    var wd = document.createElement("div");
-    var h = document.createElement("div"); h.className = "sheet-word"; h.textContent = el.textContent.toLowerCase();
-    wd.appendChild(h);
-    if (base) { var b = document.createElement("div"); b.className = "sheet-base"; b.textContent = base; wd.appendChild(b); }
-    top.appendChild(wd);
-    var sp = document.createElement("span"); sp.style.flex = "1"; top.appendChild(sp);
-    var say = document.createElement("button"); say.type = "button"; say.className = "ico listen"; say.setAttribute("aria-label", "Nghe phát âm");
-    say.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>';
-    say.addEventListener("click", function () { sayWord(el.textContent); });
-    top.appendChild(say);
-    sheetIn.appendChild(top);
-    var mean = document.createElement("div"); mean.className = "sheet-mean";
-    mean.textContent = entry ? entry.m : "Chưa có nghĩa trong từ điển của bài này.";
-    sheetIn.appendChild(mean);
-    var note = document.createElement("p"); note.className = "sheet-note";
-    note.textContent = entry ? "Từ này đã được lưu vào danh sách \"Từ của tôi\"." : "Từ đã được lưu. Hãy hỏi giáo viên nghĩa của từ này.";
-    sheetIn.appendChild(note);
+    var h = document.createElement("div"); h.className = "sheet-word"; h.textContent = e.en; h.style.flex = "1";
+    var say = document.createElement("button"); say.type = "button"; say.className = "ico listen"; say.setAttribute("aria-label", "Nghe cụm từ"); say.innerHTML = SPK;
+    say.addEventListener("click", function () { sayText(e.en); });
+    top.appendChild(h); top.appendChild(say); sheetIn.appendChild(top);
+    var mean = document.createElement("div"); mean.className = "sheet-mean"; mean.textContent = e.vi; sheetIn.appendChild(mean);
+    if (e.note) { var n = document.createElement("p"); n.className = "sheet-note"; n.textContent = e.note; sheetIn.appendChild(n); }
+    var ws = wordsIn(e.en);
+    if (ws.length) {
+      var box = document.createElement("div"); box.className = "sheet-words";
+      var lab = document.createElement("div"); lab.className = "lab"; lab.textContent = "Từ trong cụm"; box.appendChild(lab);
+      ws.forEach(function (x) {
+        var r = document.createElement("div");
+        var b = document.createElement("b"); b.textContent = x.w + (x.base ? " (" + x.base + ")" : "");
+        r.appendChild(b); r.appendChild(document.createTextNode(" = " + x.m)); box.appendChild(r);
+      });
+      sheetIn.appendChild(box);
+    }
     var acts = document.createElement("div"); acts.className = "sheet-acts";
     var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn primary"; ok.textContent = "Đã hiểu, đọc tiếp";
     ok.addEventListener("click", closeSheet);
@@ -363,18 +498,18 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
     del.addEventListener("click", function () { delete state[k]; save(); paintSeen(); renderList(); closeSheet(); });
     acts.appendChild(ok); acts.appendChild(del); sheetIn.appendChild(acts);
     sheet.classList.add("show");
-    if (synth) sayWord(el.textContent);
+    sayText(e.en);
   }
-  reading.addEventListener("click", function (e) { var w = e.target.closest && e.target.closest(".w"); if (w) openSheet(w); });
-  reading.addEventListener("keydown", function (e) {
-    if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("w")) { e.preventDefault(); openSheet(e.target); }
+  reading.addEventListener("click", function (ev) { var c = ev.target.closest && ev.target.closest(".c"); if (c) openSheet(c); });
+  reading.addEventListener("keydown", function (ev) {
+    if ((ev.key === "Enter" || ev.key === " ") && ev.target.classList && ev.target.classList.contains("c")) { ev.preventDefault(); openSheet(ev.target); }
   });
-  document.addEventListener("click", function (e) {
+  document.addEventListener("click", function (ev) {
     if (!sheet.classList.contains("show")) return;
-    if (e.target.closest("#sheetIn") || e.target.closest(".w")) return;
+    if (ev.target.closest("#sheetIn") || ev.target.closest(".c")) return;
     closeSheet();
   });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") closeSheet(); });
 
   /* ---------- Toolbar ---------- */
   document.getElementById("playAll").addEventListener("click", function () {
@@ -392,9 +527,22 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
     document.getElementById("mine").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  /* ---------- My words list ---------- */
+  /* ---------- My phrases ---------- */
   function sortedWords() {
-    return Object.keys(state).sort(function (a, b) { return (state[b].t || 0) - (state[a].t || 0); });
+    return Object.keys(state).filter(function (k) { return CH[k]; }).sort(function (a, b) { return (state[b].t || 0) - (state[a].t || 0); });
+  }
+  function copyText(text, areaId, okMsg) {
+    var area = document.getElementById(areaId);
+    function showBox() {
+      area.innerHTML = ""; var ta = document.createElement("textarea"); ta.className = "copybox"; ta.readOnly = true; ta.value = text;
+      area.appendChild(ta); ta.focus(); ta.select();
+    }
+    try { navigator.clipboard.writeText(text).then(function () { toast(okMsg); showBox(); }, showBox); } catch (e) { showBox(); }
+  }
+  function wordsText() {
+    return sortedWords().map(function (k) {
+      return CH[k].en + " = " + CH[k].vi + " (chạm " + state[k].n + " lần" + (state[k].miss ? ", quiz sai " + state[k].miss : "") + ")";
+    });
   }
   function renderList() {
     var words = sortedWords();
@@ -403,81 +551,64 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
     var actions = document.getElementById("listActions"); actions.innerHTML = "";
     if (!words.length) {
       var em = document.createElement("div"); em.className = "empty";
-      em.textContent = "Bạn chưa chạm từ nào. Hãy chạm vào một từ trong bài đọc ở trên để bắt đầu."; list.appendChild(em);
+      em.textContent = "Bạn chưa chạm cụm từ nào. Hãy chạm vào một cụm trong bài đọc ở trên để bắt đầu."; list.appendChild(em);
       document.getElementById("quiz").hidden = true; return;
     }
     words.forEach(function (k) {
-      var e = DICT[k], s = state[k];
+      var e = CH[k], s = state[k];
       var it = document.createElement("div"); it.className = "item";
-      var wd = document.createElement("div"); wd.className = "wd"; wd.textContent = k;
-      if (e && e.base) { var b = document.createElement("span"); b.className = "base"; b.textContent = "(" + e.base + ")"; wd.appendChild(b); }
-      var mn = document.createElement("div"); mn.className = "mn"; mn.textContent = e ? e.m : "Chưa có nghĩa. Hãy hỏi giáo viên.";
+      var wd = document.createElement("div"); wd.className = "wd"; wd.textContent = e.en;
+      var mn = document.createElement("div"); mn.className = "mn"; mn.textContent = e.vi;
       var acts = document.createElement("div"); acts.className = "acts";
       var pill = document.createElement("span"); pill.className = "pill"; pill.textContent = "chạm " + s.n + " lần"; acts.appendChild(pill);
       if (s.miss) { var m = document.createElement("span"); m.className = "pill miss"; m.textContent = "quiz sai " + s.miss; acts.appendChild(m); }
-      var sb = document.createElement("button"); sb.type = "button"; sb.className = "ico listen"; sb.setAttribute("aria-label", "Nghe từ " + k);
-      sb.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>';
-      sb.addEventListener("click", function () { sayWord(k); });
-      var rb = document.createElement("button"); rb.type = "button"; rb.className = "ico"; rb.setAttribute("aria-label", "Xoá từ " + k);
+      var sb = document.createElement("button"); sb.type = "button"; sb.className = "ico listen"; sb.setAttribute("aria-label", "Nghe cụm " + e.en); sb.innerHTML = SPK;
+      sb.addEventListener("click", function () { sayText(e.en); });
+      var rb = document.createElement("button"); rb.type = "button"; rb.className = "ico"; rb.setAttribute("aria-label", "Xoá cụm " + e.en);
       rb.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>';
       rb.addEventListener("click", function () { delete state[k]; save(); paintSeen(); renderList(); });
       acts.appendChild(sb); acts.appendChild(rb);
       it.appendChild(wd); it.appendChild(acts); it.appendChild(mn); list.appendChild(it);
     });
-    var q = document.createElement("button"); q.type = "button"; q.className = "btn primary"; q.textContent = "Kiểm tra các từ này";
+    var q = document.createElement("button"); q.type = "button"; q.className = "btn primary"; q.textContent = "Kiểm tra các cụm này";
     q.addEventListener("click", function () { startQuiz(words); });
     var c = document.createElement("button"); c.type = "button"; c.className = "btn"; c.textContent = "Sao chép danh sách gửi giáo viên";
-    c.addEventListener("click", copyList);
+    c.addEventListener("click", function () {
+      copyText("Cụm từ em chưa hiểu trong bài \"Who Made the First Phone Call?\":\n" + wordsText().join("\n"), "copyArea", "Đã sao chép danh sách");
+    });
     var x = document.createElement("button"); x.type = "button"; x.className = "btn quiet"; x.textContent = "Xoá hết";
     x.addEventListener("click", function () { state = {}; save(); paintSeen(); renderList(); document.getElementById("copyArea").innerHTML = ""; });
     actions.appendChild(q); actions.appendChild(c); actions.appendChild(x);
   }
 
-  function copyList() {
-    var lines = sortedWords().map(function (k) {
-      var e = DICT[k]; return k + " - " + (e ? shortMeaning(e.m) : "(chưa có nghĩa)") + " - chạm " + state[k].n + " lần" + (state[k].miss ? ", quiz sai " + state[k].miss : "");
-    });
-    var text = "Từ em chưa hiểu trong bài \"Who Made the First Phone Call?\":\n" + lines.join("\n");
-    var area = document.getElementById("copyArea");
-    function showBox() {
-      area.innerHTML = ""; var ta = document.createElement("textarea"); ta.className = "copybox"; ta.readOnly = true; ta.value = text;
-      area.appendChild(ta); ta.focus(); ta.select();
-    }
-    try {
-      navigator.clipboard.writeText(text).then(function () { toast("Đã sao chép danh sách"); showBox(); }, showBox);
-    } catch (e) { showBox(); }
-  }
-
-  /* ---------- Quiz ---------- */
+  /* ---------- Quiz on my phrases ---------- */
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   var quiz = null;
   function startQuiz(words) {
-    var items = shuffle(words.filter(function (k) { return DICT[k] && !/tên riêng|không dịch/.test(DICT[k].m); }));
+    var items = shuffle(words.filter(function (k) { return CH[k]; }));
     var panel = document.getElementById("quiz"); panel.hidden = false;
     if (!items.length) {
-      document.getElementById("quizBody").innerHTML = "";
-      var p = document.createElement("p"); p.className = "empty"; p.textContent = "Chưa có từ nào đủ nghĩa để kiểm tra. Hãy chạm thêm từ trong bài đọc.";
-      document.getElementById("quizBody").appendChild(p);
+      var body = document.getElementById("quizBody"); body.innerHTML = "";
+      var p = document.createElement("p"); p.className = "empty"; p.textContent = "Chưa có cụm nào để kiểm tra. Hãy chạm thêm cụm trong bài đọc."; body.appendChild(p);
     } else { quiz = { items: items, i: 0, score: 0, wrong: [] }; renderQ(); }
     panel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function renderQ() {
     var body = document.getElementById("quizBody"); body.innerHTML = "";
     if (quiz.i >= quiz.items.length) { renderResult(); return; }
-    var k = quiz.items[quiz.i], right = shortMeaning(DICT[k].m);
-    var pool = Object.keys(DICT).filter(function (x) {
-      var s = shortMeaning(DICT[x].m); return x !== k && s !== right && !/tên riêng|không dịch/.test(DICT[x].m) && x.length > 2;
-    });
-    var options = shuffle([right].concat(shuffle(pool).slice(0, 3).map(function (x) { return shortMeaning(DICT[x].m); })));
+    var k = quiz.items[quiz.i], right = CH[k].vi;
+    var pool = Object.keys(CH).filter(function (x) { return x !== k && CH[x].vi !== right; });
+    var close = pool.filter(function (x) { var r = CH[x].vi.length / right.length; return r > 0.5 && r < 1.8; });
+    var picks = shuffle(close.length >= 3 ? close : pool).slice(0, 3).map(function (x) { return CH[x].vi; });
+    var options = shuffle([right].concat(picks));
     var top = document.createElement("div"); top.className = "q-top";
     var l = document.createElement("span"); l.textContent = "Câu " + (quiz.i + 1) + "/" + quiz.items.length;
     var r = document.createElement("span"); r.textContent = "Đúng: " + quiz.score; top.appendChild(l); top.appendChild(r);
     var row = document.createElement("div"); row.style.display = "flex"; row.style.alignItems = "center"; row.style.gap = "10px";
-    var w = document.createElement("div"); w.className = "q-word"; w.textContent = k; row.appendChild(w);
-    var sb = document.createElement("button"); sb.type = "button"; sb.className = "ico listen"; sb.setAttribute("aria-label", "Nghe từ");
-    sb.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>';
-    sb.addEventListener("click", function () { sayWord(k); }); row.appendChild(sb);
-    var ask = document.createElement("div"); ask.className = "sub"; ask.textContent = "Chọn nghĩa đúng của từ này:";
+    var w = document.createElement("div"); w.className = "q-word"; w.style.flex = "1"; w.textContent = CH[k].en; row.appendChild(w);
+    var sb = document.createElement("button"); sb.type = "button"; sb.className = "ico listen"; sb.setAttribute("aria-label", "Nghe cụm từ"); sb.innerHTML = SPK;
+    sb.addEventListener("click", function () { sayText(CH[k].en); }); row.appendChild(sb);
+    var ask = document.createElement("div"); ask.className = "sub"; ask.textContent = "Chọn nghĩa đúng của cụm từ này:";
     var opts = document.createElement("div"); opts.className = "opts";
     var next = document.createElement("button"); next.type = "button"; next.className = "btn primary"; next.style.display = "none";
     next.textContent = quiz.i + 1 >= quiz.items.length ? "Xem kết quả" : "Câu tiếp theo";
@@ -486,7 +617,8 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
       var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = o;
       b.addEventListener("click", function () {
         opts.querySelectorAll("button").forEach(function (x) { x.disabled = true; if (x.textContent === right) x.classList.add("right"); });
-        if (o === right) { quiz.score++; } else { b.classList.add("wrong"); quiz.wrong.push(k); if (state[k]) { state[k].miss = (state[k].miss || 0) + 1; save(); renderList(); document.getElementById("quiz").hidden = false; } }
+        if (o === right) { quiz.score++; }
+        else { b.classList.add("wrong"); quiz.wrong.push(k); if (state[k]) { state[k].miss = (state[k].miss || 0) + 1; save(); renderList(); document.getElementById("quiz").hidden = false; } }
         r.textContent = "Đúng: " + quiz.score; next.style.display = "inline-flex"; next.focus();
       });
       opts.appendChild(b);
@@ -495,30 +627,168 @@ textarea.copybox { width: 100%; min-height: 110px; margin-top: 10px; border: 1px
   }
   function renderResult() {
     var body = document.getElementById("quizBody"); body.innerHTML = "";
-    var total = quiz.items.length;
-    var s = document.createElement("div"); s.className = "score"; s.textContent = quiz.score + "/" + total; body.appendChild(s);
+    var s = document.createElement("div"); s.className = "score"; s.textContent = quiz.score + "/" + quiz.items.length; body.appendChild(s);
     var msg = document.createElement("p"); msg.className = "sub";
-    msg.textContent = quiz.wrong.length ? "Những từ cần ôn lại:" : "Tuyệt vời! Bạn nhớ hết các từ đã chạm.";
+    msg.textContent = quiz.wrong.length ? "Những cụm cần ôn lại:" : "Tuyệt vời! Bạn nhớ hết các cụm đã chạm.";
     body.appendChild(msg);
     if (quiz.wrong.length) {
       var list = document.createElement("div"); list.className = "list";
       quiz.wrong.forEach(function (k) {
         var it = document.createElement("div"); it.className = "item";
-        var wd = document.createElement("div"); wd.className = "wd"; wd.textContent = k;
-        var mn = document.createElement("div"); mn.className = "mn"; mn.textContent = DICT[k].m;
+        var wd = document.createElement("div"); wd.className = "wd"; wd.textContent = CH[k].en;
+        var mn = document.createElement("div"); mn.className = "mn"; mn.textContent = CH[k].vi;
         it.appendChild(wd); it.appendChild(mn); list.appendChild(it);
       });
       body.appendChild(list);
     }
     var acts = document.createElement("div"); acts.className = "row-actions";
     if (quiz.wrong.length) {
-      var again = document.createElement("button"); again.type = "button"; again.className = "btn primary"; again.textContent = "Ôn lại các từ sai";
+      var again = document.createElement("button"); again.type = "button"; again.className = "btn primary"; again.textContent = "Ôn lại các cụm sai";
       again.addEventListener("click", function () { startQuiz(quiz.wrong.slice()); }); acts.appendChild(again);
     }
     var all = document.createElement("button"); all.type = "button"; all.className = "btn"; all.textContent = "Làm lại tất cả";
     all.addEventListener("click", function () { startQuiz(sortedWords()); }); acts.appendChild(all);
     body.appendChild(acts);
   }
+
+  /* ---------- Part 2: five questions, easy to hard, last one open ---------- */
+  var QS = [
+    { n: 1, lvl: "Dễ", cls: "easy", q: "Where was Alexander Graham Bell born?", vi: "Alexander Graham Bell sinh ra ở đâu?",
+      hint: "Đọc lại Thân bài 1. Bắt đầu bằng: He was born in ...", kw: /scotland/i, ans: "He was born in Scotland." },
+    { n: 2, lvl: "Dễ", cls: "easy", q: "Why did Bell teach deaf students?", vi: "Vì sao Bell dạy học sinh khiếm thính?",
+      hint: "Đọc lại Thân bài 1. Bắt đầu bằng: Because his ...", kw: /mother|wife|deaf|hear/i, ans: "Because his mother and his wife were deaf. He wanted to help them hear." },
+    { n: 3, lvl: "Vừa", cls: "mid", q: "What happened on March 10, 1876?", vi: "Chuyện gì đã xảy ra vào ngày 10 tháng 3 năm 1876?",
+      hint: "Đọc lại Thân bài 2. Kể 2 đến 3 việc theo thứ tự. Bắt đầu bằng: Bell spilled ...", kw: /acid|spill|shout|watson|call/i,
+      ans: "Bell spilled acid on his clothes and shouted for Mr. Watson. Watson heard Bell's voice through the machine. It was the first phone call." },
+    { n: 4, lvl: "Khó", cls: "hard", q: "Why was the first phone call an accident?", vi: "Vì sao cuộc gọi điện thoại đầu tiên là một sự cố bất ngờ?",
+      hint: "Nghĩ về lý do Bell hét lên. Bắt đầu bằng: Because Bell did not ...", kw: /plan|accident|mistake|help|acid|shout|didn.?t/i,
+      ans: "Because Bell did not plan it. He shouted for help after he spilled acid, and Watson heard him through the machine." },
+    { n: 5, lvl: "Câu hỏi mở", cls: "open", q: "Which invention do you think is the most useful? Why?", vi: "Theo bạn, phát minh nào là hữu ích nhất? Vì sao?",
+      hint: "Không có đáp án đúng hay sai. Bắt đầu bằng: I think ... is the most useful invention because ...", kw: null,
+      ans: "I think the telephone is the most useful invention because we can talk to our family and friends quickly, even when they are far away." }
+  ];
+  (function renderQuestions() {
+    var host = document.getElementById("qList");
+    QS.forEach(function (q) {
+      var card = document.createElement("div"); card.className = "qcard";
+      card.innerHTML =
+        '<div class="qhead"><span class="num">Câu ' + q.n + '</span><span class="lvl ' + q.cls + '">' + q.lvl + '</span><span class="spacer"></span>' +
+        '<button type="button" class="ico listen" aria-label="Nghe câu hỏi ' + q.n + '">' + SPK + '</button></div>' +
+        '<p class="qtext">' + q.q + '</p><p class="qvi">' + q.vi + '</p>' +
+        '<label class="sr" for="ans' + q.n + '">Câu trả lời cho câu ' + q.n + '</label>' +
+        '<textarea id="ans' + q.n + '" rows="' + (q.n === 5 ? 4 : 3) + '" placeholder="Viết câu trả lời bằng tiếng Anh..."></textarea>' +
+        '<div class="qacts"><button type="button" class="btn quiet hintBtn">Gợi ý</button><button type="button" class="btn primary chkBtn">Kiểm tra</button></div>' +
+        '<p class="hint" hidden>' + q.hint + '</p><div class="fb" hidden></div>';
+      var ta = card.querySelector("textarea"), hint = card.querySelector(".hint"), fb = card.querySelector(".fb");
+      ta.value = answers[q.n] || "";
+      ta.addEventListener("input", function () { answers[q.n] = ta.value; saveAnswers(); });
+      card.querySelector(".listen").addEventListener("click", function () { sayText(q.q); });
+      card.querySelector(".hintBtn").addEventListener("click", function () { hint.hidden = !hint.hidden; });
+      card.querySelector(".chkBtn").addEventListener("click", function () {
+        var v = ta.value.trim(); fb.hidden = false; fb.className = "fb";
+        if (!v) { fb.innerHTML = '<p class="fbmsg">Hãy viết câu trả lời trước nhé.</p>'; return; }
+        var msg, ok = true;
+        if (q.kw) {
+          ok = q.kw.test(v);
+          msg = ok ? "Tốt lắm! Câu trả lời của bạn có ý chính." : "Chưa thấy ý chính. Hãy đọc lại đoạn được gợi ý rồi sửa câu trả lời.";
+        } else if (v.split(/\s+/).length < 8) { ok = false; msg = "Hãy viết thêm: nêu tên phát minh và lý do của bạn."; }
+        else if (!/because/i.test(v)) { ok = false; msg = "Khá tốt! Hãy thêm lý do bằng \"because\"."; }
+        else { msg = "Rất tốt! Bạn đã nêu ý kiến và lý do."; }
+        fb.classList.add(ok ? "ok" : "try");
+        fb.innerHTML = '<p class="fbmsg"></p><p><b>' + (q.kw ? "Đáp án gợi ý" : "Ví dụ tham khảo") + ':</b> ' + q.ans + '</p>';
+        fb.querySelector(".fbmsg").textContent = msg;
+      });
+      host.appendChild(card);
+    });
+  })();
+
+  /* ---------- Part 3: record a spoken summary ---------- */
+  var recBtn = document.getElementById("recBtn"), recTime = document.getElementById("recTime"), recMsg = document.getElementById("recMsg");
+  var recDone = document.getElementById("recDone"), recAudio = document.getElementById("recAudio"), recDl = document.getElementById("recDl");
+  var meterFill = document.getElementById("meterFill");
+  var R = { stream: null, mr: null, parts: [], tick: null, t0: 0, url: null, ctx: null, raf: 0, mime: "" };
+  var MAX = 90;
+  function fmt(s) { var m = Math.floor(s / 60), r = Math.floor(s % 60); return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
+  function pickMime() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+    var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    for (var i = 0; i < c.length; i++) { if (MediaRecorder.isTypeSupported(c[i])) return c[i]; }
+    return "";
+  }
+  function setRecUI(on) {
+    recBtn.textContent = on ? "Dừng ghi âm" : "Bắt đầu ghi âm";
+    recBtn.classList.toggle("recording", on);
+    recBtn.classList.toggle("primary", !on);
+  }
+  function startMeter(stream) {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext; R.ctx = new AC();
+      var src = R.ctx.createMediaStreamSource(stream), an = R.ctx.createAnalyser(); an.fftSize = 256; src.connect(an);
+      var buf = new Uint8Array(an.frequencyBinCount);
+      (function loop() {
+        an.getByteTimeDomainData(buf);
+        var peak = 0; for (var i = 0; i < buf.length; i++) { var v = Math.abs(buf[i] - 128); if (v > peak) peak = v; }
+        meterFill.style.width = Math.min(100, peak / 128 * 180) + "%";
+        R.raf = requestAnimationFrame(loop);
+      })();
+    } catch (e) {}
+  }
+  function stopMeter() { cancelAnimationFrame(R.raf); meterFill.style.width = "0%"; try { if (R.ctx) R.ctx.close(); } catch (e) {} R.ctx = null; }
+  function errMsg(err) {
+    var n = err && err.name;
+    if (n === "NotAllowedError" || n === "SecurityError") return "Trình duyệt chưa cho phép dùng micro. Bấm vào biểu tượng ổ khóa cạnh địa chỉ trang, cho phép micro rồi thử lại.";
+    if (n === "NotFoundError") return "Không tìm thấy micro trên thiết bị này.";
+    return "Không ghi âm được (" + (n || "lỗi") + "). Hãy thử lại bằng Chrome hoặc Safari mới.";
+  }
+  function startRec() {
+    stopAll(); recMsg.textContent = ""; recDone.hidden = true;
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      R.stream = stream; R.parts = []; R.mime = pickMime();
+      var mr; try { mr = R.mime ? new MediaRecorder(stream, { mimeType: R.mime }) : new MediaRecorder(stream); } catch (e) { mr = new MediaRecorder(stream); }
+      R.mr = mr;
+      mr.ondataavailable = function (e) { if (e.data && e.data.size) R.parts.push(e.data); };
+      mr.onstop = finishRec;
+      mr.start();
+      R.t0 = Date.now(); setRecUI(true); recMsg.textContent = "Đang ghi âm. Hãy nói chậm và rõ.";
+      R.tick = setInterval(function () {
+        var s = (Date.now() - R.t0) / 1000; recTime.textContent = fmt(s) + " / " + fmt(MAX);
+        if (s >= MAX) stopRec();
+      }, 250);
+      startMeter(stream);
+    }).catch(function (err) { recMsg.textContent = errMsg(err); });
+  }
+  function stopRec() { if (R.mr && R.mr.state !== "inactive") R.mr.stop(); }
+  function finishRec() {
+    clearInterval(R.tick); stopMeter();
+    if (R.stream) R.stream.getTracks().forEach(function (t) { t.stop(); });
+    setRecUI(false);
+    var type = (R.mr && R.mr.mimeType) || R.mime || "audio/webm";
+    var blob = new Blob(R.parts, { type: type });
+    if (R.url) URL.revokeObjectURL(R.url);
+    R.url = URL.createObjectURL(blob);
+    recAudio.src = R.url;
+    var ext = /mp4/.test(type) ? "m4a" : /ogg/.test(type) ? "ogg" : "webm";
+    recDl.href = R.url; recDl.setAttribute("download", "tom-tat-phone-reading." + ext);
+    recDone.hidden = false;
+    recMsg.textContent = "Đã ghi xong. Hãy nghe lại. Nếu chưa hài lòng, bấm Ghi lại. Bản ghi sẽ mất khi đóng trang, nên hãy tải về và gửi cho giáo viên.";
+  }
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder)) {
+    recBtn.disabled = true;
+    recMsg.textContent = "Trình duyệt này chưa hỗ trợ ghi âm. Hãy mở trang bằng Chrome hoặc Safari mới.";
+  }
+  recBtn.addEventListener("click", function () {
+    if (R.mr && R.mr.state === "recording") stopRec(); else startRec();
+  });
+  document.getElementById("recAgain").addEventListener("click", function () { recAudio.pause(); startRec(); });
+
+  document.getElementById("copyAll").addEventListener("click", function () {
+    var lines = ["Bài làm: \"Who Made the First Phone Call?\"", "", "Cụm từ em chưa hiểu:"];
+    var w = wordsText(); lines = lines.concat(w.length ? w : ["(không có)"]);
+    lines.push("", "Câu trả lời:");
+    QS.forEach(function (q) { lines.push(q.n + ". " + q.q, "   " + ((answers[q.n] || "").trim() || "(chưa trả lời)")); });
+    lines.push("", "Bản ghi âm: em sẽ gửi file riêng.");
+    copyText(lines.join("\n"), "reportArea", "Đã sao chép bài làm");
+  });
 
   paintSeen(); renderList();
 })();
