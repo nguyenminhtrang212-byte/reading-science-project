@@ -591,14 +591,13 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
 
   /* ---- Step 1: vocabulary ---- */
   add({ step: 0, title: "Chào mừng", render: function (el) {
-    head(el, "Bắt đầu", "Chào em! Hôm nay mình học như xem một video ngắn.");
+    head(el, "Bắt đầu", "Chào bạn!");
     el.insertAdjacentHTML("beforeend",
-      '<p class="lead">Bài học đi theo 3 phần, mỗi lần chỉ hiện một thẻ:</p>' +
-      '<div class="rules"><div class="rule"><b>Phần 1</b><span>Học từ vựng và đổi động từ sang thì quá khứ đơn.</span></div>' +
-      '<div class="rule"><b>Phần 2</b><span>Trả lời 3 câu hỏi khởi động: gõ câu trả lời rồi ghi âm.</span></div>' +
-      '<div class="rule"><b>Phần 3</b><span>Đọc bài <i>Who Made the First Phone Call?</i> và trả lời 6 câu hỏi. Cuối cùng em nộp bài cho cô.</span></div></div>' +
-      '<p class="sub">Hãy ngồi nơi yên tĩnh. Khi trình duyệt hỏi, bấm Cho phép dùng micro. Đừng tải lại trang giữa chừng vì bài làm sẽ mất.</p>' +
-      '<label for="nameIn"><b>Em tên là gì?</b></label><input class="field" id="nameIn" type="text" maxlength="60" autocomplete="name" placeholder="Ví dụ: Nguyễn Minh An - lớp 7A">');
+      '<p class="lead">Hôm nay chúng ta sẽ đi qua một thì để nói về những gì đã xảy ra: <b>thì quá khứ đơn</b>.</p>' +
+      '<p class="vex">Today, we will use the past simple to talk about things that happened.</p>' +
+      '<div class="row-actions"><button type="button" class="ico listen" id="wsay" aria-label="Nghe câu tiếng Anh">' + SPK + '</button></div>' +
+      '<label for="nameIn" style="display:block;margin-top:14px"><b>Bạn tên là gì?</b></label><input class="field" id="nameIn" type="text" maxlength="60" autocomplete="name" placeholder="Ví dụ: Nguyễn Minh An - lớp 7A">');
+    $("#wsay").addEventListener("click", function () { sayText("Today, we will use the past simple to talk about things that happened."); });
     var inp = $("#nameIn"); inp.value = S.name;
     inp.addEventListener("input", function () { S.name = inp.value; try { localStorage.setItem(NKEY, S.name); } catch (e) {} });
   }, need: function () { return S.name.trim().length < 2 ? "Hãy nhập tên của em để bắt đầu." : ""; } });
@@ -636,8 +635,9 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
         b.innerHTML = past + '<p class="vex">' + esc(v.ex) + '<small>' + esc(v.exvi) + '</small></p>' +
           '<div class="row-actions"><button type="button" class="ico listen" id="exsay" aria-label="Nghe câu ví dụ">' + SPK + '</button></div>';
         $("#exsay").addEventListener("click", function () { sayText(v.ex); });
+        if (r.autoRead) { r.autoRead = false; sayText((v.past ? v.past.replace(" / ", " or ") + ". " : "") + v.ex); }
       }
-      if (!tested || r.done) { showPast(); }
+      if (!tested || r.done) { r.autoRead = false; showPast(); }
       else {
         $("#vbody").innerHTML = '<div class="vpast"><div class="lab">Bây giờ đến lượt em</div><div>Viết dạng <b>quá khứ đơn</b> của: <b>' + esc(v.en) + '</b></div>' +
           '<div class="try"><input class="field" id="vin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Quá khứ đơn của ' + esc(v.en) + '"><button type="button" class="btn primary" id="vchk">Kiểm tra</button></div>' +
@@ -647,17 +647,18 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
           var val = inp.value; if (!val.trim()) { $("#vfb").innerHTML = '<div class="note">Hãy gõ câu trả lời trước nhé.</div>'; return; }
           var ok = v.acc.indexOf(norm(val)) >= 0;
           r.tries++; if (r.tries === 1) { r.first = ok; r.ans = val.trim(); }
-          if (ok) { r.done = true; showPast(); var f = document.createElement("div"); f.className = "note ok"; f.textContent = r.first ? "Đúng rồi! Giỏi lắm." : "Đúng rồi! Lần sau em sẽ nhớ."; $("#vbody").insertBefore(f, $("#vbody").firstChild); return; }
+          if (ok) { r.done = true; r.autoRead = true; showPast(); var f = document.createElement("div"); f.className = "note ok"; f.textContent = r.first ? "Đúng rồi! Giỏi lắm." : "Đúng rồi! Lần sau em sẽ nhớ."; $("#vbody").insertBefore(f, $("#vbody").firstChild); return; }
           var fb = '<div class="note err">Chưa đúng. ' + esc(v.hint) + '</div>';
           if (r.tries >= 2) fb += '<div class="row-actions"><button type="button" class="btn quiet" id="vshow">Xem đáp án</button></div>';
           $("#vfb").innerHTML = fb;
-          var sh = $("#vshow"); if (sh) sh.addEventListener("click", function () { r.done = true; r.revealed = true; showPast(); });
+          var sh = $("#vshow"); if (sh) sh.addEventListener("click", function () { r.done = true; r.revealed = true; r.autoRead = true; showPast(); });
         }
         $("#vchk").addEventListener("click", check);
         inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(); } });
         setTimeout(function () { try { inp.focus({ preventScroll: true }); } catch (e) {} }, 50);
       }
-      setTimeout(function () { sayText(v.en); }, 200);
+      if (!tested || r.done) { setTimeout(function () { sayText(v.en + ". " + v.ex); }, 250); }
+      else { setTimeout(function () { sayText(v.en); }, 250); }
     }, need: function () { var r = S.vres[v.id]; return (S.picked.indexOf(v.id) >= 0 && !(r && r.done)) ? "Hãy viết dạng quá khứ đơn của cụm này để tiếp tục." : ""; } });
   });
 
