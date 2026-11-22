@@ -605,7 +605,7 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
   add({ step: 0, title: "Cách đổi sang quá khứ", render: function (el) {
     head(el, "Phần 1 · Từ vựng", "Khởi động: động từ ở thì quá khứ đơn");
     el.insertAdjacentHTML("beforeend",
-      '<p class="lead">Xem 4 cách đổi trước. Sau đó sẽ có 15 thẻ từ mới, và máy sẽ hỏi em ở 8 thẻ.</p>' +
+      '<p class="lead">Xem 4 cách đổi trước. Sau đó có 15 thẻ từ mới; máy hỏi quá khứ ở 8 thẻ, rồi ôn lại nghĩa và nghe.</p>' +
       '<div class="rules">' +
       '<div class="rule"><b>Thêm -ed</b><span>wait → waited <span class="eg">· call → called</span></span></div>' +
       '<div class="rule"><b>Tận cùng là e, thêm -d</b><span>move → moved <span class="eg">· use → used</span></span></div>' +
@@ -662,6 +662,71 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
     }, need: function () { var r = S.vres[v.id]; return (S.picked.indexOf(v.id) >= 0 && !(r && r.done)) ? "Hãy viết dạng quá khứ đơn của cụm này để tiếp tục." : ""; } });
   });
 
+  /* ---- review: meaning (3 choices) then listening (type what you hear) ---- */
+  S.mres = {}; S.lres = {};
+  add({ step: 0, title: "Ôn nghĩa", render: function (el) {
+    head(el, "Phần 1 · Ôn từ vựng", "Bây giờ ôn lại nghĩa và nghe");
+    el.insertAdjacentHTML("beforeend", '<p class="lead">Em đã gặp tất cả các từ rồi. Giờ máy hỏi lại 8 từ:</p><div class="rules"><div class="rule"><b>Chọn nghĩa</b><span>Đọc từ tiếng Anh, chọn nghĩa tiếng Việt đúng trong 3 đáp án.</span></div><div class="rule"><b>Nghe và gõ</b><span>Nghe máy đọc, rồi gõ lại từ em nghe được.</span></div></div>');
+  }, need: function () { return ""; } });
+  var PV = VOC.filter(function (v) { return S.picked.indexOf(v.id) >= 0; });
+  PV.forEach(function (v, i) {
+    add({ step: 0, title: "Chọn nghĩa: " + v.en, render: function (el) {
+      var r = S.mres[v.id] || (S.mres[v.id] = { tries: 0, first: null, done: false, ans: "" });
+      if (!r.opts) {
+        var others = shuffle(VOC.filter(function (x) { return x.id !== v.id && x.vi !== v.vi; })).slice(0, 2).map(function (x) { return x.vi; });
+        r.opts = shuffle([v.vi].concat(others));
+      }
+      el.innerHTML = '<div class="s-kicker">Phần 1 · Chọn nghĩa ' + (i + 1) + '/' + PV.length + '</div>' +
+        '<div class="vtop"><button type="button" class="ico listen" id="msay" aria-label="Nghe từ">' + SPK + '</button></div>' +
+        '<div class="vbig">' + esc(v.en) + '</div><p class="sub">Từ này có nghĩa là gì?</p><div class="opts" id="mopts"></div><div id="mfb" role="status"></div>';
+      $("#msay").addEventListener("click", function () { sayText(v.en); });
+      var box = $("#mopts");
+      r.opts.forEach(function (o) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = o;
+        if (r.done) { b.disabled = true; if (o === v.vi) b.classList.add("right"); }
+        b.addEventListener("click", function () {
+          if (r.done) return;
+          r.tries++; if (r.tries === 1) { r.first = (o === v.vi); r.ans = o; }
+          if (o === v.vi) {
+            r.done = true; box.querySelectorAll("button").forEach(function (x) { x.disabled = true; if (x.textContent === v.vi) x.classList.add("right"); });
+            $("#mfb").innerHTML = '<div class="note ok">' + (r.first ? "Đúng rồi!" : "Đúng rồi! Lần sau em sẽ nhớ.") + '</div>';
+            sayText(v.en);
+          } else { b.disabled = true; b.classList.add("wrong"); $("#mfb").innerHTML = '<div class="note err">Chưa đúng. Hãy thử đáp án khác.</div>'; }
+        });
+        box.appendChild(b);
+      });
+      setTimeout(function () { sayText(v.en); }, 250);
+    }, need: function () { var r = S.mres[v.id]; return r && r.done ? "" : "Hãy chọn nghĩa đúng để tiếp tục."; } });
+  });
+  var LV = PV.filter(function (v) { return v.en.indexOf(" ") < 0 || v.en.split(" ").length <= 2; }).slice(0, 5);
+  LV.forEach(function (v, i) {
+    add({ step: 0, title: "Nghe và gõ " + (i + 1), render: function (el) {
+      var r = S.lres[v.id] || (S.lres[v.id] = { tries: 0, first: null, done: false, ans: "" });
+      el.innerHTML = '<div class="s-kicker">Phần 1 · Nghe và gõ ' + (i + 1) + '/' + LV.length + '</div>' +
+        '<p class="lead">Nghe máy đọc và gõ lại từ em nghe được (tiếng Anh).</p>' +
+        '<div class="row-actions"><button type="button" class="btn primary listen" id="lplay">' + SPK + ' Nghe</button><button type="button" class="btn listen" id="lslow">Nghe chậm</button></div>' +
+        '<div class="try"><input class="field" id="lin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Từ em nghe được"><button type="button" class="btn primary" id="lchk">Kiểm tra</button></div><div id="lfb" role="status"></div>';
+      $("#lplay").addEventListener("click", function () { if (synth) { stopAll(); synth.speak(utter(v.en, 0.9)); } });
+      $("#lslow").addEventListener("click", function () { if (synth) { stopAll(); synth.speak(utter(v.en, 0.6)); } });
+      var inp = $("#lin");
+      if (r.done) { inp.value = v.en; inp.disabled = true; $("#lfb").innerHTML = '<div class="note ok">Đúng rồi: <b>' + esc(v.en) + '</b> (' + esc(v.vi) + ')</div>'; }
+      function check() {
+        if (r.done) return;
+        var val = inp.value; if (!val.trim()) { $("#lfb").innerHTML = '<div class="note">Hãy gõ từ em nghe được.</div>'; return; }
+        var ok = norm(val) === norm(v.en);
+        r.tries++; if (r.tries === 1) { r.first = ok; r.ans = val.trim(); }
+        if (ok) { r.done = true; inp.disabled = true; $("#lfb").innerHTML = '<div class="note ok">' + (r.first ? "Đúng rồi!" : "Đúng rồi! Lần sau em sẽ nhớ.") + ' <b>' + esc(v.en) + '</b> = ' + esc(v.vi) + '</div>'; return; }
+        var fb = '<div class="note err">Chưa đúng. Hãy nghe lại, nghe chậm nếu cần.</div>';
+        if (r.tries >= 3) fb += '<div class="row-actions"><button type="button" class="btn quiet" id="lshow">Xem đáp án</button></div>';
+        $("#lfb").innerHTML = fb;
+        var sh = $("#lshow"); if (sh) sh.addEventListener("click", function () { r.done = true; r.revealed = true; inp.value = v.en; inp.disabled = true; $("#lfb").innerHTML = '<div class="note">Đáp án: <b>' + esc(v.en) + '</b> = ' + esc(v.vi) + '</div>'; });
+      }
+      $("#lchk").addEventListener("click", check);
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(); } });
+      if (!r.done) setTimeout(function () { if (synth) { stopAll(); synth.speak(utter(v.en, 0.9)); } }, 300);
+    }, need: function () { var r = S.lres[v.id]; return r && r.done ? "" : "Hãy gõ từ em nghe được để tiếp tục."; } });
+  });
+
   add({ step: 0, title: "Kết quả từ vựng", render: function (el) {
     var tested = VOC.filter(function (v) { return S.picked.indexOf(v.id) >= 0; });
     var good = tested.filter(function (v) { return S.vres[v.id] && S.vres[v.id].first; }).length;
@@ -671,6 +736,8 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
       var r = S.vres[v.id] || {};
       h += '<div class="res"><span><b>' + esc(v.en) + '</b> → ' + esc(v.past) + '</span><span class="' + (r.first ? "ok" : "no") + '">' + (r.first ? "Đúng" : "Cần ôn") + '</span></div>';
     });
+    var mg = PV.filter(function (v) { return S.mres[v.id] && S.mres[v.id].first; }).length, lg = LV.filter(function (v) { return S.lres[v.id] && S.lres[v.id].first; }).length;
+    h += '</div><div class="reslist"><div class="res"><span><b>Chọn nghĩa</b> (đúng lần đầu)</span><span>' + mg + '/' + PV.length + '</span></div><div class="res"><span><b>Nghe và gõ</b> (đúng lần đầu)</span><span>' + lg + '/' + LV.length + '</span></div>';
     el.insertAdjacentHTML("beforeend", h + '</div><p class="note">Tiếp theo là phần khởi động nói. Em sẽ nói về chuyện liên lạc với bạn bè và với ông bà.</p>');
   }, need: function () { return ""; } });
 
@@ -840,6 +907,8 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
         var r = S.vres[v.id] || {};
         details.push({ part: "Từ vựng", question: "Quá khứ đơn của: " + v.en, answer: r.ans || "", correct: v.past, result: (r.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (r.tries > 1 ? " (" + r.tries + " lần thử)" : "") + (r.revealed ? ", đã xem đáp án" : "") });
       });
+      PV.forEach(function (v) { var m = S.mres[v.id] || {}; details.push({ part: "Từ vựng - nghĩa", question: "Nghĩa của: " + v.en, answer: m.ans || "", correct: v.vi, result: (m.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (m.tries > 1 ? " (" + m.tries + " lần thử)" : "") }); });
+      LV.forEach(function (v) { var m = S.lres[v.id] || {}; details.push({ part: "Từ vựng - nghe gõ", question: "Nghe và gõ từ: " + v.en, answer: m.ans || "", correct: v.en, result: (m.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (m.tries > 1 ? " (" + m.tries + " lần thử)" : "") + (m.revealed ? ", đã xem đáp án" : "") }); });
       SPQ.forEach(function (q, i) { details.push({ part: "Speaking", question: q.q, answer: S.speak[i].text, correct: "", result: "Đã ghi âm " + Math.round(S.speak[i].rec.dur) + " giây" }); });
       RQ.forEach(function (q) { details.push({ part: "Reading", question: q.q, answer: S.ans[q.n] || "", correct: q.ans, result: q.open ? "Câu hỏi mở" : (S.kwok[q.n] ? "✅ Có ý chính" : "❓ Chưa thấy ý chính") }); });
       var ph = sortedPhrases().map(function (k) { return CH[k].en + " (chạm " + state[k].n + " lần)"; });
