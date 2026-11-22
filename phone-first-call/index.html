@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: one centered column. Part 1 read + listen + tap phrases, Part 2 five questions, Part 3 record a summary. */
+/* Layout idea: a guided lesson that plays one scene at a time. Header with steps, a stage in the middle, a dock with timeline and Back/Next at the bottom. */
 :root {
   --bg: #f2f5f9;
   --surface: #ffffff;
@@ -21,6 +21,7 @@
   --now: #d7efe9;
   --bad: #b8400d;
   --good: #11713b;
+  --red: #d62828;
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color-scheme: light;
@@ -29,67 +30,145 @@
   :root:not([data-theme="light"]) {
     --bg: #0e1620; --surface: #162130; --ink: #e8eef6; --muted: #9db0c6; --line: #2a3a50;
     --accent: #4fd1c5; --accent-ink: #06201d; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #1c4a46;
-    --bad: #ff9a66; --good: #6fe0a0; color-scheme: dark;
+    --bad: #ff9a66; --good: #6fe0a0; --red: #ff6b6b; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e1620; --surface: #162130; --ink: #e8eef6; --muted: #9db0c6; --line: #2a3a50;
   --accent: #4fd1c5; --accent-ink: #06201d; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #1c4a46;
-  --bad: #ff9a66; --good: #6fe0a0; color-scheme: dark;
+  --bad: #ff9a66; --good: #6fe0a0; --red: #ff6b6b; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
-button, select, textarea { font: inherit; color: inherit; }
-.wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 140px; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; padding-bottom: 130px; }
+button, select, textarea, input { font: inherit; color: inherit; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
 
-header.top { padding: 24px 0 8px; }
+header.top { padding: 18px 0 8px; }
 .kicker-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
 .kicker { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: .02em; }
 .voice { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
 .voice select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 10px; min-height: 40px; max-width: 230px; font-size: 14px; color: var(--ink); }
-h1 { font-family: var(--font-display); font-size: clamp(30px, 6vw, 44px); line-height: 1.1; margin: 8px 0 10px; text-wrap: balance; }
-.how { color: var(--muted); margin: 0; font-size: 15px; }
-.how b { font-weight: 500; background: var(--mark); color: var(--mark-ink); padding: 0 5px; border-radius: 4px; }
+h1 { font-family: var(--font-display); font-size: clamp(26px, 5vw, 38px); line-height: 1.1; margin: 6px 0 12px; text-wrap: balance; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; font-size: 14px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; min-height: 36px; }
+.chip .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--line); font-size: 12px; font-weight: 600; }
+.chip.cur { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.chip.cur .n { background: var(--accent); color: var(--accent-ink); }
+.chip.done .n { background: var(--good); color: var(--accent-ink); }
+.chip.lock { opacity: .55; }
 
-.toolbar { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); margin-top: 12px; }
-.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 9px 14px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 44px; text-decoration: none; color: var(--ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 9px 16px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 44px; text-decoration: none; color: var(--ink); }
 .btn:hover { border-color: var(--accent); }
-.btn:focus-visible, .c:focus-visible, .ico:focus-visible, .opt:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn:focus-visible, .c:focus-visible, .ico:focus-visible, .opt:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .btn.recording { background: var(--bad); border-color: var(--bad); color: #fff; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn svg, .ico svg { width: 18px; height: 18px; flex: none; }
+.quiet { background: transparent; color: var(--muted); }
+.ico { border: 1px solid var(--line); background: transparent; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; color: var(--muted); flex: none; }
+.ico:hover { color: var(--accent); border-color: var(--accent); }
+.spacer { flex: 1; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+/* stage */
+.stage { max-width: 760px; margin: 12px auto 0; padding: 0 16px; }
+.stage.wide { max-width: 1120px; }
+.scene { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px; animation: rise .25s ease both; }
+.scene.plain { background: transparent; border: 0; padding: 0; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.s-kicker { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; }
+.scene h2 { font-family: var(--font-display); font-size: clamp(24px, 4.5vw, 32px); line-height: 1.15; margin: 4px 0 10px; text-wrap: balance; }
+.lead { font-size: 18px; margin: 0 0 12px; }
+.sub { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+.note { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 15px; }
+.note.ok { border-color: var(--good); }
+.note.err { border-color: var(--bad); }
+.field { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 10px 12px; line-height: 1.5; }
+textarea.field { resize: vertical; }
+.rules { display: grid; gap: 8px; margin: 12px 0; }
+.rule { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; align-items: center; }
+.rule b { color: var(--accent); }
+.rule .eg { color: var(--muted); font-size: 15px; }
+
+/* vocabulary card */
+.vbig { font-family: var(--font-display); font-size: clamp(34px, 8vw, 54px); font-weight: 700; line-height: 1.1; margin: 8px 0 4px; }
+.vtop { display: flex; align-items: center; gap: 10px; }
+.vtag { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; color: var(--muted); }
+.vvi { font-size: 22px; margin-bottom: 12px; }
+.vpast { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); }
+.vpast .lab { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.vpast .big { font-size: 26px; font-weight: 600; color: var(--accent); }
+.vex { margin: 10px 0 0; font-size: 18px; }
+.vex small { display: block; color: var(--muted); font-size: 15px; }
+.try { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.try .field { flex: 1; min-width: 180px; font-size: 20px; }
+.testtag { display: inline-block; margin-bottom: 4px; font-size: 12px; font-weight: 600; color: var(--bad); border: 1px solid var(--bad); border-radius: 999px; padding: 1px 10px; }
+.dots { display: flex; gap: 4px; margin: 0 0 10px; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--accent); }
+.dots i.t { outline: 2px solid var(--bad); outline-offset: 1px; }
+.reslist { display: grid; gap: 6px; margin-top: 10px; }
+.res { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 16px; }
+.res .ok { color: var(--good); font-weight: 600; }
+.res .no { color: var(--bad); font-weight: 600; }
+.score { font-family: var(--font-display); font-size: 48px; font-weight: 700; line-height: 1; margin: 4px 0 8px; }
+
+/* speaking */
+.qbig { font-family: var(--font-display); font-size: clamp(24px, 5vw, 34px); line-height: 1.2; margin: 6px 0 4px; }
+.qvi { color: var(--muted); margin: 0 0 12px; }
+.starter { margin: 8px 0 0; padding: 8px 12px; border-left: 4px solid var(--mark); background: var(--bg); border-radius: 6px; font-size: 15px; }
+.recbox { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--bg); margin-top: 14px; }
+.rec-top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.rec-time { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 110px; }
+.meter { flex: 1; min-width: 100px; height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .08s linear; }
+.recbox audio { width: 100%; margin-top: 12px; }
+.rmsg { margin: 10px 0 0; }
+
+/* reading */
+.read-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 940px) { .read-grid { grid-template-columns: 1.15fr 1fr; align-items: start; } .q-col { position: sticky; top: 10px; max-height: calc(100vh - 190px); overflow: auto; padding-right: 4px; } }
+.toolbar2 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
 .speed { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
 .speed button { border: 0; background: transparent; padding: 0 12px; min-height: 42px; cursor: pointer; font-size: 14px; }
 .speed button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
-.spacer { flex: 1; }
 .count { background: var(--mark); color: var(--mark-ink); border-radius: 999px; padding: 0 9px; font-size: 13px; font-weight: 600; }
-
-.part-head { display: flex; align-items: center; gap: 10px; margin: 20px 0 0; font-family: var(--font-display); font-size: 22px; font-weight: 700; }
-.part-tag { font-family: var(--font-body); font-size: 12px; font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 999px; padding: 2px 10px; letter-spacing: .04em; text-transform: uppercase; }
-
-article.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 8px 20px 20px; margin-top: 12px; }
-.para { padding: 16px 0; border-bottom: 1px dashed var(--line); }
+article.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 4px 20px 16px; }
+.para { padding: 14px 0; border-bottom: 1px dashed var(--line); }
 .para:last-child { border-bottom: 0; }
-.para-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.para-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 2px; }
 .tag { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
-.ico { border: 1px solid var(--line); background: transparent; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; color: var(--muted); flex: none; }
-.ico:hover { color: var(--accent); border-color: var(--accent); }
-.text { font-size: 21px; line-height: 2.1; margin: 0; }
+.text { font-size: 20px; line-height: 2.05; margin: 0; }
 .s { border-radius: 6px; transition: background .15s; }
 .s.now { background: var(--now); }
 .c { cursor: pointer; border-radius: 6px; padding: 2px 3px; border-bottom: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .c:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .c.seen { background: var(--mark); color: var(--mark-ink); border-bottom-color: transparent; }
 .c.open { outline: 2px solid var(--accent); }
+.red { color: var(--red); font-weight: 700; }
+.qcard { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; background: var(--surface); }
+.qhead { display: flex; align-items: center; gap: 8px; }
+.num { font-weight: 600; }
+.lvl { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px; border: 1px solid var(--accent); color: var(--accent); }
+.qtext { font-size: 17px; font-weight: 500; margin: 6px 0 0; }
+.qcard .qvi { font-size: 14px; margin: 0 0 8px; }
+.qacts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.hint { margin: 8px 0 0; padding: 8px 12px; border-left: 4px solid var(--mark); background: var(--bg); border-radius: 6px; font-size: 15px; }
+.fb { margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; }
+.fb p { margin: 0 0 6px; }
+.fb p:last-child { margin: 0; }
+.fb.ok { border-color: var(--good); }
+.fb.try { border-color: var(--bad); }
+.fbmsg { font-weight: 600; }
+.pre { border: 2px dashed var(--line); border-radius: 14px; padding: 16px; margin-top: 12px; }
+.pre label { display: flex; gap: 10px; align-items: center; font-size: 18px; cursor: pointer; }
+.pre input { width: 22px; height: 22px; accent-color: var(--accent); }
 
-section.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-top: 20px; }
-h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 4px; }
-.panel .part-tag { display: inline-block; margin-bottom: 8px; }
-.sub { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
-.empty { color: var(--muted); padding: 12px 0; font-size: 15px; }
+section.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-top: 16px; }
+section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 0 4px; }
+.empty { color: var(--muted); padding: 8px 0; font-size: 15px; }
 .list { display: grid; gap: 8px; }
 .item { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
 .item .wd { font-weight: 600; font-size: 17px; }
@@ -97,56 +176,37 @@ h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 4px; }
 .item .acts { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 .pill { font-size: 12px; border-radius: 999px; padding: 1px 8px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
 .pill.miss { color: var(--bad); border-color: var(--bad); }
-.row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.quiet { background: transparent; color: var(--muted); }
-
-#quiz .q-word { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin: 6px 0 2px; line-height: 1.25; }
-#quiz .q-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; }
+.q-word { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin: 6px 0 2px; line-height: 1.25; }
+.q-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; }
 .opts { display: grid; gap: 8px; margin: 14px 0; }
 .opt { text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 17px; min-height: 48px; }
 .opt:hover:not(:disabled) { border-color: var(--accent); }
 .opt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
 .opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
-.score { font-family: var(--font-display); font-size: 40px; font-weight: 700; margin: 4px 0; }
 
-/* Part 2 */
-.qcard { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-top: 12px; }
-.qhead { display: flex; align-items: center; gap: 8px; }
-.num { font-weight: 600; }
-.lvl { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px; border: 1px solid currentColor; }
-.lvl.easy { color: var(--good); }
-.lvl.mid { color: var(--muted); }
-.lvl.hard { color: var(--bad); }
-.lvl.open { color: var(--accent); }
-.qtext { font-size: 19px; font-weight: 500; margin: 8px 0 0; }
-.qvi { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
-textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); padding: 10px 12px; line-height: 1.5; resize: vertical; }
-.qacts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.hint { margin: 10px 0 0; padding: 8px 12px; border-left: 4px solid var(--mark); background: var(--bg); border-radius: 6px; font-size: 15px; }
-.fb { margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; }
-.fb p { margin: 0 0 6px; }
-.fb p:last-child { margin: 0; }
-.fb.ok { border-color: var(--good); }
-.fb.try { border-color: var(--bad); }
-.fbmsg { font-weight: 600; }
+/* submit */
+.sum { display: grid; gap: 10px; margin: 12px 0; }
+.sumrow { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.sumrow h4 { margin: 0 0 4px; font-size: 15px; color: var(--accent); }
+.sumrow p { margin: 2px 0; font-size: 15px; overflow-wrap: anywhere; }
+.sumrow audio { width: 100%; margin-top: 6px; }
 
-/* Part 3 */
-.frame { margin: 0 0 14px; padding-left: 22px; display: grid; gap: 6px; font-size: 17px; }
-.frame i { color: var(--muted); font-style: normal; letter-spacing: .1em; }
-.checks { display: grid; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; font-size: 15px; }
-.checks label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.checks input { width: 20px; height: 20px; accent-color: var(--accent); }
-.recbox { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--bg); }
-.rec-top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
-.rec-time { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 110px; }
-.meter { flex: 1; min-width: 100px; height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .08s linear; }
-.recbox audio { width: 100%; margin-top: 12px; }
-#recMsg { margin: 10px 0 0; }
+/* dock */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--bg); border-top: 1px solid var(--line); padding: 10px 0 12px; }
+.dock .wrap { display: grid; gap: 10px; }
+.timeline { display: flex; gap: 3px; }
+.timeline i { flex: 1; height: 6px; border-radius: 3px; background: var(--line); }
+.timeline i.sp { margin-left: 6px; }
+.timeline i.done { background: var(--accent); cursor: pointer; }
+.timeline i.cur { background: var(--ink); }
+.dock-row { display: flex; align-items: center; gap: 10px; }
+.need { flex: 1; font-size: 14px; color: var(--bad); min-height: 20px; }
+.pos { font-size: 13px; color: var(--muted); white-space: nowrap; }
 
-#sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: none; padding: 0 12px 12px; pointer-events: none; }
+/* phrase sheet */
+#sheet { position: fixed; left: 0; right: 0; bottom: 96px; z-index: 20; display: none; padding: 0 12px; pointer-events: none; }
 #sheet.show { display: block; }
-.sheet-in { pointer-events: auto; max-width: 640px; max-height: 72vh; overflow: auto; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(10, 20, 35, .28); }
+.sheet-in { pointer-events: auto; max-width: 640px; max-height: 60vh; overflow: auto; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(10, 20, 35, .28); }
 .sheet-top { display: flex; align-items: center; gap: 10px; }
 .sheet-word { font-family: var(--font-display); font-size: 26px; font-weight: 700; line-height: 1.2; }
 .sheet-mean { font-size: 20px; margin: 8px 0 4px; }
@@ -156,10 +216,9 @@ textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; back
 .sheet-words .lab { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .sheet-acts { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 .nospeech .listen { display: none; }
-.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 30; display: none; }
-textarea.copybox { margin-top: 10px; min-height: 110px; }
-@media (max-width: 480px) { .text { font-size: 19px; } article.card { padding: 4px 14px 14px; } .spacer { display: none; } }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.toast { position: fixed; left: 50%; bottom: 110px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 30; display: none; }
+@media (max-width: 520px) { .scene { padding: 16px 14px; } .rule { grid-template-columns: 1fr; } .text { font-size: 19px; } .pos { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body>
@@ -170,81 +229,22 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
       <label class="voice listen" id="voiceBox" for="voiceSel"><span>Giọng đọc</span><select id="voiceSel"></select></label>
     </div>
     <h1>Who Made the First Phone Call?</h1>
-    <p class="how">Bấm <b>Nghe cả bài</b> để nghe đọc. Chạm vào một <b>cụm từ</b> (đoạn có gạch chân) để xem nghĩa của cả cụm. Cụm bạn chạm sẽ được lưu lại để ôn tập.</p>
+    <nav class="steps" id="steps" aria-label="Các phần của bài học"></nav>
   </header>
+</div>
 
-  <div class="toolbar" role="toolbar" aria-label="Điều khiển nghe">
-    <button class="btn primary listen" id="playAll" type="button">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span id="playLabel">Nghe cả bài</span>
-    </button>
-    <div class="speed listen" role="group" aria-label="Tốc độ đọc">
-      <button type="button" data-rate="0.7" aria-pressed="false">Chậm</button>
-      <button type="button" data-rate="0.9" aria-pressed="true">Vừa</button>
-      <button type="button" data-rate="1.1" aria-pressed="false">Nhanh</button>
+<main class="stage" id="stage"></main>
+
+<div class="dock">
+  <div class="wrap">
+    <div class="timeline" id="timeline" aria-hidden="true"></div>
+    <div class="dock-row">
+      <button class="btn" id="backBtn" type="button">Quay lại</button>
+      <div class="need" id="needMsg" role="status"></div>
+      <span class="pos" id="posLbl"></span>
+      <button class="btn primary" id="nextBtn" type="button">Tiếp tục</button>
     </div>
-    <span class="spacer"></span>
-    <button class="btn" id="goList" type="button">Cụm từ của tôi <span class="count" id="cnt">0</span></button>
   </div>
-
-  <div class="part-head"><span class="part-tag">Phần 1</span><span>Đọc và nghe</span></div>
-  <article class="card" id="reading" aria-label="Bài đọc"></article>
-
-  <section class="panel" id="mine">
-    <h2>Cụm từ tôi đã chạm</h2>
-    <p class="sub">Những cụm bạn chưa hiểu khi đọc. Nghe lại, đọc nghĩa, rồi kiểm tra bằng bài quiz.</p>
-    <div id="wordList" class="list"></div>
-    <div class="row-actions" id="listActions"></div>
-    <div id="copyArea"></div>
-  </section>
-
-  <section class="panel" id="quiz" hidden>
-    <h2>Kiểm tra cụm từ của tôi</h2>
-    <div id="quizBody"></div>
-  </section>
-
-  <section class="panel" id="part2">
-    <span class="part-tag">Phần 2</span>
-    <h2>Trả lời 5 câu hỏi</h2>
-    <p class="sub">Các câu đi từ dễ đến khó. Câu cuối là câu hỏi mở, hãy nói ý kiến của bạn. Câu trả lời được lưu trong trình duyệt này.</p>
-    <div id="qList"></div>
-  </section>
-
-  <section class="panel" id="part3">
-    <span class="part-tag">Phần 3</span>
-    <h2>Ghi âm bản tóm tắt</h2>
-    <p class="sub">Kể lại câu chuyện bằng lời của bạn trong khoảng 30 đến 60 giây. Nói chậm và rõ. Bạn có thể dùng khung câu bên dưới.</p>
-    <ol class="frame">
-      <li>Alexander Graham Bell was a <i>……</i>. He wanted to <i>……</i>.</li>
-      <li>On March 10, 1876, he <i>……</i> and he shouted, <i>……</i>.</li>
-      <li>Watson <i>……</i>. It was the first <i>……</i>, and it was an <i>……</i>.</li>
-      <li>In 1877, Bell <i>……</i>. Today, the telephone <i>……</i>.</li>
-    </ol>
-    <ul class="checks" aria-label="Kiểm tra trước khi nộp">
-      <li><label><input type="checkbox"> Mình nói Bell là ai và ước mơ của ông</label></li>
-      <li><label><input type="checkbox"> Mình kể điều gì xảy ra ngày 10 tháng 3 năm 1876</label></li>
-      <li><label><input type="checkbox"> Mình dùng thì quá khứ đơn (was, wanted, shouted, heard...)</label></li>
-      <li><label><input type="checkbox"> Mình nói điều gì đã thay đổi sau cuộc gọi đầu tiên</label></li>
-    </ul>
-    <div class="recbox">
-      <div class="rec-top">
-        <button class="btn primary" id="recBtn" type="button">Bắt đầu ghi âm</button>
-        <span class="rec-time" id="recTime">00:00 / 01:30</span>
-        <div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
-      </div>
-      <p class="sub" id="recMsg" role="status"></p>
-      <div id="recDone" hidden>
-        <audio id="recAudio" controls></audio>
-        <div class="row-actions">
-          <a class="btn" id="recDl" href="#" download="tom-tat.webm">Tải file ghi âm</a>
-          <button class="btn quiet" id="recAgain" type="button">Ghi lại</button>
-        </div>
-      </div>
-    </div>
-    <div class="row-actions">
-      <button class="btn" id="copyAll" type="button">Sao chép bài làm gửi giáo viên</button>
-    </div>
-    <div id="reportArea"></div>
-  </section>
 </div>
 
 <div id="sheet" role="dialog" aria-label="Nghĩa của cụm từ"><div class="sheet-in" id="sheetIn"></div></div>
@@ -254,13 +254,53 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
 (function () {
   "use strict";
 
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnf8X3_Xfk9F_8HQtBwSFU_s28sRjxKb0aFaHCA4ybmMJvgaztBAbdvaFzITdbVXBt/exec";
+  var LESSON = "Reading 2 - Who Made the First Phone Call";
   var SPK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+  function $(s, r) { return (r || document).querySelector(s); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function words(s) { var m = String(s).trim().match(/\S+/g); return m ? m.length : 0; }
 
-  /* ---------- Reading text: paragraph > sentence > chunk [English, Vietnamese, optional note] ---------- */
+  /* =====================================================================
+     DATA
+     ===================================================================== */
+
+  /* Part 1: vocabulary, in the order the teacher listed */
+  var VOC = [
+    { id: "use", en: "use", vi: "sử dụng, dùng", tag: "động từ", past: "used", acc: ["used"], hint: "Tận cùng là e nên chỉ thêm d: use → used.", ex: "Bell used a wire to send the human voice.", exvi: "Bell dùng một sợi dây để truyền giọng nói của con người.", test: true },
+    { id: "send", en: "send messages", vi: "gửi tin nhắn", tag: "cụm động từ", past: "sent messages", acc: ["sent messages", "sent"], hint: "send là động từ bất quy tắc: send → sent.", ex: "Yesterday, I sent messages to my friends.", exvi: "Hôm qua, mình đã gửi tin nhắn cho bạn bè.", test: true, irr: true },
+    { id: "call", en: "call your family", vi: "gọi điện cho gia đình", tag: "cụm động từ", past: "called your family", acc: ["called your family", "called"], hint: "Động từ thường: thêm ed: call → called.", ex: "Last night, I called my family.", exvi: "Tối qua, mình đã gọi điện cho gia đình.", test: true },
+    { id: "find", en: "find out", vi: "tìm ra, tìm hiểu", tag: "cụm động từ", past: "found out", acc: ["found out"], hint: "find → found (bất quy tắc), giữ nguyên out: found out.", ex: "We found out who invented the telephone.", exvi: "Chúng ta đã tìm ra ai phát minh ra điện thoại.", test: true, irr: true },
+    { id: "wait", en: "wait", vi: "chờ, đợi", tag: "động từ", past: "waited", acc: ["waited"], hint: "Động từ thường: thêm ed: wait → waited.", ex: "People waited many days for an answer.", exvi: "Mọi người đã chờ nhiều ngày để có câu trả lời.", test: true },
+    { id: "move", en: "move", vi: "chuyển đến, di chuyển", tag: "động từ", past: "moved", acc: ["moved"], hint: "Tận cùng là e nên chỉ thêm d: move → moved.", ex: "Bell moved to the United States.", exvi: "Bell đã chuyển đến nước Mỹ.", test: true },
+    { id: "bedeaf", en: "be deaf", vi: "bị điếc, không nghe được", tag: "cụm động từ", past: "was / were deaf", acc: ["was deaf", "were deaf", "was", "were"], hint: "be → was (I, he, she, it) hoặc were (you, we, they).", ex: "Bell's mother was deaf.", exvi: "Mẹ của Bell bị điếc.", test: true, irr: true },
+    { id: "through", en: "through", vi: "xuyên qua, qua (bằng)", tag: "giới từ", past: "", acc: [], hint: "", ex: "Watson heard Bell's voice through the machine.", exvi: "Watson nghe thấy giọng của Bell qua chiếc máy.", test: false },
+    { id: "laugh", en: "laugh at", vi: "cười nhạo", tag: "cụm động từ", past: "laughed at", acc: ["laughed at", "laughed"], hint: "Thêm ed: laugh → laughed, giữ nguyên at.", ex: "Many people laughed at Bell.", exvi: "Nhiều người đã cười nhạo Bell.", test: true },
+    { id: "spill", en: "spill", vi: "làm đổ", tag: "động từ", past: "spilled", acc: ["spilled", "spilt"], hint: "Thêm ed: spill → spilled (cũng có thể viết spilt).", ex: "Bell spilled acid on his clothes.", exvi: "Bell đã làm đổ a-xít lên quần áo.", test: true },
+    { id: "shout", en: "shout", vi: "hét lên, la lớn", tag: "động từ", past: "shouted", acc: ["shouted"], hint: "Thêm ed: shout → shouted.", ex: "Bell shouted, “Mr. Watson, come here!”", exvi: "Bell hét lên: “Ông Watson, lại đây!”", test: true },
+    { id: "communicate", en: "communicate", vi: "giao tiếp, trao đổi thông tin", tag: "động từ", past: "communicated", acc: ["communicated"], hint: "Tận cùng là e nên chỉ thêm d: communicate → communicated.", ex: "People communicated by letters.", exvi: "Mọi người đã liên lạc với nhau bằng thư.", test: true },
+    { id: "contact", en: "contact", vi: "liên lạc (với ai)", tag: "động từ", past: "contacted", acc: ["contacted"], hint: "Thêm ed: contact → contacted.", ex: "Last week, I contacted my teacher.", exvi: "Tuần trước, mình đã liên lạc với giáo viên.", test: true },
+    { id: "change", en: "change", vi: "thay đổi", tag: "động từ", past: "changed", acc: ["changed"], hint: "Tận cùng là e nên chỉ thêm d: change → changed.", ex: "The telephone changed the world.", exvi: "Chiếc điện thoại đã thay đổi thế giới.", test: true },
+    { id: "plan", en: "plan", vi: "lên kế hoạch", tag: "động từ", past: "planned", acc: ["planned"], hint: "Gấp đôi n rồi thêm ed: plan → planned.", ex: "They planned a trip last summer.", exvi: "Mùa hè năm ngoái, họ đã lên kế hoạch cho một chuyến đi.", test: true }
+  ];
+  var VBYID = {}; VOC.forEach(function (v) { VBYID[v.id] = v; });
+
+  /* Part 2: speaking warm-up */
+  var SPQ = [
+    { q: "How do you communicate with your friends when you are in two different places?", vi: "Bạn làm cách nào để nói chuyện với bạn bè khi hai người ở hai nơi khác nhau?",
+      start: "Gợi ý: I use ... / I send messages on ... / I call my friends on ..." },
+    { q: "Before phones and the internet, how did our grandparents contact each other?", vi: "Trước đây, khi chưa có điện thoại và internet, ông bà ta liên lạc với nhau bằng cách nào?",
+      start: "Gợi ý (dùng thì quá khứ): They wrote ... / They visited ... / They waited ..." },
+    { q: "Do you know who invented the telephone?", vi: "Bạn có biết ai là người phát minh ra điện thoại không?",
+      start: "Gợi ý: Yes, I do. It was ... / No, I don't, but I think it was ..." }
+  ];
+
+  /* Part 3: reading text. Chunk = [English, Vietnamese, optional note]. {x} marks a red word. */
   var PARAS = [
     { tag: "Mở bài · Introduction", s: [
       [ ["Every day,", "Mỗi ngày,"], ["you use your phone", "bạn dùng điện thoại của bạn"], ["to send messages,", "để gửi tin nhắn,"], ["call your family,", "gọi điện cho gia đình,"], ["and talk to your friends.", "và nói chuyện với bạn bè."] ],
-      [ ["It is so easy!", "Điều đó thật dễ dàng!"] ],
+      [ ["{It} is so easy!", "Điều đó thật dễ dàng!"] ],
       [ ["But 150 years ago,", "Nhưng cách đây 150 năm,"], ["there were no phones.", "đã không có điện thoại."] ],
       [ ["People wrote letters", "Mọi người viết thư"], ["and waited many days", "và chờ nhiều ngày"], ["for an answer.", "để nhận được câu trả lời."] ],
       [ ["So who", "Vậy ai"], ["changed this?", "đã thay đổi điều này?"] ],
@@ -292,7 +332,27 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
       [ ["So next time you use your phone,", "Vậy nên lần tới khi bạn dùng điện thoại,", "next time = lần tới"], ["remember Bell and his big dream.", "hãy nhớ đến Bell và ước mơ lớn của ông."] ] ] }
   ];
 
-  /* ---------- Word dictionary (used for the small breakdown inside a phrase) ---------- */
+  /* Reading questions (English) */
+  var RQ = [
+    { n: 1, q: "In the sentence “It is so easy!”, what does the word “it” (in red) mean?", vi: "Trong câu “It is so easy!”, chữ “it” (tô đỏ) mang nghĩa gì?",
+      hint: "Đọc câu đứng ngay trước nó. Bắt đầu bằng: It means ...", kw: /phone|send|messag|call|talk|friend|family|us(e|ing)/i,
+      ans: "It means using your phone to send messages, call your family and talk to your friends." },
+    { n: 2, q: "150 years ago, how did people contact each other?", vi: "150 năm về trước, mọi người liên lạc với nhau bằng cách nào?",
+      hint: "Đọc lại cuối đoạn Mở bài. Bắt đầu bằng: They wrote ...", kw: /letter/i,
+      ans: "They wrote letters and waited many days for an answer." },
+    { n: 3, q: "Where was Alexander Graham Bell born?", vi: "Alexander Graham Bell sinh ra ở đâu?",
+      hint: "Đọc lại Thân bài 1. Bắt đầu bằng: He was born in ...", kw: /scotland/i, ans: "He was born in Scotland." },
+    { n: 4, q: "What did Alexander Graham Bell do in the United States?", vi: "Alexander Graham Bell làm nghề gì ở Mỹ?",
+      hint: "Đọc lại Thân bài 1. Bắt đầu bằng: He became ...", kw: /teach|teacher/i, ans: "He became a teacher and taught deaf students." },
+    { n: 5, q: "What happened on March 10, 1876?", vi: "Chuyện gì đã xảy ra vào ngày 10 tháng 3 năm 1876?",
+      hint: "Đọc lại Thân bài 2. Kể 2 đến 3 việc theo thứ tự. Bắt đầu bằng: Bell spilled ...", kw: /acid|spill|shout|watson|call/i,
+      ans: "Bell spilled acid on his clothes and shouted for Mr. Watson. Watson heard Bell's voice through the machine. It was the first phone call." },
+    { n: 6, q: "Which invention do you think is the most useful? Why?", vi: "Theo bạn, phát minh nào là hữu ích nhất? Vì sao?", open: true,
+      hint: "Không có đáp án đúng hay sai. Bắt đầu bằng: I think ... is the most useful invention because ...", kw: null,
+      ans: "I think the telephone is the most useful invention because we can talk to our family and friends quickly, even when they are far away." }
+  ];
+
+  /* Word dictionary, used for the small breakdown inside a phrase */
   var RAW = [
   "every|mỗi, mọi (adj)|","day|ngày (n)|","days|những ngày (n)|day","you|bạn (pron)|","use|sử dụng (v)|","your|của bạn (adj)|",
   "phone|điện thoại (n)|","phones|những chiếc điện thoại (n)|phone","send|gửi (v)|","messages|tin nhắn (n)|message","call|gọi điện; cuộc gọi (v, n)|",
@@ -323,7 +383,6 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
   RAW.forEach(function (line) { var p = line.split("|"); DICT[p[0]] = { m: p[1], base: p[2] || "" }; });
   var STOP = {};
   "the a an and to of i it he his him they them you your is was were but so at in on for with not that".split(" ").forEach(function (w) { STOP[w] = 1; });
-
   function lookupKey(raw) {
     var k = raw.toLowerCase().replace(/’/g, "'");
     if (DICT[k]) return k;
@@ -334,34 +393,46 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
     return m.replace(/\s*\((?:n|v|adj|adv|pron)(?:,\s*(?:n|v|adj|adv))?\)\s*$/, "")
             .replace(/\s*\([^)]*=[^)]*\)/g, "").replace(/;.*$/, "").trim();
   }
+  function plain(s) { return s.replace(/[{}]/g, ""); }
   function cleanEdge(s) { return s.replace(/^[\s“”"‘’'.,!?;:]+|[\s“”"‘’'.,!?;:]+$/g, ""); }
-  function keyOf(en) { return cleanEdge(en).toLowerCase().replace(/’/g, "'"); }
-
+  function keyOf(en) { return cleanEdge(plain(en)).toLowerCase().replace(/’/g, "'"); }
   var CH = {};
   PARAS.forEach(function (p) { p.s.forEach(function (sen) { sen.forEach(function (c) {
-    CH[keyOf(c[0])] = { en: cleanEdge(c[0]), vi: cleanEdge(c[1]), note: c[2] || "" };
+    CH[keyOf(c[0])] = { en: cleanEdge(plain(c[0])), vi: cleanEdge(c[1]), note: c[2] || "" };
   }); }); });
 
-  /* ---------- Saved data (this browser only) ---------- */
-  var KEY = "phone-reader-chunks-v2", AKEY = "phone-reader-answers-v1", VKEY = "phone-reader-voice-v1";
-  var state = {}, answers = {}, voiceURI = "";
-  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
-  try { answers = JSON.parse(localStorage.getItem(AKEY) || "{}") || {}; } catch (e) { answers = {}; }
+  /* =====================================================================
+     STATE
+     ===================================================================== */
+  var NKEY = "phone-flow-name-v1", PKEY = "phone-flow-chunks-v1", VKEY = "phone-reader-voice-v1";
+  var S = { name: "", idx: 0, max: 0, picked: [], vres: {}, speak: [], ans: {}, checked: {}, kwok: {}, ready: false, submitted: false };
+  var state = {}, voiceURI = "";   /* state = phrases the student tapped */
+  try { S.name = localStorage.getItem(NKEY) || ""; } catch (e) {}
+  try { state = JSON.parse(localStorage.getItem(PKEY) || "{}") || {}; } catch (e) { state = {}; }
   try { voiceURI = localStorage.getItem(VKEY) || ""; } catch (e) { voiceURI = ""; }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  function saveAnswers() { try { localStorage.setItem(AKEY, JSON.stringify(answers)); } catch (e) {} }
+  function savePhrases() { try { localStorage.setItem(PKEY, JSON.stringify(state)); } catch (e) {} }
+
+  /* The system picks 8 verbs to test; at least 2 are irregular */
+  (function pick() {
+    var irr = shuffle(VOC.filter(function (v) { return v.test && v.irr; })).slice(0, 2);
+    var rest = shuffle(VOC.filter(function (v) { return v.test && !v.irr; })).slice(0, 6);
+    var ids = irr.concat(rest).map(function (v) { return v.id; });
+    S.picked = VOC.filter(function (v) { return ids.indexOf(v.id) >= 0; }).map(function (v) { return v.id; });
+  })();
+  SPQ.forEach(function () { S.speak.push({ text: "", rec: makeRecorder() }); });
 
   function toast(msg) {
-    var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block";
+    var t = $("#toast"); t.textContent = msg; t.style.display = "block";
     clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, 2200);
   }
 
-  /* ---------- Speech and voice choice ---------- */
+  /* =====================================================================
+     SPEECH + VOICE CHOICE
+     ===================================================================== */
   var synth = window.speechSynthesis || null;
   var voice = null, rate = 0.9, run = 0, playing = false;
   if (!synth || typeof SpeechSynthesisUtterance === "undefined") { document.body.classList.add("nospeech"); synth = null; }
-  var voiceSel = document.getElementById("voiceSel"), voiceBox = document.getElementById("voiceBox");
-
+  var voiceSel = $("#voiceSel"), voiceBox = $("#voiceBox");
   function enVoices() {
     var vs = (synth && synth.getVoices()) || [];
     return vs.filter(function (v) { return /^en/i.test(v.lang); }).sort(function (a, b) {
@@ -386,11 +457,9 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
   voiceSel.addEventListener("change", function () {
     voiceURI = voiceSel.value;
     try { localStorage.setItem(VKEY, voiceURI); } catch (e) {}
-    pickVoice();
-    stopAll();
-    if (synth) synth.speak(utter("Hello! I will read the story for you."));
+    pickVoice(); stopAll();
+    if (synth) synth.speak(utter("Hello! I will read the lesson for you."));
   });
-
   function utter(text, r) {
     var u = new SpeechSynthesisUtterance(text);
     u.lang = "en-US"; if (voice) { u.voice = voice; u.lang = voice.lang; } u.rate = r || rate; return u;
@@ -398,8 +467,9 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
   function clearNow() { document.querySelectorAll(".s.now").forEach(function (e) { e.classList.remove("now"); }); }
   function setPlaying(v) {
     playing = v;
-    document.getElementById("playLabel").textContent = v ? "Dừng nghe" : "Nghe cả bài";
-    document.getElementById("playAll").querySelector("svg").innerHTML = v ? '<path d="M6 6h12v12H6z"/>' : '<path d="M8 5v14l11-7z"/>';
+    var l = $("#playLabel"), b = $("#playAll");
+    if (l) l.textContent = v ? "Dừng nghe" : "Nghe cả bài";
+    if (b) b.querySelector("svg").innerHTML = v ? '<path d="M6 6h12v12H6z"/>' : '<path d="M8 5v14l11-7z"/>';
   }
   function stopAll() { run++; if (synth) synth.cancel(); clearNow(); setPlaying(false); }
   function playSentences(list) {
@@ -425,36 +495,406 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
     synth.speak(utter(t, Math.max(0.6, rate - 0.1)));
   }
 
-  /* ---------- Render reading ---------- */
-  var reading = document.getElementById("reading");
-  PARAS.forEach(function (p, pi) {
-    var box = document.createElement("div"); box.className = "para"; box.id = "para" + (pi + 1);
-    var head = document.createElement("div"); head.className = "para-head";
-    var tag = document.createElement("span"); tag.className = "tag"; tag.textContent = p.tag;
-    var btn = document.createElement("button"); btn.className = "ico listen"; btn.type = "button";
-    btn.setAttribute("aria-label", "Nghe đoạn " + (pi + 1)); btn.innerHTML = SPK;
-    head.appendChild(tag); head.appendChild(btn);
-    var para = document.createElement("p"); para.className = "text";
-    p.s.forEach(function (sen, si) {
-      var sp = document.createElement("span"); sp.className = "s";
-      sp.setAttribute("data-text", sen.map(function (c) { return c[0]; }).join(" "));
-      sen.forEach(function (c, ci) {
-        var el = document.createElement("span"); el.className = "c"; el.tabIndex = 0; el.setAttribute("role", "button");
-        el.setAttribute("data-k", keyOf(c[0])); el.textContent = c[0]; sp.appendChild(el);
-        if (ci < sen.length - 1) sp.appendChild(document.createTextNode(" "));
-      });
-      para.appendChild(sp);
-      if (si < p.s.length - 1) para.appendChild(document.createTextNode(" "));
-    });
-    btn.addEventListener("click", function () { playSentences(Array.prototype.slice.call(para.querySelectorAll(".s"))); });
-    box.appendChild(head); box.appendChild(para); reading.appendChild(box);
+  /* =====================================================================
+     RECORDER (one per speaking question)
+     ===================================================================== */
+  var activeRec = null;
+  function pickMime() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+    var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    for (var i = 0; i < c.length; i++) { if (MediaRecorder.isTypeSupported(c[i])) return c[i]; }
+    return "";
+  }
+  function fmt(s) { var m = Math.floor(s / 60), r = Math.floor(s % 60); return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
+  function errMsg(err) {
+    var n = err && err.name;
+    if (n === "NotAllowedError" || n === "SecurityError") return "Trình duyệt chưa cho phép dùng micro. Bấm vào biểu tượng ổ khóa cạnh địa chỉ trang, cho phép micro rồi thử lại.";
+    if (n === "NotFoundError") return "Không tìm thấy micro trên thiết bị này.";
+    return "Không ghi âm được (" + (n || "lỗi") + "). Hãy thử lại bằng Chrome hoặc Safari mới.";
+  }
+  function makeRecorder() {
+    var R = { blob: null, dur: 0, url: null, enabled: false, recording: false, msg: "", ui: null, mr: null, stream: null, parts: [], tick: null, t0: 0, ctx: null, raf: 0, MAX: 60 };
+    var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    R.paint = function () {
+      var u = R.ui; if (!u) return;
+      u.btn.textContent = R.recording ? "Dừng ghi âm" : (R.blob ? "Ghi âm lại" : "Bắt đầu ghi âm");
+      u.btn.classList.toggle("recording", R.recording); u.btn.classList.toggle("primary", !R.recording);
+      u.btn.disabled = !supported || (!R.enabled && !R.recording);
+      u.msg.textContent = !supported ? "Trình duyệt này chưa hỗ trợ ghi âm. Hãy mở trang bằng Chrome hoặc Safari mới." : (R.msg || (R.enabled ? "" : "Hãy gõ câu trả lời của bạn ở trên trước, rồi mới ghi âm."));
+      if (R.blob && !R.recording) { u.done.hidden = false; u.audio.src = R.url; u.time.textContent = fmt(R.dur) + " / " + fmt(R.MAX); } else { u.done.hidden = true; }
+    };
+    R.mount = function (host) {
+      host.innerHTML = '<div class="rec-top"><button type="button" class="btn primary rb"></button><span class="rec-time">00:00 / ' + fmt(R.MAX) + '</span><div class="meter" aria-hidden="true"><i></i></div></div><p class="sub rmsg" role="status"></p><div class="rdone" hidden><audio controls></audio></div>';
+      R.ui = { btn: $(".rb", host), time: $(".rec-time", host), fill: $(".meter i", host), msg: $(".rmsg", host), done: $(".rdone", host), audio: $("audio", host) };
+      R.ui.btn.addEventListener("click", function () { if (R.recording) R.stop(); else R.start(); });
+      R.paint();
+    };
+    R.setEnabled = function (on) { R.enabled = on; R.paint(); };
+    R.meter = function (stream) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext; R.ctx = new AC();
+        var src = R.ctx.createMediaStreamSource(stream), an = R.ctx.createAnalyser(); an.fftSize = 256; src.connect(an);
+        var buf = new Uint8Array(an.frequencyBinCount);
+        (function loop() {
+          an.getByteTimeDomainData(buf);
+          var peak = 0; for (var i = 0; i < buf.length; i++) { var v = Math.abs(buf[i] - 128); if (v > peak) peak = v; }
+          if (R.ui) R.ui.fill.style.width = Math.min(100, peak / 128 * 180) + "%";
+          R.raf = requestAnimationFrame(loop);
+        })();
+      } catch (e) {}
+    };
+    R.start = function () {
+      if (activeRec && activeRec !== R) activeRec.stop();
+      stopAll(); R.msg = "";
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+        R.stream = stream; R.parts = [];
+        var mime = pickMime(), mr;
+        try { mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream); } catch (e) { mr = new MediaRecorder(stream); }
+        R.mr = mr; activeRec = R;
+        mr.ondataavailable = function (e) { if (e.data && e.data.size) R.parts.push(e.data); };
+        mr.onstop = R.finish;
+        mr.start();
+        R.t0 = Date.now(); R.recording = true; R.msg = "Đang ghi âm. Hãy đọc to câu trả lời của bạn, nói chậm và rõ.";
+        R.tick = setInterval(function () {
+          var s = (Date.now() - R.t0) / 1000; if (R.ui) R.ui.time.textContent = fmt(s) + " / " + fmt(R.MAX);
+          if (s >= R.MAX) R.stop();
+        }, 250);
+        R.meter(stream); R.paint();
+      }).catch(function (err) { R.msg = errMsg(err); R.paint(); });
+    };
+    R.stop = function () { if (R.mr && R.mr.state !== "inactive") R.mr.stop(); };
+    R.finish = function () {
+      clearInterval(R.tick); cancelAnimationFrame(R.raf); if (R.ui) R.ui.fill.style.width = "0%";
+      try { if (R.ctx) R.ctx.close(); } catch (e) {} R.ctx = null;
+      if (R.stream) R.stream.getTracks().forEach(function (t) { t.stop(); });
+      R.recording = false; if (activeRec === R) activeRec = null;
+      var dur = (Date.now() - R.t0) / 1000;
+      if (dur < 2 || !R.parts.length) { R.msg = "Bản ghi âm quá ngắn. Hãy ghi lại và đọc to cả câu trả lời."; R.paint(); return; }
+      var type = (R.mr && R.mr.mimeType) || pickMime() || "audio/webm";
+      if (R.url) URL.revokeObjectURL(R.url);
+      R.blob = new Blob(R.parts, { type: type }); R.url = URL.createObjectURL(R.blob); R.dur = dur; R.wav = null; R.sent = false;
+      R.msg = "Đã ghi xong. Hãy nghe lại. Nếu chưa hài lòng, bấm Ghi âm lại.";
+      R.paint();
+    };
+    return R;
+  }
+
+  /* =====================================================================
+     SCENES
+     ===================================================================== */
+  var STEPS = ["Từ vựng", "Nói", "Đọc", "Nộp bài"];
+  var SC = [];
+  function add(o) { SC.push(o); }
+  function head(el, kicker, title) {
+    el.innerHTML = '<div class="s-kicker">' + esc(kicker) + '</div><h2>' + esc(title) + '</h2>';
+  }
+
+  /* ---- Step 1: vocabulary ---- */
+  add({ step: 0, title: "Chào mừng", render: function (el) {
+    head(el, "Bắt đầu", "Chào em! Hôm nay mình học như xem một video ngắn.");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Bài học đi theo 3 phần, mỗi lần chỉ hiện một thẻ:</p>' +
+      '<div class="rules"><div class="rule"><b>Phần 1</b><span>Học từ vựng và đổi động từ sang thì quá khứ đơn.</span></div>' +
+      '<div class="rule"><b>Phần 2</b><span>Trả lời 3 câu hỏi khởi động: gõ câu trả lời rồi ghi âm.</span></div>' +
+      '<div class="rule"><b>Phần 3</b><span>Đọc bài <i>Who Made the First Phone Call?</i> và trả lời 6 câu hỏi. Cuối cùng em nộp bài cho cô.</span></div></div>' +
+      '<p class="sub">Hãy ngồi nơi yên tĩnh. Khi trình duyệt hỏi, bấm Cho phép dùng micro. Đừng tải lại trang giữa chừng vì bài làm sẽ mất.</p>' +
+      '<label for="nameIn"><b>Em tên là gì?</b></label><input class="field" id="nameIn" type="text" maxlength="60" autocomplete="name" placeholder="Ví dụ: Nguyễn Minh An - lớp 7A">');
+    var inp = $("#nameIn"); inp.value = S.name;
+    inp.addEventListener("input", function () { S.name = inp.value; try { localStorage.setItem(NKEY, S.name); } catch (e) {} });
+  }, need: function () { return S.name.trim().length < 2 ? "Hãy nhập tên của em để bắt đầu." : ""; } });
+
+  add({ step: 0, title: "Cách đổi sang quá khứ", render: function (el) {
+    head(el, "Phần 1 · Từ vựng", "Khởi động: động từ ở thì quá khứ đơn");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Xem 4 cách đổi trước. Sau đó sẽ có 15 thẻ từ mới, và máy sẽ hỏi em ở 8 thẻ.</p>' +
+      '<div class="rules">' +
+      '<div class="rule"><b>Thêm -ed</b><span>wait → waited <span class="eg">· call → called</span></span></div>' +
+      '<div class="rule"><b>Tận cùng là e, thêm -d</b><span>move → moved <span class="eg">· use → used</span></span></div>' +
+      '<div class="rule"><b>Gấp đôi phụ âm</b><span>plan → planned</span></div>' +
+      '<div class="rule"><b>Bất quy tắc</b><span>send → sent <span class="eg">· find → found · be → was / were</span></span></div></div>' +
+      '<p class="sub">Từ nào xuất hiện trước thì mới được kiểm tra. Thẻ có ô trống thì em gõ dạng quá khứ đơn nhé.</p>');
+  }, need: function () { return ""; } });
+
+  function dots(i) {
+    var h = '<div class="dots" aria-hidden="true">';
+    VOC.forEach(function (v, k) { h += '<i class="' + (k <= i ? "on " : "") + (S.picked.indexOf(v.id) >= 0 ? "t" : "") + '"></i>'; });
+    return h + '</div>';
+  }
+  function norm(s) { return s.toLowerCase().replace(/[’']/g, "'").replace(/[.,!?]/g, "").replace(/\s+/g, " ").trim(); }
+  VOC.forEach(function (v, i) {
+    add({ step: 0, title: v.en, render: function (el) {
+      var tested = S.picked.indexOf(v.id) >= 0, r = S.vres[v.id] || (S.vres[v.id] = { tries: 0, first: null, ans: "", done: !tested, revealed: false });
+      el.innerHTML = '<div class="s-kicker">Phần 1 · Từ mới ' + (i + 1) + '/' + VOC.length + '</div>' + dots(i) +
+        '<div class="vtop"><span class="vtag">' + esc(v.tag) + '</span><button type="button" class="ico listen" id="vsay" aria-label="Nghe từ">' + SPK + '</button>' +
+        (tested ? '<span class="testtag">Thẻ có câu hỏi</span>' : '') + '</div>' +
+        '<div class="vbig">' + esc(v.en) + '</div><div class="vvi">' + esc(v.vi) + '</div><div id="vbody"></div>';
+      $("#vsay").addEventListener("click", function () { sayText(v.en); });
+      function showPast() {
+        var b = $("#vbody"); if (!b) return;
+        var past = v.past ? '<div class="vpast"><div class="lab">Quá khứ đơn</div><div class="big">' + esc(v.past) + '</div></div>' :
+          '<div class="vpast"><div class="lab">Lưu ý</div><div>Giới từ, không có dạng quá khứ.</div></div>';
+        b.innerHTML = past + '<p class="vex">' + esc(v.ex) + '<small>' + esc(v.exvi) + '</small></p>' +
+          '<div class="row-actions"><button type="button" class="ico listen" id="exsay" aria-label="Nghe câu ví dụ">' + SPK + '</button></div>';
+        $("#exsay").addEventListener("click", function () { sayText(v.ex); });
+      }
+      if (!tested || r.done) { showPast(); }
+      else {
+        $("#vbody").innerHTML = '<div class="vpast"><div class="lab">Bây giờ đến lượt em</div><div>Viết dạng <b>quá khứ đơn</b> của: <b>' + esc(v.en) + '</b></div>' +
+          '<div class="try"><input class="field" id="vin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Quá khứ đơn của ' + esc(v.en) + '"><button type="button" class="btn primary" id="vchk">Kiểm tra</button></div>' +
+          '<div id="vfb" role="status"></div></div>';
+        var inp = $("#vin");
+        function check() {
+          var val = inp.value; if (!val.trim()) { $("#vfb").innerHTML = '<div class="note">Hãy gõ câu trả lời trước nhé.</div>'; return; }
+          var ok = v.acc.indexOf(norm(val)) >= 0;
+          r.tries++; if (r.tries === 1) { r.first = ok; r.ans = val.trim(); }
+          if (ok) { r.done = true; showPast(); var f = document.createElement("div"); f.className = "note ok"; f.textContent = r.first ? "Đúng rồi! Giỏi lắm." : "Đúng rồi! Lần sau em sẽ nhớ."; $("#vbody").insertBefore(f, $("#vbody").firstChild); return; }
+          var fb = '<div class="note err">Chưa đúng. ' + esc(v.hint) + '</div>';
+          if (r.tries >= 2) fb += '<div class="row-actions"><button type="button" class="btn quiet" id="vshow">Xem đáp án</button></div>';
+          $("#vfb").innerHTML = fb;
+          var sh = $("#vshow"); if (sh) sh.addEventListener("click", function () { r.done = true; r.revealed = true; showPast(); });
+        }
+        $("#vchk").addEventListener("click", check);
+        inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(); } });
+        setTimeout(function () { try { inp.focus({ preventScroll: true }); } catch (e) {} }, 50);
+      }
+      setTimeout(function () { sayText(v.en); }, 200);
+    }, need: function () { var r = S.vres[v.id]; return (S.picked.indexOf(v.id) >= 0 && !(r && r.done)) ? "Hãy viết dạng quá khứ đơn của cụm này để tiếp tục." : ""; } });
   });
+
+  add({ step: 0, title: "Kết quả từ vựng", render: function (el) {
+    var tested = VOC.filter(function (v) { return S.picked.indexOf(v.id) >= 0; });
+    var good = tested.filter(function (v) { return S.vres[v.id] && S.vres[v.id].first; }).length;
+    head(el, "Phần 1 · Từ vựng", "Kết quả của em");
+    var h = '<div class="score">' + good + '/' + tested.length + '</div><p class="sub">Số câu đúng ngay ở lần thử đầu tiên.</p><div class="reslist">';
+    tested.forEach(function (v) {
+      var r = S.vres[v.id] || {};
+      h += '<div class="res"><span><b>' + esc(v.en) + '</b> → ' + esc(v.past) + '</span><span class="' + (r.first ? "ok" : "no") + '">' + (r.first ? "Đúng" : "Cần ôn") + '</span></div>';
+    });
+    el.insertAdjacentHTML("beforeend", h + '</div><p class="note">Tiếp theo là phần khởi động nói. Em sẽ nói về chuyện liên lạc với bạn bè và với ông bà.</p>');
+  }, need: function () { return ""; } });
+
+  /* ---- Step 2: speaking warm-up ---- */
+  add({ step: 1, title: "Khởi động nói", render: function (el) {
+    head(el, "Phần 2 · Speaking", "Khởi động: nói về cách liên lạc");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Có 3 câu hỏi, mỗi lần hiện một câu.</p>' +
+      '<div class="rules"><div class="rule"><b>Bước 1</b><span>Đọc câu hỏi (bấm nút loa để nghe).</span></div>' +
+      '<div class="rule"><b>Bước 2</b><span>Gõ câu trả lời bằng tiếng Anh.</span></div>' +
+      '<div class="rule"><b>Bước 3</b><span>Bấm ghi âm và nói to câu trả lời của em.</span></div></div>' +
+      '<p class="sub">Không sao nếu câu của em chưa hoàn hảo. Cô muốn nghe em nói.</p>');
+  }, need: function () { return ""; } });
+
+  SPQ.forEach(function (q, i) {
+    add({ step: 1, title: "Câu hỏi " + (i + 1), render: function (el) {
+      var sp = S.speak[i];
+      el.innerHTML = '<div class="s-kicker">Phần 2 · Câu hỏi ' + (i + 1) + '/' + SPQ.length + '</div>' +
+        '<div class="vtop"><button type="button" class="ico listen" id="qsay" aria-label="Nghe câu hỏi">' + SPK + '</button></div>' +
+        '<div class="qbig">' + esc(q.q) + '</div><p class="qvi">' + esc(q.vi) + '</p>' +
+        '<label for="sptext"><b>1. Gõ câu trả lời của em</b></label><textarea class="field" id="sptext" rows="3" placeholder="Viết bằng tiếng Anh..."></textarea>' +
+        '<p class="starter">' + esc(q.start) + '</p>' +
+        '<p style="margin:14px 0 0"><b>2. Ghi âm: đọc to câu em vừa gõ</b></p><div class="recbox" id="rechost"></div>';
+      var ta = $("#sptext"); ta.value = sp.text;
+      $("#qsay").addEventListener("click", function () { sayText(q.q); });
+      sp.rec.mount($("#rechost"));
+      sp.rec.setEnabled(words(sp.text) >= 3);
+      ta.addEventListener("input", function () { sp.text = ta.value; sp.rec.setEnabled(words(sp.text) >= 3 || !!sp.rec.blob); });
+      setTimeout(function () { sayText(q.q); }, 250);
+    }, need: function () {
+      var sp = S.speak[i];
+      if (words(sp.text) < 3) return "Hãy gõ câu trả lời (ít nhất 3 từ) trước.";
+      if (!sp.rec.blob) return "Hãy bấm ghi âm và nói to câu trả lời của em.";
+      return "";
+    } });
+  });
+
+  /* ---- Step 3: reading ---- */
+  add({ step: 2, title: "Giới thiệu bài đọc", render: function (el) {
+    head(el, "Phần 3 · Reading", "Giới thiệu bài đọc");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Hôm nay em sẽ tìm ra ai là người phát minh ra chiếc điện thoại, để kết nối thế giới lại gần nhau hơn.</p>' +
+      '<p class="vex">Today, you will find out who invented the telephone and brought the world closer together.</p>' +
+      '<div class="row-actions"><button type="button" class="ico listen" id="isay" aria-label="Nghe câu tiếng Anh">' + SPK + '</button></div>');
+    $("#isay").addEventListener("click", function () { sayText("Today, you will find out who invented the telephone and brought the world closer together."); });
+  }, need: function () { return ""; } });
+
+  add({ step: 2, title: "Chuẩn bị", render: function (el) {
+    head(el, "Phần 3 · Reading", "Em sẵn sàng chưa?");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Hãy lấy giấy bút để ghi lại những từ vựng và thông tin em muốn ghi nhớ.</p>' +
+      '<p class="sub">Có thể cô giáo sẽ hỏi em ở bài học kế tiếp.</p>' +
+      '<div class="pre"><label><input type="checkbox" id="rdy"> Em đã có giấy bút và sẵn sàng đọc</label></div>');
+    var c = $("#rdy"); c.checked = S.ready; c.addEventListener("change", function () { S.ready = c.checked; });
+  }, need: function () { return S.ready ? "" : "Hãy lấy giấy bút và tick vào ô \"Em đã có giấy bút\"."; } });
+
+  add({ step: 2, wide: true, plain: true, title: "Đọc và trả lời", render: function (el) {
+    el.innerHTML =
+      '<div class="s-kicker">Phần 3 · Reading</div><h2>Đọc bài và trả lời 6 câu hỏi</h2>' +
+      '<p class="sub">Bài đọc ở bên trái, câu hỏi ở bên phải. Chạm vào một cụm từ (đoạn có gạch chân) để xem nghĩa của cả cụm. Chữ màu đỏ là chữ có trong câu hỏi số 1.</p>' +
+      '<div class="read-grid"><div class="read-col">' +
+        '<div class="toolbar2"><button class="btn primary listen" id="playAll" type="button">' +
+          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span id="playLabel">Nghe cả bài</span></button>' +
+          '<div class="speed listen" role="group" aria-label="Tốc độ đọc"><button type="button" data-rate="0.7" aria-pressed="false">Chậm</button><button type="button" data-rate="0.9" aria-pressed="true">Vừa</button><button type="button" data-rate="1.1" aria-pressed="false">Nhanh</button></div>' +
+          '<span class="spacer"></span><button class="btn" id="goList" type="button">Cụm từ của tôi <span class="count" id="cnt">0</span></button></div>' +
+        '<article class="card" id="reading" aria-label="Bài đọc"></article></div>' +
+        '<div class="q-col"><div id="qList"></div></div></div>' +
+      '<section class="panel" id="mine"><h3>Cụm từ tôi đã chạm</h3><p class="sub">Những cụm em chưa hiểu khi đọc. Nghe lại, đọc nghĩa, rồi kiểm tra bằng bài quiz.</p>' +
+        '<div id="wordList" class="list"></div><div class="row-actions" id="listActions"></div></section>' +
+      '<section class="panel" id="quiz" hidden><h3>Kiểm tra cụm từ của tôi</h3><div id="quizBody"></div></section>';
+    buildReading($("#reading")); buildQuestions($("#qList")); renderList(); paintSeen();
+    $("#playAll").addEventListener("click", function () { if (playing) { stopAll(); return; } playSentences(Array.prototype.slice.call(document.querySelectorAll(".s"))); });
+    document.querySelectorAll(".speed button").forEach(function (b) {
+      b.setAttribute("aria-pressed", parseFloat(b.getAttribute("data-rate")) === rate ? "true" : "false");
+      b.addEventListener("click", function () {
+        rate = parseFloat(b.getAttribute("data-rate"));
+        document.querySelectorAll(".speed button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        toast("Tốc độ đọc: " + b.textContent);
+      });
+    });
+    $("#goList").addEventListener("click", function () { $("#mine").scrollIntoView({ behavior: "smooth", block: "start" }); });
+  }, need: function () {
+    var miss = RQ.filter(function (q) { return !S.checked[q.n]; }).map(function (q) { return q.n; });
+    return miss.length ? "Còn câu " + miss.join(", ") + " chưa trả lời. Gõ câu trả lời rồi bấm Kiểm tra." : "";
+  } });
+
+  /* ---- Step 4: submit ---- */
+  add({ step: 3, title: "Nộp bài", render: function (el) {
+    head(el, "Nộp bài", "Em đã hoàn thành! Nộp bài cho cô nhé.");
+    var tested = VOC.filter(function (v) { return S.picked.indexOf(v.id) >= 0; });
+    var good = tested.filter(function (v) { return S.vres[v.id] && S.vres[v.id].first; }).length;
+    var sum = '<div class="sum">';
+    sum += '<div class="sumrow"><h4>Học sinh</h4><p id="sumName"></p></div>';
+    sum += '<div class="sumrow"><h4>Phần 1 · Từ vựng</h4><p>Đúng ngay lần đầu: ' + good + '/' + tested.length + '</p></div>';
+    sum += '<div class="sumrow"><h4>Phần 2 · Nói</h4><div id="sumSpeak"></div></div>';
+    sum += '<div class="sumrow"><h4>Phần 3 · Đọc</h4><div id="sumRead"></div></div>';
+    sum += '<div class="sumrow"><h4>Cụm từ em chạm vì chưa hiểu</h4><p id="sumPhr"></p></div></div>';
+    el.insertAdjacentHTML("beforeend", sum + '<div class="row-actions"><button type="button" class="btn primary" id="subBtn">Nộp bài cho cô</button></div><div id="subMsg" role="status"></div>');
+    $("#sumName").textContent = S.name;
+    SPQ.forEach(function (q, i) {
+      var sp = S.speak[i], d = document.createElement("div");
+      var p = document.createElement("p"); p.textContent = (i + 1) + ". " + q.q + " → " + sp.text; d.appendChild(p);
+      if (sp.rec.url) { var a = document.createElement("audio"); a.controls = true; a.src = sp.rec.url; d.appendChild(a); }
+      $("#sumSpeak").appendChild(d);
+    });
+    RQ.forEach(function (q) { var p = document.createElement("p"); p.textContent = q.n + ". " + (S.ans[q.n] || ""); $("#sumRead").appendChild(p); });
+    var ph = sortedPhrases().map(function (k) { return CH[k].en; });
+    $("#sumPhr").textContent = ph.length ? ph.join("; ") : "(không có)";
+    $("#subBtn").addEventListener("click", submitAll);
+    if (S.submitted) markSubmitted();
+  }, need: function () { return ""; } });
+
+  /* ---------- upload helpers (same protocol as the other lessons) ---------- */
+  async function toWav(blob) {
+    var AC = window.AudioContext || window.webkitAudioContext, OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    var ab = await blob.arrayBuffer();
+    var ac = new AC();
+    var buf = await new Promise(function (res, rej) { var p = ac.decodeAudioData(ab, res, rej); if (p && p.then) p.then(res, rej); });
+    try { ac.close(); } catch (e) {}
+    var sr = 16000, len = Math.max(1, Math.ceil(buf.duration * sr));
+    var off = new OAC(1, len, sr), src = off.createBufferSource();
+    src.buffer = buf; src.connect(off.destination); src.start();
+    var out = await new Promise(function (res, rej) { off.oncomplete = function (e) { res(e.renderedBuffer); }; var p = off.startRendering(); if (p && p.then) p.then(res, rej); });
+    var f = out.getChannelData(0), n = f.length, view = new DataView(new ArrayBuffer(44 + n * 2));
+    function wr(o, s) { for (var i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); }
+    wr(0, "RIFF"); view.setUint32(4, 36 + n * 2, true); wr(8, "WAVE"); wr(12, "fmt "); view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, sr, true); view.setUint32(28, sr * 2, true);
+    view.setUint16(32, 2, true); view.setUint16(34, 16, true); wr(36, "data"); view.setUint32(40, n * 2, true);
+    for (var i = 0; i < n; i++) { var s = Math.max(-1, Math.min(1, f[i])); view.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true); }
+    return new Blob([view], { type: "audio/wav" });
+  }
+  function blobToB64(b) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(",")[1]); }; r.onerror = rej; r.readAsDataURL(b); }); }
+  async function post(obj) {
+    var body = JSON.stringify(obj), headers = { "Content-Type": "text/plain;charset=utf-8" };
+    try {
+      var r = await fetch(SCRIPT_URL, { method: "POST", headers: headers, body: body, redirect: "follow" });
+      var j = await r.json(); return j && j.ok === true;
+    } catch (e) {
+      try { await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: headers, body: body }); return true; } catch (e2) { return false; }
+    }
+  }
+  function markSubmitted() {
+    var b = $("#subBtn"); if (b) { b.disabled = true; b.textContent = "Đã nộp"; }
+    var m = $("#subMsg"); if (m) m.innerHTML = '<div class="note ok">Đã nộp bài cho cô. Em làm tốt lắm! Em có thể đóng trang này.</div>';
+  }
+  async function submitAll() {
+    var btn = $("#subBtn"), msg = $("#subMsg");
+    if (S.submitted) return;
+    btn.disabled = true;
+    try {
+      for (var i = 0; i < SPQ.length; i++) {
+        var sp = S.speak[i], R = sp.rec;
+        if (R.sent) continue;
+        msg.innerHTML = '<div class="note">Đang gửi bản ghi âm ' + (i + 1) + '/' + SPQ.length + '. Em đừng đóng trang nhé.</div>';
+        if (!R.wav) { try { R.wav = await toWav(R.blob); } catch (e) { R.wav = R.blob; } }
+        var type = R.wav.type || "audio/wav";
+        var ext = type === "audio/wav" ? "wav" : (/mp4/.test(type) ? "m4a" : (/ogg/.test(type) ? "ogg" : "webm"));
+        var ok = await post({ type: "audio", name: S.name.trim(), lesson: LESSON, file: "speaking-" + (i + 1) + "." + ext, label: "Speaking " + (i + 1), score: null, dur: Math.round(R.dur), target: SPQ[i].q, transcript: sp.text, audio: await blobToB64(R.wav), mime: type });
+        if (!ok) throw new Error("audio");
+        R.sent = true;
+      }
+      msg.innerHTML = '<div class="note">Đang gửi bài làm...</div>';
+      var tested = VOC.filter(function (v) { return S.picked.indexOf(v.id) >= 0; });
+      var good = tested.filter(function (v) { return S.vres[v.id] && S.vres[v.id].first; }).length;
+      var details = [];
+      tested.forEach(function (v) {
+        var r = S.vres[v.id] || {};
+        details.push({ part: "Từ vựng", question: "Quá khứ đơn của: " + v.en, answer: r.ans || "", correct: v.past, result: (r.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (r.tries > 1 ? " (" + r.tries + " lần thử)" : "") + (r.revealed ? ", đã xem đáp án" : "") });
+      });
+      SPQ.forEach(function (q, i) { details.push({ part: "Speaking", question: q.q, answer: S.speak[i].text, correct: "", result: "Đã ghi âm " + Math.round(S.speak[i].rec.dur) + " giây" }); });
+      RQ.forEach(function (q) { details.push({ part: "Reading", question: q.q, answer: S.ans[q.n] || "", correct: q.ans, result: q.open ? "Câu hỏi mở" : (S.kwok[q.n] ? "✅ Có ý chính" : "❓ Chưa thấy ý chính") }); });
+      var ph = sortedPhrases().map(function (k) { return CH[k].en + " (chạm " + state[k].n + " lần)"; });
+      details.push({ part: "Cụm từ em chạm vì chưa hiểu", question: "Danh sách (" + ph.length + " cụm)", answer: ph.join("; ") || "(không có)", correct: "", result: "" });
+      var okSub = await post({ type: "submit", name: S.name.trim(), lesson: LESSON, summary: { recordings: SPQ.length, avg: null, full: null, writes: SPQ.length + " câu nói, " + RQ.length + " câu đọc", quiz: good + "/" + tested.length }, details: details });
+      if (!okSub) throw new Error("submit");
+      S.submitted = true; markSubmitted();
+    } catch (e) {
+      btn.disabled = false;
+      msg.innerHTML = '<div class="note err">Chưa gửi được (mạng yếu hoặc cô chưa mở cổng nhận bài). Em kiểm tra mạng rồi bấm <b>Nộp bài cho cô</b> lại nhé. Bài làm của em vẫn còn đó.</div>';
+    }
+  }
+
+  /* =====================================================================
+     READING BUILDERS (chunks, sheet, phrase list, quiz, questions)
+     ===================================================================== */
+  function setChunk(el, text) {
+    text.split(/(\{[^}]+\})/).forEach(function (part) {
+      if (!part) return;
+      if (part.charAt(0) === "{") { var b = document.createElement("span"); b.className = "red"; b.textContent = part.slice(1, -1); el.appendChild(b); }
+      else { el.appendChild(document.createTextNode(part)); }
+    });
+  }
+  function buildReading(host) {
+    PARAS.forEach(function (p, pi) {
+      var box = document.createElement("div"); box.className = "para";
+      var hd = document.createElement("div"); hd.className = "para-head";
+      var tag = document.createElement("span"); tag.className = "tag"; tag.textContent = p.tag;
+      var btn = document.createElement("button"); btn.className = "ico listen"; btn.type = "button";
+      btn.setAttribute("aria-label", "Nghe đoạn " + (pi + 1)); btn.innerHTML = SPK;
+      hd.appendChild(tag); hd.appendChild(btn);
+      var para = document.createElement("p"); para.className = "text";
+      p.s.forEach(function (sen, si) {
+        var sp = document.createElement("span"); sp.className = "s";
+        sp.setAttribute("data-text", sen.map(function (c) { return plain(c[0]); }).join(" "));
+        sen.forEach(function (c, ci) {
+          var el = document.createElement("span"); el.className = "c"; el.tabIndex = 0; el.setAttribute("role", "button");
+          el.setAttribute("data-k", keyOf(c[0])); setChunk(el, c[0]); sp.appendChild(el);
+          if (ci < sen.length - 1) sp.appendChild(document.createTextNode(" "));
+        });
+        para.appendChild(sp);
+        if (si < p.s.length - 1) para.appendChild(document.createTextNode(" "));
+      });
+      btn.addEventListener("click", function () { playSentences(Array.prototype.slice.call(para.querySelectorAll(".s"))); });
+      box.appendChild(hd); box.appendChild(para); host.appendChild(box);
+    });
+    host.addEventListener("click", function (ev) { var c = ev.target.closest && ev.target.closest(".c"); if (c) openSheet(c); });
+    host.addEventListener("keydown", function (ev) {
+      if ((ev.key === "Enter" || ev.key === " ") && ev.target.classList && ev.target.classList.contains("c")) { ev.preventDefault(); openSheet(ev.target); }
+    });
+  }
   function paintSeen() {
     document.querySelectorAll(".c").forEach(function (c) { c.classList.toggle("seen", !!state[c.getAttribute("data-k")]); });
   }
 
-  /* ---------- Phrase sheet ---------- */
-  var sheet = document.getElementById("sheet"), sheetIn = document.getElementById("sheetIn"), openEl = null;
+  var sheet = $("#sheet"), sheetIn = $("#sheetIn"), openEl = null;
   function closeSheet() { sheet.classList.remove("show"); if (openEl) openEl.classList.remove("open"); openEl = null; }
   function wordsIn(en) {
     var out = [], seen = {};
@@ -471,7 +911,7 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
     if (openEl) openEl.classList.remove("open");
     openEl = el; el.classList.add("open");
     if (!state[k]) state[k] = { n: 0, miss: 0 };
-    state[k].n += 1; state[k].t = Date.now(); save(); paintSeen(); renderList();
+    state[k].n += 1; state[k].t = Date.now(); savePhrases(); paintSeen(); renderList();
     sheetIn.innerHTML = "";
     var top = document.createElement("div"); top.className = "sheet-top";
     var h = document.createElement("div"); h.className = "sheet-word"; h.textContent = e.en; h.style.flex = "1";
@@ -495,15 +935,11 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
     var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn primary"; ok.textContent = "Đã hiểu, đọc tiếp";
     ok.addEventListener("click", closeSheet);
     var del = document.createElement("button"); del.type = "button"; del.className = "btn quiet"; del.textContent = "Bấm nhầm, bỏ khỏi danh sách";
-    del.addEventListener("click", function () { delete state[k]; save(); paintSeen(); renderList(); closeSheet(); });
+    del.addEventListener("click", function () { delete state[k]; savePhrases(); paintSeen(); renderList(); closeSheet(); });
     acts.appendChild(ok); acts.appendChild(del); sheetIn.appendChild(acts);
     sheet.classList.add("show");
     sayText(e.en);
   }
-  reading.addEventListener("click", function (ev) { var c = ev.target.closest && ev.target.closest(".c"); if (c) openSheet(c); });
-  reading.addEventListener("keydown", function (ev) {
-    if ((ev.key === "Enter" || ev.key === " ") && ev.target.classList && ev.target.classList.contains("c")) { ev.preventDefault(); openSheet(ev.target); }
-  });
   document.addEventListener("click", function (ev) {
     if (!sheet.classList.contains("show")) return;
     if (ev.target.closest("#sheetIn") || ev.target.closest(".c")) return;
@@ -511,50 +947,20 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
   });
   document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") closeSheet(); });
 
-  /* ---------- Toolbar ---------- */
-  document.getElementById("playAll").addEventListener("click", function () {
-    if (playing) { stopAll(); return; }
-    playSentences(Array.prototype.slice.call(document.querySelectorAll(".s")));
-  });
-  document.querySelectorAll(".speed button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      rate = parseFloat(b.getAttribute("data-rate"));
-      document.querySelectorAll(".speed button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-      toast("Tốc độ đọc: " + b.textContent);
-    });
-  });
-  document.getElementById("goList").addEventListener("click", function () {
-    document.getElementById("mine").scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-
-  /* ---------- My phrases ---------- */
-  function sortedWords() {
+  function sortedPhrases() {
     return Object.keys(state).filter(function (k) { return CH[k]; }).sort(function (a, b) { return (state[b].t || 0) - (state[a].t || 0); });
   }
-  function copyText(text, areaId, okMsg) {
-    var area = document.getElementById(areaId);
-    function showBox() {
-      area.innerHTML = ""; var ta = document.createElement("textarea"); ta.className = "copybox"; ta.readOnly = true; ta.value = text;
-      area.appendChild(ta); ta.focus(); ta.select();
-    }
-    try { navigator.clipboard.writeText(text).then(function () { toast(okMsg); showBox(); }, showBox); } catch (e) { showBox(); }
-  }
-  function wordsText() {
-    return sortedWords().map(function (k) {
-      return CH[k].en + " = " + CH[k].vi + " (chạm " + state[k].n + " lần" + (state[k].miss ? ", quiz sai " + state[k].miss : "") + ")";
-    });
-  }
   function renderList() {
-    var words = sortedWords();
-    document.getElementById("cnt").textContent = words.length;
-    var list = document.getElementById("wordList"); list.innerHTML = "";
-    var actions = document.getElementById("listActions"); actions.innerHTML = "";
-    if (!words.length) {
+    var list = $("#wordList"), actions = $("#listActions"); if (!list) return;
+    var ws = sortedPhrases();
+    var cnt = $("#cnt"); if (cnt) cnt.textContent = ws.length;
+    list.innerHTML = ""; actions.innerHTML = "";
+    if (!ws.length) {
       var em = document.createElement("div"); em.className = "empty";
-      em.textContent = "Bạn chưa chạm cụm từ nào. Hãy chạm vào một cụm trong bài đọc ở trên để bắt đầu."; list.appendChild(em);
-      document.getElementById("quiz").hidden = true; return;
+      em.textContent = "Em chưa chạm cụm từ nào. Hãy chạm vào một cụm trong bài đọc để bắt đầu."; list.appendChild(em);
+      var qz = $("#quiz"); if (qz) qz.hidden = true; return;
     }
-    words.forEach(function (k) {
+    ws.forEach(function (k) {
       var e = CH[k], s = state[k];
       var it = document.createElement("div"); it.className = "item";
       var wd = document.createElement("div"); wd.className = "wd"; wd.textContent = e.en;
@@ -566,35 +972,27 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
       sb.addEventListener("click", function () { sayText(e.en); });
       var rb = document.createElement("button"); rb.type = "button"; rb.className = "ico"; rb.setAttribute("aria-label", "Xoá cụm " + e.en);
       rb.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>';
-      rb.addEventListener("click", function () { delete state[k]; save(); paintSeen(); renderList(); });
+      rb.addEventListener("click", function () { delete state[k]; savePhrases(); paintSeen(); renderList(); });
       acts.appendChild(sb); acts.appendChild(rb);
       it.appendChild(wd); it.appendChild(acts); it.appendChild(mn); list.appendChild(it);
     });
     var q = document.createElement("button"); q.type = "button"; q.className = "btn primary"; q.textContent = "Kiểm tra các cụm này";
-    q.addEventListener("click", function () { startQuiz(words); });
-    var c = document.createElement("button"); c.type = "button"; c.className = "btn"; c.textContent = "Sao chép danh sách gửi giáo viên";
-    c.addEventListener("click", function () {
-      copyText("Cụm từ em chưa hiểu trong bài \"Who Made the First Phone Call?\":\n" + wordsText().join("\n"), "copyArea", "Đã sao chép danh sách");
-    });
+    q.addEventListener("click", function () { startQuiz(ws); });
     var x = document.createElement("button"); x.type = "button"; x.className = "btn quiet"; x.textContent = "Xoá hết";
-    x.addEventListener("click", function () { state = {}; save(); paintSeen(); renderList(); document.getElementById("copyArea").innerHTML = ""; });
-    actions.appendChild(q); actions.appendChild(c); actions.appendChild(x);
+    x.addEventListener("click", function () { state = {}; savePhrases(); paintSeen(); renderList(); });
+    actions.appendChild(q); actions.appendChild(x);
   }
 
-  /* ---------- Quiz on my phrases ---------- */
-  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   var quiz = null;
-  function startQuiz(words) {
-    var items = shuffle(words.filter(function (k) { return CH[k]; }));
-    var panel = document.getElementById("quiz"); panel.hidden = false;
-    if (!items.length) {
-      var body = document.getElementById("quizBody"); body.innerHTML = "";
-      var p = document.createElement("p"); p.className = "empty"; p.textContent = "Chưa có cụm nào để kiểm tra. Hãy chạm thêm cụm trong bài đọc."; body.appendChild(p);
-    } else { quiz = { items: items, i: 0, score: 0, wrong: [] }; renderQ(); }
+  function startQuiz(ws) {
+    var items = shuffle(ws.filter(function (k) { return CH[k]; }));
+    var panel = $("#quiz"); if (!panel) return; panel.hidden = false;
+    quiz = { items: items, i: 0, score: 0, wrong: [] };
+    renderQ();
     panel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function renderQ() {
-    var body = document.getElementById("quizBody"); body.innerHTML = "";
+    var body = $("#quizBody"); if (!body) return; body.innerHTML = "";
     if (quiz.i >= quiz.items.length) { renderResult(); return; }
     var k = quiz.items[quiz.i], right = CH[k].vi;
     var pool = Object.keys(CH).filter(function (x) { return x !== k && CH[x].vi !== right; });
@@ -618,7 +1016,7 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
       b.addEventListener("click", function () {
         opts.querySelectorAll("button").forEach(function (x) { x.disabled = true; if (x.textContent === right) x.classList.add("right"); });
         if (o === right) { quiz.score++; }
-        else { b.classList.add("wrong"); quiz.wrong.push(k); if (state[k]) { state[k].miss = (state[k].miss || 0) + 1; save(); renderList(); document.getElementById("quiz").hidden = false; } }
+        else { b.classList.add("wrong"); quiz.wrong.push(k); if (state[k]) { state[k].miss = (state[k].miss || 0) + 1; savePhrases(); } }
         r.textContent = "Đúng: " + quiz.score; next.style.display = "inline-flex"; next.focus();
       });
       opts.appendChild(b);
@@ -626,10 +1024,10 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
     body.appendChild(top); body.appendChild(row); body.appendChild(ask); body.appendChild(opts); body.appendChild(next);
   }
   function renderResult() {
-    var body = document.getElementById("quizBody"); body.innerHTML = "";
+    var body = $("#quizBody"); body.innerHTML = "";
     var s = document.createElement("div"); s.className = "score"; s.textContent = quiz.score + "/" + quiz.items.length; body.appendChild(s);
     var msg = document.createElement("p"); msg.className = "sub";
-    msg.textContent = quiz.wrong.length ? "Những cụm cần ôn lại:" : "Tuyệt vời! Bạn nhớ hết các cụm đã chạm.";
+    msg.textContent = quiz.wrong.length ? "Những cụm cần ôn lại:" : "Tuyệt vời! Em nhớ hết các cụm đã chạm.";
     body.appendChild(msg);
     if (quiz.wrong.length) {
       var list = document.createElement("div"); list.className = "list";
@@ -647,150 +1045,96 @@ textarea.copybox { margin-top: 10px; min-height: 110px; }
       again.addEventListener("click", function () { startQuiz(quiz.wrong.slice()); }); acts.appendChild(again);
     }
     var all = document.createElement("button"); all.type = "button"; all.className = "btn"; all.textContent = "Làm lại tất cả";
-    all.addEventListener("click", function () { startQuiz(sortedWords()); }); acts.appendChild(all);
+    all.addEventListener("click", function () { startQuiz(sortedPhrases()); }); acts.appendChild(all);
     body.appendChild(acts);
   }
 
-  /* ---------- Part 2: five questions, easy to hard, last one open ---------- */
-  var QS = [
-    { n: 1, lvl: "Dễ", cls: "easy", q: "Where was Alexander Graham Bell born?", vi: "Alexander Graham Bell sinh ra ở đâu?",
-      hint: "Đọc lại Thân bài 1. Bắt đầu bằng: He was born in ...", kw: /scotland/i, ans: "He was born in Scotland." },
-    { n: 2, lvl: "Dễ", cls: "easy", q: "Why did Bell teach deaf students?", vi: "Vì sao Bell dạy học sinh khiếm thính?",
-      hint: "Đọc lại Thân bài 1. Bắt đầu bằng: Because his ...", kw: /mother|wife|deaf|hear/i, ans: "Because his mother and his wife were deaf. He wanted to help them hear." },
-    { n: 3, lvl: "Vừa", cls: "mid", q: "What happened on March 10, 1876?", vi: "Chuyện gì đã xảy ra vào ngày 10 tháng 3 năm 1876?",
-      hint: "Đọc lại Thân bài 2. Kể 2 đến 3 việc theo thứ tự. Bắt đầu bằng: Bell spilled ...", kw: /acid|spill|shout|watson|call/i,
-      ans: "Bell spilled acid on his clothes and shouted for Mr. Watson. Watson heard Bell's voice through the machine. It was the first phone call." },
-    { n: 4, lvl: "Khó", cls: "hard", q: "Why was the first phone call an accident?", vi: "Vì sao cuộc gọi điện thoại đầu tiên là một sự cố bất ngờ?",
-      hint: "Nghĩ về lý do Bell hét lên. Bắt đầu bằng: Because Bell did not ...", kw: /plan|accident|mistake|help|acid|shout|didn.?t/i,
-      ans: "Because Bell did not plan it. He shouted for help after he spilled acid, and Watson heard him through the machine." },
-    { n: 5, lvl: "Câu hỏi mở", cls: "open", q: "Which invention do you think is the most useful? Why?", vi: "Theo bạn, phát minh nào là hữu ích nhất? Vì sao?",
-      hint: "Không có đáp án đúng hay sai. Bắt đầu bằng: I think ... is the most useful invention because ...", kw: null,
-      ans: "I think the telephone is the most useful invention because we can talk to our family and friends quickly, even when they are far away." }
-  ];
-  (function renderQuestions() {
-    var host = document.getElementById("qList");
-    QS.forEach(function (q) {
+  function buildQuestions(host) {
+    RQ.forEach(function (q) {
       var card = document.createElement("div"); card.className = "qcard";
       card.innerHTML =
-        '<div class="qhead"><span class="num">Câu ' + q.n + '</span><span class="lvl ' + q.cls + '">' + q.lvl + '</span><span class="spacer"></span>' +
+        '<div class="qhead"><span class="num">Câu ' + q.n + '</span>' + (q.open ? '<span class="lvl">Câu hỏi mở</span>' : '') + '<span class="spacer"></span>' +
         '<button type="button" class="ico listen" aria-label="Nghe câu hỏi ' + q.n + '">' + SPK + '</button></div>' +
-        '<p class="qtext">' + q.q + '</p><p class="qvi">' + q.vi + '</p>' +
+        '<p class="qtext">' + esc(q.q) + '</p><p class="qvi">' + esc(q.vi) + '</p>' +
         '<label class="sr" for="ans' + q.n + '">Câu trả lời cho câu ' + q.n + '</label>' +
-        '<textarea id="ans' + q.n + '" rows="' + (q.n === 5 ? 4 : 3) + '" placeholder="Viết câu trả lời bằng tiếng Anh..."></textarea>' +
+        '<textarea class="field" id="ans' + q.n + '" rows="' + (q.open ? 4 : 2) + '" placeholder="Viết câu trả lời bằng tiếng Anh..."></textarea>' +
         '<div class="qacts"><button type="button" class="btn quiet hintBtn">Gợi ý</button><button type="button" class="btn primary chkBtn">Kiểm tra</button></div>' +
-        '<p class="hint" hidden>' + q.hint + '</p><div class="fb" hidden></div>';
-      var ta = card.querySelector("textarea"), hint = card.querySelector(".hint"), fb = card.querySelector(".fb");
-      ta.value = answers[q.n] || "";
-      ta.addEventListener("input", function () { answers[q.n] = ta.value; saveAnswers(); });
-      card.querySelector(".listen").addEventListener("click", function () { sayText(q.q); });
-      card.querySelector(".hintBtn").addEventListener("click", function () { hint.hidden = !hint.hidden; });
-      card.querySelector(".chkBtn").addEventListener("click", function () {
+        '<p class="hint" hidden>' + esc(q.hint) + '</p><div class="fb" hidden></div>';
+      var ta = $("textarea", card), hint = $(".hint", card), fb = $(".fb", card);
+      ta.value = S.ans[q.n] || "";
+      ta.addEventListener("input", function () { S.ans[q.n] = ta.value; });
+      $(".listen", card).addEventListener("click", function () { sayText(q.q); });
+      $(".hintBtn", card).addEventListener("click", function () { hint.hidden = !hint.hidden; });
+      $(".chkBtn", card).addEventListener("click", function () {
         var v = ta.value.trim(); fb.hidden = false; fb.className = "fb";
         if (!v) { fb.innerHTML = '<p class="fbmsg">Hãy viết câu trả lời trước nhé.</p>'; return; }
-        var msg, ok = true;
+        var msg, ok = true, counted = true;
         if (q.kw) {
           ok = q.kw.test(v);
-          msg = ok ? "Tốt lắm! Câu trả lời của bạn có ý chính." : "Chưa thấy ý chính. Hãy đọc lại đoạn được gợi ý rồi sửa câu trả lời.";
-        } else if (v.split(/\s+/).length < 8) { ok = false; msg = "Hãy viết thêm: nêu tên phát minh và lý do của bạn."; }
+          msg = ok ? "Tốt lắm! Câu trả lời của em có ý chính." : "Chưa thấy ý chính. Hãy đọc lại đoạn được gợi ý rồi sửa câu trả lời.";
+        } else if (words(v) < 8) { ok = false; counted = false; msg = "Hãy viết thêm (ít nhất 8 từ): nêu tên phát minh và lý do của em."; }
         else if (!/because/i.test(v)) { ok = false; msg = "Khá tốt! Hãy thêm lý do bằng \"because\"."; }
-        else { msg = "Rất tốt! Bạn đã nêu ý kiến và lý do."; }
+        else { msg = "Rất tốt! Em đã nêu ý kiến và lý do."; }
+        S.checked[q.n] = counted; S.kwok[q.n] = ok;
         fb.classList.add(ok ? "ok" : "try");
-        fb.innerHTML = '<p class="fbmsg"></p><p><b>' + (q.kw ? "Đáp án gợi ý" : "Ví dụ tham khảo") + ':</b> ' + q.ans + '</p>';
-        fb.querySelector(".fbmsg").textContent = msg;
+        fb.innerHTML = '<p class="fbmsg"></p>' + (counted ? '<p><b>' + (q.kw ? "Đáp án gợi ý" : "Ví dụ tham khảo") + ':</b> ' + esc(q.ans) + '</p>' : "");
+        $(".fbmsg", fb).textContent = msg;
       });
       host.appendChild(card);
     });
-  })();
+  }
 
-  /* ---------- Part 3: record a spoken summary ---------- */
-  var recBtn = document.getElementById("recBtn"), recTime = document.getElementById("recTime"), recMsg = document.getElementById("recMsg");
-  var recDone = document.getElementById("recDone"), recAudio = document.getElementById("recAudio"), recDl = document.getElementById("recDl");
-  var meterFill = document.getElementById("meterFill");
-  var R = { stream: null, mr: null, parts: [], tick: null, t0: 0, url: null, ctx: null, raf: 0, mime: "" };
-  var MAX = 90;
-  function fmt(s) { var m = Math.floor(s / 60), r = Math.floor(s % 60); return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
-  function pickMime() {
-    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
-    var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
-    for (var i = 0; i < c.length; i++) { if (MediaRecorder.isTypeSupported(c[i])) return c[i]; }
-    return "";
+  /* =====================================================================
+     PLAYER: steps, timeline, back / next
+     ===================================================================== */
+  var stage = $("#stage"), stepsEl = $("#steps"), tl = $("#timeline"), needMsg = $("#needMsg"), nextBtn = $("#nextBtn"), backBtn = $("#backBtn"), posLbl = $("#posLbl");
+  function firstOfStep(st) { for (var i = 0; i < SC.length; i++) if (SC[i].step === st) return i; return 0; }
+  function leave() { stopAll(); if (activeRec) activeRec.stop(); closeSheet(); }
+  function show(i) {
+    leave();
+    S.idx = i; if (i > S.max) S.max = i;
+    var sc = SC[i];
+    stage.className = "stage" + (sc.wide ? " wide" : "");
+    stage.innerHTML = ""; var el = document.createElement("section"); el.className = "scene" + (sc.plain ? " plain" : ""); stage.appendChild(el);
+    sc.render(el);
+    needMsg.textContent = "";
+    backBtn.disabled = i === 0;
+    nextBtn.style.display = i === SC.length - 1 ? "none" : "";
+    posLbl.textContent = (i + 1) + " / " + SC.length;
+    paintNav();
+    window.scrollTo({ top: 0 });
   }
-  function setRecUI(on) {
-    recBtn.textContent = on ? "Dừng ghi âm" : "Bắt đầu ghi âm";
-    recBtn.classList.toggle("recording", on);
-    recBtn.classList.toggle("primary", !on);
+  function paintNav() {
+    stepsEl.innerHTML = "";
+    STEPS.forEach(function (name, st) {
+      var b = document.createElement("button"); b.type = "button";
+      var cur = SC[S.idx].step === st, reached = firstOfStep(st) <= S.max, done = reached && !cur && firstOfStep(st + 1 <= 3 ? st + 1 : st) <= S.max && st < 3 && st < SC[S.idx].step;
+      b.className = "chip" + (cur ? " cur" : "") + (done ? " done" : "") + (!reached ? " lock" : "");
+      b.innerHTML = '<span class="n">' + (st + 1) + '</span>' + esc(name);
+      b.addEventListener("click", function () {
+        if (!reached) { needMsg.textContent = "Hãy hoàn thành phần trước để mở phần \"" + name + "\"."; return; }
+        show(firstOfStep(st));
+      });
+      stepsEl.appendChild(b);
+    });
+    tl.innerHTML = "";
+    SC.forEach(function (sc, i) {
+      var seg = document.createElement("i");
+      seg.className = (i < S.idx || (i <= S.max && i !== S.idx) ? "done " : "") + (i === S.idx ? "cur " : "") + (i > 0 && SC[i - 1].step !== sc.step ? "sp" : "");
+      seg.title = sc.title;
+      if (i <= S.max && i !== S.idx) seg.addEventListener("click", function () { show(i); });
+      tl.appendChild(seg);
+    });
   }
-  function startMeter(stream) {
-    try {
-      var AC = window.AudioContext || window.webkitAudioContext; R.ctx = new AC();
-      var src = R.ctx.createMediaStreamSource(stream), an = R.ctx.createAnalyser(); an.fftSize = 256; src.connect(an);
-      var buf = new Uint8Array(an.frequencyBinCount);
-      (function loop() {
-        an.getByteTimeDomainData(buf);
-        var peak = 0; for (var i = 0; i < buf.length; i++) { var v = Math.abs(buf[i] - 128); if (v > peak) peak = v; }
-        meterFill.style.width = Math.min(100, peak / 128 * 180) + "%";
-        R.raf = requestAnimationFrame(loop);
-      })();
-    } catch (e) {}
-  }
-  function stopMeter() { cancelAnimationFrame(R.raf); meterFill.style.width = "0%"; try { if (R.ctx) R.ctx.close(); } catch (e) {} R.ctx = null; }
-  function errMsg(err) {
-    var n = err && err.name;
-    if (n === "NotAllowedError" || n === "SecurityError") return "Trình duyệt chưa cho phép dùng micro. Bấm vào biểu tượng ổ khóa cạnh địa chỉ trang, cho phép micro rồi thử lại.";
-    if (n === "NotFoundError") return "Không tìm thấy micro trên thiết bị này.";
-    return "Không ghi âm được (" + (n || "lỗi") + "). Hãy thử lại bằng Chrome hoặc Safari mới.";
-  }
-  function startRec() {
-    stopAll(); recMsg.textContent = ""; recDone.hidden = true;
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-      R.stream = stream; R.parts = []; R.mime = pickMime();
-      var mr; try { mr = R.mime ? new MediaRecorder(stream, { mimeType: R.mime }) : new MediaRecorder(stream); } catch (e) { mr = new MediaRecorder(stream); }
-      R.mr = mr;
-      mr.ondataavailable = function (e) { if (e.data && e.data.size) R.parts.push(e.data); };
-      mr.onstop = finishRec;
-      mr.start();
-      R.t0 = Date.now(); setRecUI(true); recMsg.textContent = "Đang ghi âm. Hãy nói chậm và rõ.";
-      R.tick = setInterval(function () {
-        var s = (Date.now() - R.t0) / 1000; recTime.textContent = fmt(s) + " / " + fmt(MAX);
-        if (s >= MAX) stopRec();
-      }, 250);
-      startMeter(stream);
-    }).catch(function (err) { recMsg.textContent = errMsg(err); });
-  }
-  function stopRec() { if (R.mr && R.mr.state !== "inactive") R.mr.stop(); }
-  function finishRec() {
-    clearInterval(R.tick); stopMeter();
-    if (R.stream) R.stream.getTracks().forEach(function (t) { t.stop(); });
-    setRecUI(false);
-    var type = (R.mr && R.mr.mimeType) || R.mime || "audio/webm";
-    var blob = new Blob(R.parts, { type: type });
-    if (R.url) URL.revokeObjectURL(R.url);
-    R.url = URL.createObjectURL(blob);
-    recAudio.src = R.url;
-    var ext = /mp4/.test(type) ? "m4a" : /ogg/.test(type) ? "ogg" : "webm";
-    recDl.href = R.url; recDl.setAttribute("download", "tom-tat-phone-reading." + ext);
-    recDone.hidden = false;
-    recMsg.textContent = "Đã ghi xong. Hãy nghe lại. Nếu chưa hài lòng, bấm Ghi lại. Bản ghi sẽ mất khi đóng trang, nên hãy tải về và gửi cho giáo viên.";
-  }
-  if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder)) {
-    recBtn.disabled = true;
-    recMsg.textContent = "Trình duyệt này chưa hỗ trợ ghi âm. Hãy mở trang bằng Chrome hoặc Safari mới.";
-  }
-  recBtn.addEventListener("click", function () {
-    if (R.mr && R.mr.state === "recording") stopRec(); else startRec();
+  nextBtn.addEventListener("click", function () {
+    var msg = SC[S.idx].need();
+    if (msg) { needMsg.textContent = msg; return; }
+    if (S.idx < SC.length - 1) show(S.idx + 1);
   });
-  document.getElementById("recAgain").addEventListener("click", function () { recAudio.pause(); startRec(); });
+  backBtn.addEventListener("click", function () { if (S.idx > 0) show(S.idx - 1); });
+  window.addEventListener("beforeunload", function (e) { if (S.idx > 1 && !S.submitted) { e.preventDefault(); e.returnValue = ""; } });
 
-  document.getElementById("copyAll").addEventListener("click", function () {
-    var lines = ["Bài làm: \"Who Made the First Phone Call?\"", "", "Cụm từ em chưa hiểu:"];
-    var w = wordsText(); lines = lines.concat(w.length ? w : ["(không có)"]);
-    lines.push("", "Câu trả lời:");
-    QS.forEach(function (q) { lines.push(q.n + ". " + q.q, "   " + ((answers[q.n] || "").trim() || "(chưa trả lời)")); });
-    lines.push("", "Bản ghi âm: em sẽ gửi file riêng.");
-    copyText(lines.join("\n"), "reportArea", "Đã sao chép bài làm");
-  });
-
-  paintSeen(); renderList();
+  show(0);
 })();
 </script>
 </body>
