@@ -223,6 +223,9 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
 .qbig2{font-size:clamp(20px,4.5vw,26px);line-height:1.35;margin:6px 0 14px;font-weight:500}.qbig2 small{display:block;color:var(--muted);font-size:15px;font-weight:400}
 .slot{min-height:56px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}.slot .ph{color:var(--muted);font-size:15px}
 .bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}.tile{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;min-height:44px;font:inherit;cursor:pointer}.tile.on{border-color:var(--accent)}.tile:disabled{opacity:.4}
+.scene.copy{background:#fff1e3;border-color:#b8520d;border-width:2px;color:#2b1a0c}.scene.copy .s-kicker,.scene.copy h2{color:#8f3f08}.scene.copy .sub,.scene.copy .egvi,.scene.copy .rule .eg{color:#6b4a30}.scene.copy .rule{background:#fff;color:#2b1a0c}.scene.copy .vex{background:none;color:#2b1a0c}.scene.copy .rule b{color:#8f3f08}
+.copybar{background:#b8520d;color:#fff;border-radius:10px;padding:8px 12px;font-weight:600;margin:0 0 12px;font-size:15px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .scene.copy{background:#3a2412;border-color:#e08a4a;color:#ffe9d6}:root:not([data-theme="light"]) .scene.copy .s-kicker,:root:not([data-theme="light"]) .scene.copy h2,:root:not([data-theme="light"]) .scene.copy .rule b{color:#ffb27a}:root:not([data-theme="light"]) .scene.copy .sub,:root:not([data-theme="light"]) .scene.copy .egvi,:root:not([data-theme="light"]) .scene.copy .rule .eg{color:#e6c3a6}:root:not([data-theme="light"]) .scene.copy .rule{background:#2a1a0d;color:#ffe9d6}:root:not([data-theme="light"]) .scene.copy .vex{background:none;color:#ffe9d6}:root:not([data-theme="light"]) .copybar{background:#e08a4a;color:#2b1a0c}}
 .starter{color:var(--muted);font-size:15px;margin:6px 0 0}.vtop{margin:0 0 6px}
 </style>
 </head>
@@ -425,7 +428,7 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
   }
 
   var NKEY = "u5l2-flow-name-v1", VKEY = "phone-reader-voice-v1";
-  var S = { name: "", idx: 0, max: 0, res: {}, speak: [], submitted: false };
+  var S = { name: "", idx: 0, max: 0, res: {}, speak: [], submitted: false, ready: false };
   var voiceURI = "";
   try { S.name = localStorage.getItem(NKEY) || ""; } catch (e) {}
   try { voiceURI = localStorage.getItem(VKEY) || ""; } catch (e) { voiceURI = ""; }
@@ -519,7 +522,7 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
           b.addEventListener("click", function () {
             if (r.done) return;
             if (o === right) { r.ans = o; b.classList.add("right"); box.querySelectorAll("button").forEach(function (x) { x.disabled = true; }); good(); }
-            else { b.classList.add("wrong"); b.disabled = true; bad("Chưa đúng. Em đọc lại câu rồi chọn lại nhé 💪"); }
+            else { b.classList.add("wrong"); b.disabled = true; bad("Chưa đúng, em chọn lại nhé 💪<br><b>💡 Giải thích:</b> " + it.x); }
           });
           box.appendChild(b);
         });
@@ -574,8 +577,17 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
   RECALL.forEach(function (it, i) { itemScene(GROUPS[0], it, i, 0); });
 
   /* Step 1: learn */
-  add({ step: 1, title: "some – a lot of", render: function (el) {
-    head(el, "Học · Thẻ 1/3", "some, a lot of, lots of");
+  add({ step: 1, title: "Chuẩn bị giấy bút", render: function (el) {
+    head(el, "Học", "Lấy giấy và bút nào ✍️");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Ba thẻ tiếp theo có kiến thức mới. Em hãy <b>lấy vở và bút</b> để chép lại nhé.</p>' +
+      '<p class="sub">Thẻ nào <b style="color:#b8520d">chuyển sang màu cam</b> nghĩa là phần cần chép. Chép xong mới bấm Tiếp tục. Viết ra tay sẽ giúp em nhớ lâu hơn.</p>' +
+      '<div class="pre"><label><input type="checkbox" id="rdy"> Em đã có giấy bút và sẵn sàng chép</label></div>');
+    var c = $("#rdy"); c.checked = !!S.ready; c.addEventListener("change", function () { S.ready = c.checked; });
+  }, need: function () { return S.ready ? "" : "Hãy lấy giấy bút và tick vào ô xác nhận."; } });
+
+  add({ step: 1, copy: true, title: "some – a lot of", render: function (el) {
+    head(el, "Học · Thẻ 1/3", "some, a lot of, lots of"); el.insertAdjacentHTML("beforeend", '<div class="copybar">✍️ Em chép phần này vào vở nhé</div>');
     el.insertAdjacentHTML("beforeend",
       '<p class="lead">Tin vui: ba từ này dùng được với <b>cả hai loại</b> danh từ. Em không cần phân vân! 🎉</p>' +
       '<div class="rules"><div class="rule"><b>some</b><span>một ít, vài<span class="eg"> · lượng vừa phải</span></span></div>' +
@@ -585,8 +597,8 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
     wireSay(el);
   }, need: function () { return ""; } });
 
-  add({ step: 1, title: "How many – How much", render: function (el) {
-    head(el, "Học · Thẻ 2/3", "How many? How much?");
+  add({ step: 1, copy: true, title: "How many – How much", render: function (el) {
+    head(el, "Học · Thẻ 2/3", "How many? How much?"); el.insertAdjacentHTML("beforeend", '<div class="copybar">✍️ Em chép phần này vào vở nhé</div>');
     el.insertAdjacentHTML("beforeend",
       '<p class="lead">Hỏi “bao nhiêu?” cũng dễ thôi. Chỉ cần nhìn danh từ đếm được hay không.</p>' +
       '<div class="rules"><div class="rule"><b>How many</b><span>+ danh từ số nhiều<span class="eg"> · đếm được (eggs, books)</span></span></div>' +
@@ -595,8 +607,8 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
     wireSay(el);
   }, need: function () { return ""; } });
 
-  add({ step: 1, title: "Hỏi giá", render: function (el) {
-    head(el, "Học · Thẻ 3/3", "Hỏi giá: How much is / are…?");
+  add({ step: 1, copy: true, title: "Hỏi giá", render: function (el) {
+    head(el, "Học · Thẻ 3/3", "Hỏi giá: How much is / are…?"); el.insertAdjacentHTML("beforeend", '<div class="copybar">✍️ Em chép phần này vào vở nhé</div>');
     el.insertAdjacentHTML("beforeend",
       '<p class="lead">Khi đi mua đồ ăn, em hỏi giá bằng <b>How much</b> + <b>is</b> (một món) hoặc <b>are</b> (nhiều món).</p>' +
       eg("How much is a glass of milk?", "Một ly sữa giá bao nhiêu?") + eg("It's nine thousand dong.", "Giá chín nghìn đồng.") +
@@ -750,7 +762,7 @@ section.panel h3 { font-family: var(--font-display); font-size: 22px; margin: 0 
     S.idx = i; if (i > S.max) S.max = i;
     var sc = SC[i];
     stage.className = "stage";
-    stage.innerHTML = ""; var el = document.createElement("section"); el.className = "scene"; stage.appendChild(el);
+    stage.innerHTML = ""; var el = document.createElement("section"); el.className = "scene" + (sc.copy ? " copy" : ""); stage.appendChild(el);
     sc.render(el);
     needMsg.textContent = "";
     backBtn.disabled = i === 0;
