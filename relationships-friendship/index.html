@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relationships: Friends and Family (Reading, Speaking, Writing)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a guided lesson that plays one scene at a time. Header with steps, a stage in the middle, a dock with timeline and Back/Next at the bottom. */
+:root {
+  --bg: #fcf1f5;
+  --surface: #ffffff;
+  --ink: #2a1620;
+  --muted: #6b5560;
+  --line: #ecd5de;
+  --accent: #c2255c;
+  --accent-ink: #ffffff;
+  --mark: #ffe27a;
+  --mark-ink: #3b2f00;
+  --now: #fbd9e5;
+  --bad: #b8400d;
+  --good: #11713b;
+  --red: #d62828;
+  --ac: #fff0b3;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a0f15; --surface: #26161e; --ink: #f6e8ee; --muted: #c9aab8; --line: #4a2b3a;
+    --accent: #ff8fb3; --accent-ink: #3a0a1c; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #5a2339;
+    --bad: #ff9a66; --good: #6fe0a0; --red: #ff6b6b; --ac: #4a3d0c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a0f15; --surface: #26161e; --ink: #f6e8ee; --muted: #c9aab8; --line: #4a2b3a;
+  --accent: #ff8fb3; --accent-ink: #3a0a1c; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #5a2339;
+  --bad: #ff9a66; --good: #6fe0a0; --red: #ff6b6b; --ac: #4a3d0c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; padding-bottom: 130px; }
+button, select, textarea, input { font: inherit; color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+header.top { padding: 18px 0 8px; }
+.kicker-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.kicker { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: .02em; }
+.voice { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.voice select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 10px; min-height: 40px; max-width: 230px; font-size: 14px; color: var(--ink); }
+h1 { font-family: var(--font-display); font-size: clamp(26px, 5vw, 38px); line-height: 1.1; margin: 6px 0 12px; text-wrap: balance; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; font-size: 14px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; min-height: 36px; }
+.chip .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--line); font-size: 12px; font-weight: 600; }
+.chip.cur { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.chip.cur .n { background: var(--accent); color: var(--accent-ink); }
+.chip.done .n { background: var(--good); color: var(--bg); }
+.chip.lock { opacity: .55; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 9px 16px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 44px; text-decoration: none; color: var(--ink); }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .ico:focus-visible, .opt:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .chip:focus-visible, .vk:focus-visible, .gw:focus-visible, .node:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.recording { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn svg, .ico svg { width: 18px; height: 18px; flex: none; }
+.quiet { background: transparent; color: var(--muted); }
+.ico { border: 1px solid var(--line); background: transparent; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; color: var(--muted); flex: none; }
+.ico:hover { color: var(--accent); border-color: var(--accent); }
+.spacer { flex: 1; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+/* stage */
+.stage { max-width: 760px; margin: 12px auto 0; padding: 0 16px; }
+.stage.wide { max-width: 1120px; }
+.scene { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px; animation: rise .25s ease both; }
+.scene.plain { background: transparent; border: 0; padding: 0; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.s-kicker { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; }
+.scene h2 { font-family: var(--font-display); font-size: clamp(24px, 4.5vw, 32px); line-height: 1.15; margin: 4px 0 10px; text-wrap: balance; }
+.scene h3 { font-family: var(--font-display); font-size: 21px; margin: 18px 0 6px; }
+.lead { font-size: 18px; margin: 0 0 12px; }
+.sub { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+.note { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 15px; }
+.note.ok { border-color: var(--good); }
+.note.err { border-color: var(--bad); }
+.field { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 10px 12px; line-height: 1.5; }
+textarea.field { resize: vertical; }
+.rules { display: grid; gap: 8px; margin: 12px 0; }
+.rule { display: grid; grid-template-columns: 150px 1fr; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; align-items: center; }
+.rule b { color: var(--accent); }
+.rule .eg { color: var(--muted); font-size: 15px; }
+.cbox { margin: 12px 0; padding: 14px 16px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); font-size: 16px; }
+.cbox .lab { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+.cbox p { margin: 0 0 8px; }
+.cbox p:last-child { margin: 0; }
+.formula { margin: 12px 0; padding: 12px 16px; border-left: 5px solid var(--accent); background: var(--bg); border-radius: 8px; font-size: 17px; line-height: 1.8; }
+.pre { border: 2px dashed var(--line); border-radius: 14px; padding: 14px 16px; margin-top: 14px; }
+.pen-t { font-size: 12px; font-weight: 600; color: var(--bad); text-transform: uppercase; letter-spacing: .07em; }
+.pen-p { margin: 4px 0 10px; font-size: 16px; }
+.pre label { display: flex; gap: 10px; align-items: center; font-size: 17px; cursor: pointer; }
+.pre input { width: 22px; height: 22px; accent-color: var(--accent); flex: none; }
+
+/* vocabulary */
+.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 8px 0 12px; }
+.node { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 12px; font-size: 14px; line-height: 1.4; }
+.node.cur { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.node.past { border-color: var(--accent); color: var(--accent); }
+.arrow { color: var(--muted); font-size: 14px; }
+.chain.big .node { font-size: 17px; padding: 8px 16px; text-align: center; }
+.chain.big .node small { display: block; font-size: 13px; opacity: .85; font-weight: 400; }
+.vbig { font-family: var(--font-display); font-size: clamp(30px, 7vw, 48px); font-weight: 700; line-height: 1.12; margin: 8px 0 4px; }
+.vtop { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.vtag { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; color: var(--muted); }
+.vvi { font-size: 21px; margin-bottom: 8px; }
+.vex { margin: 10px 0 0; font-size: 18px; }
+.vex small { display: block; color: var(--muted); font-size: 15px; }
+.linkto { margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; border: 1px dashed var(--accent); font-size: 16px; }
+.uses { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 12px; font-size: 14px; color: var(--muted); }
+.uses .pill { border: 1px solid var(--accent); color: var(--accent); }
+.dots { display: flex; gap: 3px; flex-wrap: wrap; margin: 0 0 10px; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--accent); }
+.try { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.try .field { flex: 1; min-width: 180px; font-size: 20px; }
+.reslist { display: grid; gap: 6px; margin-top: 10px; }
+.res { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 16px; }
+.res .ok { color: var(--good); font-weight: 600; }
+.res .no { color: var(--bad); font-weight: 600; }
+.score { font-family: var(--font-display); font-size: 48px; font-weight: 700; line-height: 1; margin: 4px 0 8px; }
+.mapgrid { display: grid; gap: 10px; margin: 12px 0; }
+.mapcard { border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; }
+.mapcard h4 { margin: 0 0 4px; font-size: 15px; color: var(--accent); }
+.mapcard .chain { margin: 4px 0; }
+
+/* quiz cards, prod blocks */
+.qcard { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; background: var(--surface); }
+.qhead { display: flex; align-items: center; gap: 8px; }
+.num { font-weight: 600; }
+.lvl { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px; border: 1px solid var(--accent); color: var(--accent); }
+.qtext { font-size: 17px; font-weight: 500; margin: 6px 0 0; }
+.qvi { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
+.opts { display: grid; gap: 8px; margin: 12px 0 4px; }
+.opt { text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 14px; cursor: pointer; font-size: 16px; min-height: 46px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+.opt:disabled { cursor: default; color: var(--ink); }
+.fb { margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; }
+.fb p { margin: 0 0 6px; }
+.fb p:last-child { margin: 0; }
+.fb.ok { border-color: var(--good); }
+.fb.try { border-color: var(--bad); }
+.fbmsg { font-weight: 600; }
+.prod { margin-top: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }
+.prod-q { margin: 0 0 8px; font-weight: 500; }
+.qacts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+/* reading */
+.read-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 940px) { .read-grid { grid-template-columns: 1.1fr 1fr; align-items: start; } .q-col { position: sticky; top: 10px; max-height: calc(100vh - 190px); overflow: auto; padding-right: 4px; } }
+.toolbar2 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.speed { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.speed button { border: 0; background: transparent; padding: 0 12px; min-height: 42px; cursor: pointer; font-size: 14px; }
+.speed button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+article.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 4px 20px 16px; }
+article.card h3 { font-family: var(--font-display); font-size: 24px; margin: 16px 0 0; }
+.para { padding: 12px 0; border-bottom: 1px dashed var(--line); }
+.para:last-child { border-bottom: 0; }
+.para-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tag { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+.text { font-size: 19px; line-height: 1.95; margin: 0; }
+.text.now { background: var(--now); border-radius: 8px; }
+.vk { cursor: pointer; border-radius: 6px; padding: 1px 3px; border-bottom: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); }
+.vk:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.gw { cursor: pointer; border-radius: 6px; border-bottom: 2px dotted var(--muted); }
+.gw:hover { background: color-mix(in srgb, var(--muted) 14%, transparent); }
+.conn { font-weight: 600; color: var(--accent); }
+mark.ac { background: var(--ac); color: inherit; border-radius: 4px; padding: 0 2px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin: 6px 0 10px; }
+
+/* speaking */
+.qbig { font-family: var(--font-display); font-size: clamp(24px, 5vw, 34px); line-height: 1.2; margin: 6px 0 4px; }
+.qvi2 { color: var(--muted); margin: 0 0 12px; }
+.cue { margin: 10px 0; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+.cue ul { margin: 4px 0 0; padding-left: 20px; }
+.kws { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.kw { border: 1px solid var(--accent); border-radius: 12px; padding: 4px 12px; background: var(--bg); cursor: pointer; text-align: left; font-size: 15px; line-height: 1.35; }
+.kw small { display: block; color: var(--muted); font-size: 13px; }
+.band { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .06em; padding: 2px 10px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); }
+.band.low { background: var(--muted); color: var(--surface); }
+.sample { margin: 8px 0 12px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); font-size: 18px; line-height: 1.85; }
+.sample p { margin: 0 0 8px; }
+.sample p:last-child { margin: 0; }
+.ups { display: grid; gap: 8px; margin: 10px 0; }
+.up { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 15px; }
+.up .a { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 70%, transparent); }
+.up .b { font-weight: 600; margin: 2px 0; }
+.up .why { color: var(--muted); }
+.dsent { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-top: 10px; }
+.dsent.locked { opacity: .45; }
+.dhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.dhead b { flex: 1; }
+.dgood { margin-top: 8px; font-size: 17px; }
+.recbox { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--bg); margin-top: 14px; }
+.rec-top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.rec-time { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 110px; }
+.meter { flex: 1; min-width: 100px; height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .08s linear; }
+.recbox audio { width: 100%; margin-top: 12px; }
+.rmsg { margin: 10px 0 0; }
+
+/* writing */
+.ideas { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 12px; }
+.idea { border: 1px solid var(--line); border-radius: 10px; padding: 3px 10px; font-size: 14px; background: var(--bg); }
+.idea small { color: var(--muted); }
+.ofield { margin-bottom: 14px; }
+.ofield label { display: block; font-weight: 600; }
+.ofield .help { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
+.titem { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-top: 12px; }
+.titem .vi { font-size: 17px; margin: 0 0 8px; }
+.hints { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 8px; font-size: 14px; }
+.hints .h { border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 1px 10px; }
+.hints .h.got { background: var(--accent); color: var(--accent-ink); }
+.model { margin-top: 8px; font-size: 17px; line-height: 1.8; }
+.essay p { margin: 0 0 12px; font-size: 18px; line-height: 1.85; }
+.sum { display: grid; gap: 10px; margin: 12px 0; }
+.sumrow { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.sumrow h4 { margin: 0 0 4px; font-size: 15px; color: var(--accent); }
+.sumrow p { margin: 2px 0; font-size: 15px; overflow-wrap: anywhere; }
+.sumrow audio { width: 100%; margin-top: 6px; }
+.pill { font-size: 12px; border-radius: 999px; padding: 1px 8px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
+
+/* dock */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--bg); border-top: 1px solid var(--line); padding: 10px 0 12px; }
+.dock .wrap { display: grid; gap: 10px; }
+.timeline { display: flex; gap: 2px; }
+.timeline i { flex: 1; min-width: 2px; height: 6px; border-radius: 3px; background: var(--line); }
+.timeline i.sp { margin-left: 6px; }
+.timeline i.done { background: var(--accent); cursor: pointer; }
+.timeline i.cur { background: var(--ink); }
+.dock-row { display: flex; align-items: center; gap: 10px; }
+.need { flex: 1; font-size: 14px; color: var(--bad); min-height: 20px; }
+.pos { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+/* info sheet */
+#sheet { position: fixed; left: 0; right: 0; bottom: 96px; z-index: 20; display: none; padding: 0 12px; pointer-events: none; }
+#sheet.show { display: block; }
+.sheet-in { pointer-events: auto; max-width: 640px; max-height: 60vh; overflow: auto; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(10, 20, 35, .28); }
+.sheet-top { display: flex; align-items: center; gap: 10px; }
+.sheet-word { font-family: var(--font-display); font-size: 26px; font-weight: 700; line-height: 1.2; }
+.sheet-mean { font-size: 20px; margin: 8px 0 4px; }
+.sheet-note { color: var(--muted); font-size: 15px; margin: 0 0 4px; }
+.sheet-acts { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.nospeech .listen { display: none; }
+.toast { position: fixed; left: 50%; bottom: 110px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 30; display: none; max-width: 90vw; }
+@media (max-width: 520px) { .scene { padding: 16px 14px; } .rule { grid-template-columns: 1fr; } .text { font-size: 18px; } .pos { display: none; } .sample { font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="kicker-row">
+      <div class="kicker">Reading · Speaking · Writing · IELTS band 6 đến 7</div>
+      <label class="voice listen" id="voiceBox" for="voiceSel"><span>Giọng đọc</span><select id="voiceSel"></select></label>
+    </div>
+    <h1>Relationships: Friends and Family</h1>
+    <nav class="steps" id="steps" aria-label="Các phần của bài học"></nav>
+  </header>
+</div>
+
+<main class="stage" id="stage"></main>
+
+<div class="dock">
+  <div class="wrap">
+    <div class="timeline" id="timeline" aria-hidden="true"></div>
+    <div class="dock-row">
+      <button class="btn" id="backBtn" type="button">Quay lại</button>
+      <div class="need" id="needMsg" role="status"></div>
+      <span class="pos" id="posLbl"></span>
+      <button class="btn primary" id="nextBtn" type="button">Tiếp tục</button>
+    </div>
+  </div>
+</div>
+
+<div id="sheet" role="dialog" aria-label="Nghĩa của từ"><div class="sheet-in" id="sheetIn"></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnf8X3_Xfk9F_8HQtBwSFU_s28sRjxKb0aFaHCA4ybmMJvgaztBAbdvaFzITdbVXBt/exec";
+  var LESSON = "Reading-Speaking-Writing - Relationships and Friendship";
+  /* =====================================================================
+     DATA 1: vocabulary chains, gap-fill, grammar
+     Markup used in strings:  {{id|text}} = lesson word (tap for meaning)
+                              [[text|nghĩa]] = glossary word
+                              @@text@@ = connector phrase
+                              ^^text^^ = academic word (Writing model)
+     ===================================================================== */
+
+  var CHAINS = [
+    { id: "loyal", n: 1, title: "Lòng trung thành", en: "Loyalty", ids: ["loyalty", "standby", "thick", "therefor"],
+      story: "Hãy nhớ lại lần em gặp chuyện buồn. Ai là người không bỏ đi? Đó là người bạn trung thành. Chuỗi này đi từ một <b>phẩm chất</b> (loyalty) → <b>hành động</b> ở bên cạnh (stand by) → <b>khoảng thời gian dài</b>, cả vui lẫn buồn (through thick and thin) → rồi cách nói rất tự nhiên để hứa “mình luôn ở đây” (be there for)." },
+    { id: "reliable", n: 2, title: "Đáng tin cậy", en: "Reliability", ids: ["rel", "counton", "confide", "secret"],
+      story: "Ở bên nhau chưa đủ. Em còn phải <b>tin</b> người ấy. Bắt đầu từ một tính từ (reliable) → em dám <b>nhờ vả</b> (count on) → em dám <b>kể chuyện thầm kín</b> (confide in) → và tin họ sẽ <b>giữ kín</b> (keep a secret)." },
+    { id: "support", n: 3, title: "Hỗ trợ tinh thần", en: "Emotional support", ids: ["emo", "ear", "shoulder", "cheer"],
+      story: "Khi em buồn, một người bạn tốt làm ba việc: <b>nghe</b> (lend a sympathetic ear), cho em <b>chỗ dựa</b> (a shoulder to cry on), rồi làm em <b>cười lại</b> (cheer up). Gộp cả ba lại, ta có một cụm lớn: offer emotional support." },
+    { id: "common", n: 4, title: "Hợp nhau và gắn kết", en: "Having things in common", ids: ["common", "bond", "wave", "eye"],
+      story: "Tình bạn bắt đầu từ đâu? Từ chuyện hai người có <b>nhiều điểm chung</b> (have a lot in common) → cùng làm điều mình thích nên <b>gắn kết</b> (bond over) → nói nửa câu là hiểu (on the same wavelength) → và dĩ nhiên cũng có lúc <b>không đồng ý</b> với nhau (see eye to eye)." },
+    { id: "touch", n: 5, title: "Giữ liên lạc và rạn nứt", en: "Staying close, growing apart", ids: ["touch", "drift", "fall", "makeup"],
+      story: "Tình bạn giống một cái cây: không tưới thì héo. <b>Giữ liên lạc</b> (keep in touch) thì còn gần → bỏ bê thì <b>dần xa nhau</b> (drift apart) → <b>cãi nhau</b> (fall out with) → và nếu còn thương nhau thì <b>làm hòa</b> (make up)." },
+    { id: "family", n: 6, title: "Gia đình", en: "Family ties", ids: ["knit", "along", "lookup", "gap"],
+      story: "Bạn bè thì mình chọn, gia đình thì không. Một gia đình <b>gắn bó</b> (close-knit) thì các thành viên <b>hòa thuận</b> (get along with) → có người để mình <b>ngưỡng mộ</b> (look up to) → nhưng vẫn có thể có <b>khoảng cách thế hệ</b> (generation gap)." }
+  ];
+
+  var VOC = [
+    /* ---- chain 1 ---- */
+    { id: "loyalty", chain: "loyal", en: "loyalty", vi: "lòng trung thành, sự chung thủy", kind: "danh từ", lt: "loyalty",
+      core: "Cô nhớ từ này qua từ gốc <b>loyal</b> (trung thành). Thêm <b>-ty</b> là thành danh từ: loyal → loyalty. Em hình dung một chú chó trung thành: chủ nghèo hay giàu, nó vẫn ở cạnh. Hai mẫu em dùng nhiều: <b>be loyal to someone</b> (trung thành với ai) và <b>show loyalty to someone</b> (thể hiện lòng trung thành).",
+      link: "Nhưng loyalty chỉ là một <i>phẩm chất</i>. Phẩm chất ấy thể hiện bằng <i>hành động</i> nào? Đó là <b>stand by someone</b>.",
+      ex: "Our friendship is built on loyalty, not on gifts.", exvi: "Tình bạn của tụi mình được xây trên lòng trung thành chứ không phải quà cáp.",
+      re: /loyal/i },
+    { id: "standby", chain: "loyal", en: "stand by someone", vi: "ủng hộ, luôn ở bên cạnh ai (nhất là lúc khó khăn)", kind: "cụm động từ", lt: "stand by",
+      core: "<b>stand</b> = đứng, <b>by</b> = bên cạnh → <b>đứng cạnh ai</b>. Nghĩa bóng là ở lại ủng hộ họ, nhất là khi người khác quay lưng. Chú ý quá khứ: <b>stood by</b> (stand → stood → stood, bất quy tắc). Em sẽ gặp lại cụm này trong Reading và Speaking Part 2.",
+      link: "Ở bên cạnh đến bao lâu, trong hoàn cảnh nào? Câu trả lời là <b>through thick and thin</b>.",
+      ex: "She stood by me when everyone else turned away.", exvi: "Cô ấy đã ở bên tôi khi mọi người khác quay lưng.",
+      re: /stand(s|ing)?\s+by|stood\s+by/i },
+    { id: "thick", chain: "loyal", en: "through thick and thin", vi: "đồng cam cộng khổ, vượt qua cả lúc thuận lợi lẫn khó khăn", kind: "thành ngữ",
+      core: "Cô nhớ thế này: <b>thick</b> là rừng rậm, khó đi; <b>thin</b> là rừng thưa, dễ đi (đây là cách giải thích quen thuộc để nhớ thành ngữ). Cùng nhau đi <i>qua cả đường khó lẫn đường dễ</i> = đồng cam cộng khổ. Hay đi với: <b>be friends through thick and thin</b>, <b>stay together through thick and thin</b>.",
+      link: "Muốn cùng nhau đi qua thick and thin, người bạn phải luôn có mặt khi em cần: <b>be there for someone</b>.",
+      ex: "We have been friends through thick and thin.", exvi: "Chúng tôi đã là bạn của nhau, đồng cam cộng khổ.",
+      re: /through\s+thick\s+and\s+thin/i },
+    { id: "therefor", chain: "loyal", en: "be there for someone", vi: "luôn có mặt để giúp đỡ, an ủi ai", kind: "cụm từ",
+      core: "Câu em nghe nhiều nhất trong phim và đời thật: <b>I’ll be there for you</b>. <b>be there for someone</b> = có mặt khi họ cần, cả về thể chất lẫn tinh thần. Rất tự nhiên để dùng trong Speaking. Em có thể nói <i>She has always been there for me</i> (dùng hiện tại hoàn thành, cô sẽ dạy ở phần Ngữ pháp).",
+      link: "Và người luôn ở đó cho em thì cũng phải <b>reliable</b>, tức là đáng tin cậy. Ta sang chuỗi 2.",
+      ex: "A true friend is always there for you.", exvi: "Một người bạn thật sự luôn ở đó vì bạn.",
+      re: /\bthere\s+for\b/i },
+
+    /* ---- chain 2 ---- */
+    { id: "rel", chain: "reliable", en: "reliable", vi: "đáng tin cậy, có thể trông cậy", kind: "tính từ", lt: "reliable",
+      core: "Từ này ghép từ <b>rely</b> (dựa vào) + <b>-able</b> (có thể) → <b>reliable</b> = <i>có thể để mình dựa vào</i>. Danh từ: <b>reliability</b>. Trái nghĩa: <b>unreliable</b>. Em dùng được cho cả người lẫn vật: a reliable friend, a reliable source (nguồn tin đáng tin).",
+      link: "Reliable là <i>tính chất</i>. Còn <i>hành động</i> của em với một người reliable là: <b>count on</b> họ.",
+      ex: "He’s a reliable friend; he never forgets a promise.", exvi: "Cậu ấy là người bạn đáng tin; chẳng bao giờ quên lời hứa.",
+      re: /reliab/i },
+    { id: "counton", chain: "reliable", en: "count on someone", vi: "tin cậy, trông cậy vào ai", kind: "cụm động từ", lt: "count on",
+      core: "<b>count</b> = đếm. Em “đếm” ai đó vào danh sách những người chắc chắn có mặt khi mình cần. Gần nghĩa: <b>rely on</b>, <b>depend on</b>. Hai mẫu câu em dùng cả đời: <b>You can always count on me.</b> và <b>She is someone I can count on.</b>",
+      link: "Trông cậy được rồi thì em mới dám <b>confide in</b> họ, tức là kể chuyện thầm kín.",
+      ex: "You can always count on me.", exvi: "Cậu luôn có thể trông cậy vào tớ.",
+      re: /count(s|ed|ing)?\s+on/i },
+    { id: "confide", chain: "reliable", en: "confide in someone", vi: "tâm sự, thổ lộ chuyện riêng với ai", kind: "cụm động từ", lt: "confide in",
+      core: "Gốc Latin <b>fid-</b> nghĩa là tin (em thấy nó trong <b>confidence</b>, <b>fidelity</b>). <b>confide in</b> = tin ai đến mức kể cho họ nghe chuyện thầm kín. Chú ý giới từ <b>in</b>: <i>confide in someone about something</i>.",
+      link: "Kể chuyện thầm kín xong, em mong người nghe sẽ <b>keep a secret</b>.",
+      ex: "I confide in my sister because she never judges me.", exvi: "Mình tâm sự với chị gái vì chị không bao giờ phán xét mình.",
+      re: /\bconfid(e|es|ed|ing)\s+in\b/i },
+    { id: "secret", chain: "reliable", en: "keep a secret", vi: "giữ bí mật", kind: "cụm từ đi cùng nhau",
+      core: "Động từ đi với <i>secret</i> là <b>keep</b> (giữ), không phải “hold” hay “save”. Em nhớ ba cụm: <b>keep a secret</b> (giữ bí mật), <b>tell a secret</b> (kể bí mật), <b>share a secret</b> (chia sẻ bí mật). Tính từ liên quan: <b>trustworthy</b> (đáng tin).",
+      link: "Bí mật đã được giữ, bước tiếp theo là người bạn chia sẻ nỗi buồn: <b>offer emotional support</b>. Ta sang chuỗi 3.",
+      ex: "A real friend knows how to keep a secret.", exvi: "Một người bạn thật sự biết cách giữ bí mật.",
+      re: /(keep|keeps|kept|keeping)\s+(a\s+|the\s+|my\s+|your\s+|their\s+)?secrets?/i },
+
+    /* ---- chain 3 ---- */
+    { id: "emo", chain: "support", en: "offer emotional support", vi: "hỗ trợ về mặt tinh thần", kind: "cụm từ", lt: "",
+      core: "<b>emotional</b> = thuộc về cảm xúc; <b>support</b> = sự hỗ trợ; <b>offer</b> = đưa ra, trao. Em phân biệt: <b>practical support</b> (giúp việc cụ thể: cho mượn tiền, chở đi học) và <b>emotional support</b> (an ủi, lắng nghe, động viên). Danh từ <i>support</i> ở đây là không đếm được, nên không thêm -s.",
+      link: "Cách nhẹ nhàng nhất để offer emotional support là <b>lend a sympathetic ear</b>.",
+      ex: "Good friends offer emotional support during exam season.", exvi: "Bạn tốt hỗ trợ tinh thần cho nhau trong mùa thi.",
+      re: /emotional\s+support/i },
+    { id: "ear", chain: "support", en: "lend a sympathetic ear", vi: "lắng nghe một cách đồng cảm", kind: "thành ngữ",
+      core: "<b>lend</b> = cho mượn, <b>ear</b> = tai → <i>cho mượn đôi tai</i>. <b>sympathetic</b> = đồng cảm, thông cảm (đừng nhầm với <b>sympathy</b> là danh từ). Cô hay dặn học sinh: nhiều khi người ta không cần lời khuyên, chỉ cần có ai đó <i>lắng nghe</i>.",
+      link: "Nghe xong, đôi khi em cần cho bạn một chỗ để khóc: <b>a shoulder to cry on</b>.",
+      ex: "She always lends a sympathetic ear when I’m stressed.", exvi: "Cô ấy luôn lắng nghe tôi khi tôi căng thẳng.",
+      re: /sympathetic\s+ear/i },
+    { id: "shoulder", chain: "support", en: "a shoulder to cry on", vi: "chỗ dựa để khóc, người để than thở lúc buồn", kind: "thành ngữ",
+      core: "Hình ảnh rất rõ: <b>bờ vai</b> để <b>tựa đầu khóc</b>. Mẫu hay dùng: <b>be a shoulder to cry on</b>, <b>need a shoulder to cry on</b>. Chú ý giới từ <b>on</b> (cry on), không phải “cry in”.",
+      link: "Khóc xong rồi thì bạn sẽ giúp em vui lên: <b>cheer someone up</b>.",
+      ex: "When my dog died, my best friend was a shoulder to cry on.", exvi: "Khi chú chó của tôi mất, bạn thân là chỗ dựa để tôi khóc.",
+      re: /shoulder\s+to\s+cry\s+on/i },
+    { id: "cheer", chain: "support", en: "cheer someone up", vi: "làm ai vui lên", kind: "cụm động từ",
+      core: "<b>cheer</b> = cổ vũ, reo hò; <b>up</b> = lên → làm tinh thần <i>đi lên</i>. Đây là cụm động từ <b>tách được</b>: nói <b>cheer me up</b>, không nói “cheer up me”. Em cũng gặp <b>Cheer up!</b> (Vui lên nào!) và <b>cheer myself up</b> (tự làm mình vui).",
+      link: "Tốt rồi, em đã nắm xong chuỗi hỗ trợ tinh thần. Giờ ta hỏi ngược lại: vì sao hai người thân nhau ngay từ đầu? Vì họ <b>have a lot in common</b>. Ta sang chuỗi 4.",
+      ex: "He told a joke to cheer me up.", exvi: "Cậu ấy kể một câu chuyện cười để làm tớ vui lên.",
+      re: /cheer(s|ed|ing)?\s+(\w+\s+)?up/i },
+
+    /* ---- chain 4 ---- */
+    { id: "common", chain: "common", en: "have a lot in common", vi: "có nhiều điểm chung", kind: "cụm từ",
+      core: "<b>common</b> ở đây là danh từ: <b>in common</b> = điểm chung. Mẫu: <b>have a lot in common (with someone)</b>, <b>have nothing in common</b>, <b>have little in common</b>. Chú ý <b>with</b> khi nói với ai: <i>I have a lot in common with Mai.</i>",
+      link: "Có điểm chung rồi thì hai người thân nhanh hơn khi cùng làm điều đó: <b>bond over</b>.",
+      ex: "We have a lot in common: we both love hiking and music.", exvi: "Tụi mình có nhiều điểm chung: cả hai đều mê đi bộ đường dài và âm nhạc.",
+      re: /in\s+common/i },
+    { id: "bond", chain: "common", en: "bond over something", vi: "gắn kết nhờ cùng chung sở thích, trải nghiệm", kind: "cụm động từ",
+      core: "<b>bond</b> (danh từ) = mối liên kết, sợi dây gắn kết; <b>bond</b> (động từ) = trở nên thân thiết. <b>bond over</b> + điều chung: <i>bond over music</i>, <i>bond over a shared experience</i>. Quá khứ: <b>bonded</b> (thêm -ed).",
+      link: "Khi đã gắn kết, hai người đôi khi hiểu nhau mà không cần giải thích: <b>be on the same wavelength</b>.",
+      ex: "We bonded over our love of football.", exvi: "Tụi mình gắn kết nhờ cùng yêu bóng đá.",
+      re: /bond(s|ed|ing)?\s+over/i },
+    { id: "wave", chain: "common", en: "be on the same wavelength", vi: "hợp nhau, cùng suy nghĩ", kind: "thành ngữ",
+      core: "<b>wavelength</b> = bước sóng (của radio). Hai chiếc radio cùng bắt một sóng thì nghe cùng một bài. Hai người cùng <i>tần số</i> thì chỉ cần nửa câu là hiểu nhau. Nói tự nhiên: <b>We’re on the same wavelength.</b>",
+      link: "Nhưng hợp nhau không có nghĩa lúc nào cũng đồng ý. Có lúc em sẽ nói: <b>we don’t see eye to eye</b>.",
+      ex: "We’re on the same wavelength, so I rarely need to explain myself.", exvi: "Tụi mình hợp tần số nên tôi hiếm khi phải giải thích.",
+      re: /same\s+wavelength/i },
+    { id: "eye", chain: "common", en: "see eye to eye", vi: "đồng quan điểm, nhất trí với nhau", kind: "thành ngữ",
+      core: "Hai người <b>nhìn thẳng vào mắt nhau</b> = cùng nhìn một hướng. Cô thấy người ta dùng dạng <b>phủ định</b> nhiều hơn: <b>don’t see eye to eye</b> (bất đồng). Mẫu: <b>see eye to eye with someone on/about something</b>.",
+      link: "Bất đồng đôi khi làm tình bạn rạn nứt. Ta sang chuỗi 5: <b>keep in touch</b> và <b>drift apart</b>.",
+      ex: "My dad and I don’t always see eye to eye on music.", exvi: "Bố và tôi không phải lúc nào cũng cùng quan điểm về âm nhạc.",
+      re: /see(s|ing)?\s+eye\s+to\s+eye|saw\s+eye\s+to\s+eye/i },
+
+    /* ---- chain 5 ---- */
+    { id: "touch", chain: "touch", en: "keep in touch (with someone)", vi: "giữ liên lạc (với ai)", kind: "cụm từ",
+      core: "<b>touch</b> = chạm. Giữ cho hai người vẫn còn <i>chạm</i> vào nhau dù ở xa. Cách dùng: <b>keep in touch with</b> + người; <b>stay in touch</b> cũng đúng. Câu chia tay quen thuộc: <b>Let’s keep in touch!</b>",
+      link: "Nếu không keep in touch thì chuyện gì xảy ra? Hai người sẽ <b>drift apart</b>.",
+      ex: "We keep in touch through video calls.", exvi: "Tụi mình giữ liên lạc qua cuộc gọi video.",
+      re: /(keep|keeps|kept|keeping|stay|stays|stayed|staying)\s+in\s+touch/i },
+    { id: "drift", chain: "touch", en: "drift apart", vi: "dần xa cách nhau", kind: "cụm động từ", lt: "drift apart",
+      core: "<b>drift</b> = trôi dạt; <b>apart</b> = xa nhau. Hình dung hai chiếc thuyền buông neo, nước cuốn mỗi chiếc một hướng. Không ai cố ý, nó cứ <i>dần dần</i> như thế. Đây là điểm khác với <b>fall out</b> (cãi nhau rõ ràng).",
+      link: "Còn nếu hai người <i>cãi nhau</i> thì ta nói: <b>fall out with</b>.",
+      ex: "After graduation, many friends drift apart.", exvi: "Sau khi tốt nghiệp, nhiều người bạn dần xa nhau.",
+      re: /drift(s|ed|ing)?\s+apart/i },
+    { id: "fall", chain: "touch", en: "fall out with someone", vi: "cãi nhau, bất hòa với ai", kind: "cụm động từ",
+      core: "<b>fall out</b> = “rơi ra” khỏi mối quan hệ. Quá khứ: <b>fell out</b> (fall → fell → fallen). Mẫu: <b>fall out with someone over something</b>. Đừng nhầm với <b>fall for</b> (phải lòng).",
+      link: "Nhưng nhiều khi cãi xong lại làm lành: <b>make up</b>.",
+      ex: "I fell out with my best friend over a silly joke.", exvi: "Tôi cãi nhau với bạn thân vì một câu đùa ngớ ngẩn.",
+      re: /fall(s|ing)?\s+out|fell\s+out/i },
+    { id: "makeup", chain: "touch", en: "make up (with someone)", vi: "làm hòa", kind: "cụm động từ", lt: "make up",
+      core: "<b>make up</b> trong nghĩa này = <b>làm hòa</b>. (Make up còn có nghĩa khác là <i>trang điểm</i> hoặc <i>bịa ra</i>, nên em luôn nhìn ngữ cảnh.) Mẫu: <b>make up with someone</b>, hoặc <b>We made up.</b>",
+      link: "Hết chuỗi bạn bè. Giờ sang gia đình. Bạn bè thì ta chọn, còn gia đình thì sao? Chuỗi 6 bắt đầu bằng <b>close-knit</b>.",
+      ex: "We made up the next day and laughed about it.", exvi: "Hôm sau tụi mình làm hòa và cười về chuyện đó.",
+      re: /\b(make|makes|making|made)\s+up\b/i },
+
+    /* ---- chain 6 ---- */
+    { id: "knit", chain: "family", en: "close-knit", vi: "gắn bó chặt chẽ", kind: "tính từ", lt: "close-knit",
+      core: "<b>knit</b> = đan len. <b>close-knit</b> = <i>đan sít</i>, như chiếc áo len đan chặt không bị tuột. Thường đi với: <b>a close-knit family</b>, <b>a close-knit community</b> (cộng đồng gắn bó).",
+      link: "Gia đình gắn bó thì các thành viên <b>get along with</b> nhau.",
+      ex: "I grew up in a close-knit family.", exvi: "Tôi lớn lên trong một gia đình gắn bó.",
+      re: /close[-\s]knit/i },
+    { id: "along", chain: "family", en: "get along with someone", vi: "hòa thuận, hòa hợp với ai", kind: "cụm động từ",
+      core: "<b>get along (well) with someone</b> = sống hoặc làm việc hòa thuận với ai. Tiếng Anh–Anh hay nói <b>get on with</b>, cùng nghĩa. Đây là câu hỏi quen thuộc ở IELTS Part 1: <i>Do you get along well with your family?</i>",
+      link: "Trong nhà hòa thuận, em thường có người để ngưỡng mộ: <b>look up to</b>.",
+      ex: "I get along well with my cousins.", exvi: "Tôi hòa thuận với các anh chị em họ.",
+      re: /(get|gets|getting|got)\s+(along|on)\s+(well\s+)?with/i },
+    { id: "lookup", chain: "family", en: "look up to someone", vi: "ngưỡng mộ, kính trọng ai", kind: "cụm động từ",
+      core: "<b>look up</b> = ngước lên nhìn. Ta ngước nhìn người mình kính trọng. Trái nghĩa dễ nhớ: <b>look down on</b> (coi thường). Chú ý: <b>look up to</b> khác <b>look up</b> (tra cứu).",
+      link: "Nhưng giữa người lớn và người trẻ vẫn có một khoảng cách: <b>generation gap</b>.",
+      ex: "I really look up to my older sister.", exvi: "Tôi rất ngưỡng mộ chị gái.",
+      re: /look(s|ed|ing)?\s+up\s+to/i },
+    { id: "gap", chain: "family", en: "generation gap", vi: "khoảng cách thế hệ", kind: "danh từ ghép", lt: "generation gap",
+      core: "<b>generation</b> = thế hệ, <b>gap</b> = khoảng trống, vết nứt. Cụm hay gặp: <b>bridge the generation gap</b> (thu hẹp khoảng cách thế hệ), <b>there is a generation gap</b>. Đây là danh từ ghép, <i>generation</i> không thêm -s.",
+      link: "Đó là toàn bộ 24 từ. Đừng quên: tất cả sẽ quay lại trong Reading, Speaking và Writing, nên em đã gặp chúng một lần rồi thì sẽ nhận ra ngay.",
+      ex: "The generation gap sometimes makes it hard to talk about technology.", exvi: "Khoảng cách thế hệ đôi khi khiến việc nói chuyện về công nghệ trở nên khó.",
+      re: /generation\s+gap/i }
+  ];
+  var VBYID = {}; VOC.forEach(function (v) { VBYID[v.id] = v; });
+  var CBYID = {}; CHAINS.forEach(function (c) { CBYID[c.id] = c; });
+
+  /* gap-fill: one sentence per word (first option in each list is the answer; order is shuffled when shown) */
+  var GAPS = {
+    loyal: [
+      { q: "Our friendship is built on ___, so I never worry that she will talk behind my back.", opts: ["loyalty", "a generation gap", "a secret"], ans: 0, why: "<b>loyalty</b> = lòng trung thành. Cô ấy không nói xấu sau lưng em vì cô ấy trung thành." },
+      { q: "When I lost my job, my brother ___ me and gave me a place to stay.", opts: ["stood by", "fell out with", "got along with"], ans: 0, why: "<b>stood by</b> = quá khứ của stand by (ở bên ủng hộ). Anh trai giúp em nên không thể là fell out with (cãi nhau)." },
+      { q: "We have supported each other ___ since primary school.", opts: ["through thick and thin", "off the top of our heads", "in common"], ans: 0, why: "<b>through thick and thin</b> = cùng nhau vượt qua mọi chuyện. Cụm này đi sau động từ chỉ sự ủng hộ, ở bên nhau." },
+      { q: "Call me any time, day or night. I will always ___ you.", opts: ["be there for", "look up to", "confide in"], ans: 0, why: "<b>be there for you</b> = luôn có mặt khi bạn cần. Look up to (ngưỡng mộ) và confide in (tâm sự) sai nghĩa với lời hứa này." }
+    ],
+    reliable: [
+      { q: "I can’t depend on Tom. He is late every time, so he is not very ___.", opts: ["reliable", "close-knit", "sympathetic"], ans: 0, why: "<b>reliable</b> = đáng tin cậy. Tom hay trễ nên em không thể dựa vào anh ấy." },
+      { q: "You can ___ me. I will be at the airport at six, I promise.", opts: ["count on", "make up", "cheer up"], ans: 0, why: "<b>count on me</b> = trông cậy vào tớ. Cấu trúc: can count on + người." },
+      { q: "I only ___ my best friend because I know she will not tell anyone.", opts: ["confide in", "drift apart from", "stand by"], ans: 0, why: "<b>confide in</b> = tâm sự. Lí do “she will not tell anyone” cho thấy em kể chuyện riêng với cô ấy." },
+      { q: "I told her my plan because I knew she could ___.", opts: ["keep a secret", "cheer me up", "bond over"], ans: 0, why: "<b>keep a secret</b> = giữ bí mật. Động từ đi với secret là keep." }
+    ],
+    support: [
+      { q: "Counsellors at school ___ to students who feel anxious about exams.", opts: ["offer emotional support", "get along with", "keep in touch"], ans: 0, why: "<b>offer emotional support</b> = hỗ trợ tinh thần. Chủ ngữ số nhiều (counsellors) nên dùng offer, không thêm -s." },
+      { q: "I didn’t need advice that day. I just needed someone to ___.", opts: ["lend a sympathetic ear", "see eye to eye", "have a lot in common"], ans: 0, why: "<b>lend a sympathetic ear</b> = lắng nghe đồng cảm. Em không cần lời khuyên, chỉ cần người nghe." },
+      { q: "After the match, our captain was crying, so I became ___ for him.", opts: ["a shoulder to cry on", "a close-knit family", "a generation gap"], ans: 0, why: "<b>a shoulder to cry on</b> = chỗ dựa để khóc. Đội trưởng đang khóc nên cần chỗ dựa." },
+      { q: "I felt terrible, so my sister baked my favourite cake to ___.", opts: ["cheer me up", "look me up", "make me up"], ans: 0, why: "<b>cheer me up</b> = làm tớ vui lên (cụm động từ tách được). Look me up (tìm tớ) và make me up (trang điểm cho tớ) sai nghĩa." }
+    ],
+    common: [
+      { q: "Mai and I like the same music, books and films. We really ___.", opts: ["have a lot in common", "drift apart", "count on"], ans: 0, why: "<b>have a lot in common</b> = có nhiều điểm chung. Cùng thích nhạc, sách, phim là điểm chung." },
+      { q: "We became close when we ___ our love of cooking.", opts: ["bonded over", "fell out over", "looked up to"], ans: 0, why: "<b>bonded over</b> = gắn kết nhờ cùng yêu thích điều gì. Became close nên không thể là fell out." },
+      { q: "We often finish each other’s sentences because we are ___.", opts: ["on the same wavelength", "close-knit", "through thick and thin"], ans: 0, why: "<b>on the same wavelength</b> = cùng tần số, hiểu nhau ngay. Hai người nói tiếp câu của nhau là dấu hiệu rõ nhất." },
+      { q: "My mum and I never ___ about clothes; she hates everything I wear.", opts: ["see eye to eye", "bond over", "make up"], ans: 0, why: "<b>never see eye to eye</b> = chẳng bao giờ đồng quan điểm. Mẹ ghét mọi thứ em mặc nên hai người bất đồng." }
+    ],
+    touch: [
+      { q: "She moved to Canada, but we still ___ by video call every Sunday.", opts: ["keep in touch", "fall out", "make up"], ans: 0, why: "<b>keep in touch</b> = giữ liên lạc. Gọi video mỗi Chủ nhật là cách giữ liên lạc." },
+      { q: "We didn’t have an argument. We just gradually stopped talking and ___.", opts: ["drifted apart", "made up", "stood by"], ans: 0, why: "<b>drifted apart</b> = dần xa nhau. “Không cãi nhau, chỉ dần ngừng nói chuyện” là đúng nghĩa drift apart." },
+      { q: "They ___ over money and haven’t spoken for months.", opts: ["fell out", "made up", "kept in touch"], ans: 0, why: "<b>fell out</b> = đã cãi nhau (quá khứ của fall out). “Haven’t spoken for months” cho thấy họ chưa làm hòa." },
+      { q: "It was only a silly argument, so we ___ the next morning.", opts: ["made up", "fell out", "drifted apart"], ans: 0, why: "<b>made up</b> = đã làm hòa. Chỉ là cãi nhau vặt nên sáng hôm sau làm hòa." }
+    ],
+    family: [
+      { q: "In a ___ family, everyone eats dinner together and helps each other.", opts: ["close-knit", "reliable", "sympathetic"], ans: 0, why: "<b>close-knit</b> = gắn bó. Cả nhà ăn tối cùng nhau, giúp đỡ nhau." },
+      { q: "I ___ my cousins very well; we never argue.", opts: ["get along with", "count on", "confide"], ans: 0, why: "<b>get along with</b> = hòa thuận với. “Never argue” (không bao giờ cãi nhau) khớp nghĩa." },
+      { q: "My grandfather worked hard all his life, so I really ___ him.", opts: ["look up to", "look down on", "fall out with"], ans: 0, why: "<b>look up to</b> = ngưỡng mộ. Ông làm việc chăm chỉ cả đời nên em ngưỡng mộ. Look down on là coi thường (nghĩa ngược lại)." },
+      { q: "Grandma doesn’t understand my phone, and I don’t understand her radio. That’s the ___.", opts: ["generation gap", "shoulder to cry on", "same wavelength"], ans: 0, why: "<b>generation gap</b> = khoảng cách thế hệ. Hai thế hệ không hiểu đồ dùng của nhau." }
+    ]
+  };
+
+  /* =====================================================================
+     GRAMMAR (bonus): language for talking about relationships
+     ===================================================================== */
+  var GR = [
+    { id: "pp", title: "Present perfect: tình bạn kéo dài đến bây giờ",
+      intro: "Khi em muốn nói <i>một mối quan hệ đã bắt đầu từ trước và vẫn còn đến hôm nay</i>, em dùng <b>thì hiện tại hoàn thành</b>. Ví dụ: tình bạn của em với Lan bắt đầu từ lớp 6 và <b>bây giờ vẫn còn</b>. Cô hay thấy học sinh nói <i>I know her for five years</i>. Câu này <b>sai</b>, vì “know” đang kéo dài đến hôm nay nên phải dùng hiện tại hoàn thành: <i>I’ve known her for five years.</i>",
+      formula: "<b>S + have / has + V3</b> + <b>for</b> + khoảng thời gian (for five years, for a long time)<br><b>S + have / has + V3</b> + <b>since</b> + mốc thời gian (since 2019, since primary school)",
+      rules: "<b>for</b> trả lời câu hỏi “bao lâu?”. <b>since</b> trả lời câu hỏi “từ khi nào?”. Với động từ chỉ trạng thái (know, be, have), em dùng <i>have known</i>, <i>have been</i>.",
+      ex: [["We have been friends for ten years.", "Chúng tôi đã là bạn mười năm rồi."], ["I’ve known her since primary school.", "Mình quen cô ấy từ hồi tiểu học."], ["She has always been there for me.", "Cô ấy luôn ở bên mình."]],
+      tip: "Nếu việc đã <b>kết thúc</b> và có <b>mốc thời gian cụ thể</b> thì dùng quá khứ đơn: <i>We met in 2019.</i> Chữ <b>in 2019</b> báo hiệu quá khứ đơn.",
+      pen: "Viết vào vở 3 câu về một người bạn của em: một câu với <b>for</b>, một câu với <b>since</b>, một câu với <b>always</b>.",
+      mc: [
+        { q: "I ___ Nam since we were in grade six.", opts: ["have known", "know", "knew"], ans: 0, why: "<b>since</b> + mốc thời gian, quan hệ còn đến nay → hiện tại hoàn thành: have known." },
+        { q: "We’ve been best friends ___ five years.", opts: ["for", "since", "from"], ans: 0, why: "Five years là một <b>khoảng thời gian</b> → dùng <b>for</b>. Since cần một mốc (since 2020)." },
+        { q: "We ___ each other in 2019.", opts: ["met", "have met", "meet"], ans: 0, why: "<b>in 2019</b> là mốc thời gian cụ thể, việc đã kết thúc → quá khứ đơn: met." },
+        { q: "How long ___ your best friend?", opts: ["have you known", "do you know", "did you know"], ans: 0, why: "<b>How long</b> hỏi về khoảng thời gian kéo dài đến nay → have you known." }
+      ],
+      prod: { prompt: "Viết 1 câu về một người bạn của em, dùng <b>for</b> hoặc <b>since</b> với thì hiện tại hoàn thành.", min: 6,
+        test: function (t) { return /\b(have|has|'ve|’ve|'s|’s)\b/i.test(t) && /\b(for|since)\b/i.test(t); },
+        fail: "Cô chưa thấy cấu trúc. Hãy dùng <b>have / has + V3</b> và <b>for</b> hoặc <b>since</b>. Ví dụ: <i>We have been friends for six years.</i>", ok: "Rất tốt! Em đã dùng hiện tại hoàn thành với for / since." } },
+
+    { id: "used", title: "Used to: tình bạn ngày xưa khác bây giờ",
+      intro: "Khi em kể về <i>một thói quen hoặc tình trạng trong quá khứ mà bây giờ không còn nữa</i>, em dùng <b>used to + động từ</b>. Cấu trúc này rất hợp để nói về bạn cũ, thói quen cũ: <i>We used to be inseparable, but we drifted apart.</i> Cô hay nói với học sinh: <b>used to</b> ngầm báo rằng “<b>bây giờ khác rồi</b>”.",
+      formula: "<b>S + used to + V (nguyên mẫu)</b><br>Phủ định: <b>S + didn’t use to + V</b><br>Nghi vấn: <b>Did + S + use to + V?</b>",
+      rules: "Sau <b>did / didn’t</b>, chữ <b>used</b> mất đuôi <b>d</b> thành <b>use</b>. <b>would + V</b> cũng chỉ thói quen quá khứ (việc lặp lại), nhưng không dùng cho trạng thái: nói <i>I used to be shy</i>, không nói “I would be shy”.",
+      ex: [["We used to be inseparable.", "Tụi mình từng không rời nhau nửa bước."], ["I used to see her every day, but now we only text.", "Mình từng gặp cô ấy mỗi ngày, nhưng giờ chỉ nhắn tin."], ["Did you use to live near each other?", "Hồi đó các bạn có sống gần nhau không?"]],
+      tip: "Đừng nhầm với <b>be used to + V-ing</b> (quen với): <i>I’m used to living far from my family.</i> Cấu trúc này nói về thói quen ở hiện tại.",
+      pen: "Viết vào vở 2 câu với <b>used to</b> về một điều em và bạn thân từng làm nhưng bây giờ không làm nữa.",
+      mc: [
+        { q: "We ___ be close, but now we hardly talk.", opts: ["used to", "use to", "are used to"], ans: 0, why: "Câu khẳng định, nói về quá khứ đã chấm dứt → <b>used to + V</b>." },
+        { q: "Did you ___ live in the same street?", opts: ["use to", "used to", "using to"], ans: 0, why: "Sau <b>Did</b>, động từ trở về nguyên mẫu nên used mất d: <b>use to</b>." },
+        { q: "When I was a child, I ___ shy.", opts: ["used to be", "would be", "am used to be"], ans: 0, why: "<b>be shy</b> là trạng thái, nên dùng used to be. Would chỉ dùng cho hành động lặp lại." },
+        { q: "We ___ play badminton every Sunday when we were at school.", opts: ["would", "are used to", "have"], ans: 0, why: "Hành động lặp lại trong quá khứ (every Sunday) → có thể dùng <b>would + V</b> (hoặc used to). Hai đáp án còn lại sai cấu trúc." }
+      ],
+      prod: { prompt: "Viết 1 câu về một bạn cũ hoặc một thói quen cũ của em, dùng <b>used to</b>.", min: 6,
+        test: function (t) { return /\bused to\b|\buse to\b/i.test(t); },
+        fail: "Cô chưa thấy <b>used to</b>. Ví dụ: <i>We used to walk to school together.</i>", ok: "Rất tốt! Em đã dùng used to để nói về quá khứ." } },
+
+    { id: "rel", title: "Mệnh đề quan hệ: miêu tả người bạn bằng một câu dài và đẹp",
+      intro: "Thay vì nói hai câu ngắn: <i>I have a friend. I can count on him.</i>, em gộp lại thành một câu dài và tự nhiên hơn: <i>I have a friend <b>who</b> I can count on.</i> <b>who</b> hoặc <b>that</b> thay cho <b>người</b>; <b>whose</b> nói về <b>cái thuộc về người đó</b> (lời khuyên của họ, nhà của họ). Đây là cách ghi điểm Grammar rất nhanh.",
+      formula: "<b>who / that + V</b>: <i>a friend who always listens</i><br><b>(who / that) + S + V</b>: <i>a friend (who) I can count on</i> (có thể bỏ who)<br><b>whose + danh từ</b>: <i>someone whose advice I trust</i>",
+      rules: "Đừng thêm đại từ thừa: nói <i>a friend who I can count on</i>, không nói “a friend who I can count on <u>him</u>”. Với mệnh đề có dấu phẩy (thêm thông tin), dùng <b>who</b>, không dùng <b>that</b>: <i>My cousin, who lives in Da Nang, calls me every week.</i>",
+      ex: [["Linh is someone who always lends a sympathetic ear.", "Linh là người luôn lắng nghe mình."], ["I have a friend I can count on.", "Mình có một người bạn mà mình có thể trông cậy."], ["He is a friend whose advice I really trust.", "Cậu ấy là người bạn mà mình rất tin lời khuyên."]],
+      tip: "Câu bỏ who sau tân ngữ rất tự nhiên trong Speaking: <i>She’s the kind of friend I can always count on.</i>",
+      pen: "Viết vào vở 3 câu miêu tả bạn thân theo mẫu: <b>who + động từ</b>; <b>(who) + tôi + động từ</b>; <b>whose + danh từ</b>.",
+      mc: [
+        { q: "She is a friend ___ always cheers me up.", opts: ["who", "whose", "which"], ans: 0, why: "Thay cho người và làm chủ ngữ của “always cheers me up” → <b>who</b>." },
+        { q: "He is someone ___ advice I always follow.", opts: ["whose", "who", "that"], ans: 0, why: "<b>whose + advice</b> = lời khuyên của người đó (sở hữu)." },
+        { q: "Which sentence is correct?", opts: ["I have a friend who I can count on.", "I have a friend who I can count on him.", "I have a friend whose I can count on."], ans: 0, why: "Không thêm đại từ thừa “him”. Whose phải đi với danh từ." },
+        { q: "My cousin, ___ lives in Da Nang, calls me every week.", opts: ["who", "that", "whose"], ans: 0, why: "Mệnh đề có dấu phẩy (thêm thông tin) → dùng <b>who</b>; không dùng <b>that</b> sau dấu phẩy." }
+      ],
+      prod: { prompt: "Viết 1 câu miêu tả bạn thân của em, dùng <b>who</b>, <b>that</b> hoặc <b>whose</b>.", min: 7,
+        test: function (t) { return /\b(who|that|whose)\b/i.test(t); },
+        fail: "Cô chưa thấy <b>who / that / whose</b>. Ví dụ: <i>My best friend is someone who never judges me.</i>", ok: "Rất tốt! Em đã dùng mệnh đề quan hệ." } },
+
+    { id: "more", title: "So sánh kép: càng... càng...",
+      intro: "Khi hai điều thay đổi <i>cùng nhau</i>, ta dùng <b>The + so sánh hơn, the + so sánh hơn</b>. Tình bạn rất hợp với cấu trúc này: <i>The more time we spend together, the closer we become.</i> (Càng dành nhiều thời gian bên nhau, tụi mình càng thân.) Câu này nghe rất “cao cấp” nhưng cấu trúc lại dễ.",
+      formula: "<b>The + so sánh hơn + S + V, the + so sánh hơn + S + V</b><br>the more / the less · the closer · the better · the more reliable",
+      rules: "Tính từ ngắn thêm <b>-er</b> (close → closer). Tính từ dài dùng <b>more</b> (more reliable). Bất quy tắc: good → better. Đừng quên <b>the</b> ở cả hai vế, và giữa hai vế có dấu phẩy.",
+      ex: [["The more we talk, the better we understand each other.", "Càng nói chuyện, tụi mình càng hiểu nhau."], ["The closer we are, the more we trust each other.", "Càng thân, tụi mình càng tin nhau."], ["The less time friends spend together, the more likely they are to drift apart.", "Bạn bè càng ít dành thời gian cho nhau thì càng dễ xa cách."]],
+      tip: "Cấu trúc này rất hợp ở Speaking Part 3 và Writing để nói về <b>xu hướng</b> và <b>nguyên nhân – kết quả</b>.",
+      pen: "Viết vào vở 2 câu với <b>The more..., the ...</b> về tình bạn hoặc gia đình của em.",
+      mc: [
+        { q: "The ___ time we spend together, the closer we become.", opts: ["more", "most", "much"], ans: 0, why: "Cấu trúc <b>the + so sánh hơn</b>: the more time (nhiều thời gian hơn)." },
+        { q: "The ___ we are, the more we trust each other.", opts: ["closer", "close", "closest"], ans: 0, why: "Tính từ ngắn → <b>close + er</b> = closer, đi sau the." },
+        { q: "The ___ reliable a friend is, the more we trust them.", opts: ["more", "most", "very"], ans: 0, why: "Tính từ dài (reliable) dùng <b>more</b> để tạo so sánh hơn." },
+        { q: "Which sentence is correct?", opts: ["The more we talk, the better we understand each other.", "The more we talk, we understand each other better.", "More we talk, better we understand each other."], ans: 0, why: "Cần có <b>the</b> ở cả hai vế và dấu phẩy giữa hai vế." }
+      ],
+      prod: { prompt: "Viết 1 câu về tình bạn hoặc gia đình, dùng <b>The more / less ..., the ...</b>.", min: 8,
+        test: function (t) { return /\bthe\s+(more|less|\w+er|better|worse)\b[^,]*,\s*the\s+(more|less|\w+er|better|worse)\b/i.test(t); },
+        fail: "Cô chưa thấy đủ hai vế <b>The ..., the ...</b> có dấu phẩy ở giữa. Ví dụ: <i>The more we talk, the closer we become.</i>", ok: "Rất tốt! Em đã dùng so sánh kép." } }
+  ];
+
+  /* =====================================================================
+     DATA 2: reading (band 6, True/False/Not Given + multiple choice)
+     ===================================================================== */
+  var RD_TITLE = "Family by Birth, Friends by Choice";
+  var PARAS = [
+    { tag: "A", t: "For most of human history, a person’s closest circle was made up of relatives. Today, however, many [[sociologists|nhà xã hội học]] argue that friends now play an equally important part in our lives, and in busy modern cities an even bigger one. The difference between the two relationships lies not in how much we care, but in how they begin, grow and sometimes end." },
+    { tag: "B", t: "Family bonds are largely a matter of chance. We do not choose our parents or [[siblings|anh chị em ruột]], yet we are expected to remain {{loyalty|loyal}} to them for life. In a {{knit|close-knit}} family, members {{standby|stand by}} one another {{thick|through thick and thin}}, and nobody questions their {{loyalty|loyalty}}. Even so, relatives do not always {{eye|see eye to eye}}, especially when there is a {{gap|generation gap}}. A teenager who {{lookup|looks up to}} her grandmother may still argue with her about technology, marriage or career choices." },
+    { tag: "C", t: "Friendships, by contrast, are [[voluntary|tự nguyện]]. People tend to become friends because they {{common|have a lot in common}}, such as a shared hobby or a similar sense of humour, and they often {{bond|bond over}} experiences such as preparing for the same exam or moving to a new city. When two friends are {{wave|on the same wavelength}}, they rarely need to explain themselves [[at length|dài dòng]]." },
+    { tag: "D", t: "Precisely because friendship is a choice, it takes effort to [[maintain|duy trì]]. Without regular contact, friends can easily {{drift|drift apart}}, particularly after they leave school or move abroad. Those who {{touch|keep in touch}}, even through a short message or a weekly call, usually stay close for far longer. Arguments are also common. Two friends may {{fall|fall out}} over money or a misunderstanding, yet many manage to {{makeup|make up}} within days, since each knows the other is {{rel|reliable}} and can be {{counton|counted on}} in a crisis." },
+    { tag: "E", t: "It is interesting to compare what people expect from each kind of relationship. Many say they turn to relatives for practical help, such as a loan or somewhere to stay, but they prefer to {{confide|confide in}} friends when something is troubling them. Friends often {{emo|offer emotional support}} that busy relatives cannot: a good friend will {{ear|lend a sympathetic ear}}, be {{shoulder|a shoulder to cry on}}, or simply {{cheer|cheer you up}} after a bad day. Above all, a real friend is someone who is {{therefor|there for}} you when life gets difficult." },
+    { tag: "F", t: "In conclusion, neither relationship is superior. Family offers [[stability|sự ổn định]] and a shared history, whereas friendship offers freedom and the chance to find people who truly understand us. In cities where relatives are often [[scattered|ở rải rác]] across the country, friends are increasingly described as “the family we choose”. Many psychologists believe that people who {{along|get along with}} both their relatives and their friends tend to [[cope with|đối phó với, vượt qua]] stress better." }
+  ];
+
+  var TFNG = ["True", "False", "Not Given"];
+  var RQ = [
+    { tag: "True / False / Not Given", q: "According to the writer, friends are more important than relatives in every society.", qvi: "Theo tác giả, bạn bè quan trọng hơn người thân trong mọi xã hội.", opts: TFNG, fix: true, ans: 1,
+      why: "<b>False.</b> Đoạn A chỉ nói bạn bè đóng vai trò <i>equally important</i> (quan trọng ngang bằng), và <i>even bigger</i> chỉ trong <i>busy modern cities</i>. Câu hỏi nói <b>every society</b> (mọi xã hội) nên trái với bài. Bẫy quen thuộc: từ tuyệt đối như every, all, always, never." },
+    { tag: "True / False / Not Given", q: "Disagreements between relatives are more likely when they belong to different generations.", qvi: "Bất đồng giữa người thân dễ xảy ra hơn khi họ thuộc các thế hệ khác nhau.", opts: TFNG, fix: true, ans: 0,
+      why: "<b>True.</b> Đoạn B: <i>relatives do not always see eye to eye, especially when there is a generation gap</i>. <i>especially when…</i> nghĩa là càng dễ xảy ra hơn khi có khoảng cách thế hệ. Paraphrase: <i>different generations</i> = <i>generation gap</i>." },
+    { tag: "True / False / Not Given", q: "Preparing for the same exam can bring people closer as friends.", qvi: "Cùng ôn một kỳ thi có thể khiến mọi người thân nhau hơn.", opts: TFNG, fix: true, ans: 0,
+      why: "<b>True.</b> Đoạn C: <i>bond over experiences such as preparing for the same exam</i>. Paraphrase: <i>bond over</i> = <i>bring people closer</i>." },
+    { tag: "True / False / Not Given", q: "Women find it easier to keep in touch with friends than men do.", qvi: "Phụ nữ thấy dễ giữ liên lạc với bạn bè hơn đàn ông.", opts: TFNG, fix: true, ans: 2,
+      why: "<b>Not Given.</b> Cả bài không nhắc đến giới tính (women, men). Đoạn D chỉ nói chung về việc giữ liên lạc. Không có thông tin để kết luận, dù ngoài đời em có thể nghĩ điều đó đúng. Nhớ: <b>bài không nói thì là Not Given</b>." },
+    { tag: "True / False / Not Given", q: "Friends who have an argument usually stay angry with each other for a long time.", qvi: "Bạn bè cãi nhau thường giận nhau rất lâu.", opts: TFNG, fix: true, ans: 1,
+      why: "<b>False.</b> Đoạn D: <i>many manage to make up within days</i>. Nhiều người làm hòa trong vài ngày, trái với “giận rất lâu”." },
+    { tag: "True / False / Not Given", q: "Friends usually give better advice than relatives.", qvi: "Bạn bè thường cho lời khuyên tốt hơn người thân.", opts: TFNG, fix: true, ans: 2,
+      why: "<b>Not Given.</b> Đoạn E nói người ta thích <i>confide in</i> bạn bè, nhưng không so sánh <i>chất lượng lời khuyên</i>. “Thích tâm sự” không có nghĩa là “khuyên hay hơn”." },
+    { tag: "True / False / Not Given", q: "Many people prefer to talk to friends rather than relatives about personal worries.", qvi: "Nhiều người thích nói với bạn bè hơn người thân về nỗi lo riêng.", opts: TFNG, fix: true, ans: 0,
+      why: "<b>True.</b> Đoạn E: <i>they prefer to confide in friends when something is troubling them</i>. Paraphrase: <i>troubling them</i> = <i>personal worries</i>; <i>prefer … rather than relatives</i> khớp với “turn to relatives for practical help, but …”." },
+    { tag: "Multiple choice", q: "What is the main point of paragraph A?", qvi: "Ý chính của đoạn A là gì?",
+      opts: ["Relatives have always been less important than friends.", "Family and friendship differ mainly in how they develop.", "Friends and relatives begin in exactly the same way.", "People care more about friends than about relatives."], ans: 1,
+      why: "Câu cuối đoạn A: <i>The difference … lies not in how much we care, but in how they begin, grow and sometimes end.</i> Khác nhau ở <b>cách phát triển</b>, không phải mức độ quan tâm, nên chọn B. Đáp án D bẫy ở chữ “care”." },
+    { tag: "Multiple choice", q: "According to paragraph D, friends are most likely to drift apart when …", qvi: "Theo đoạn D, bạn bè dễ xa nhau nhất khi …",
+      opts: ["they argue about money.", "they no longer have regular contact.", "they cannot make up quickly.", "they start new hobbies."], ans: 1,
+      why: "<i>Without regular contact, friends can easily drift apart.</i> Đáp án A là lí do <i>fall out</i> (cãi nhau), không phải <i>drift apart</i>. Hãy luôn đối chiếu đúng cụm từ mà câu hỏi dùng." },
+    { tag: "Multiple choice", q: "The phrase “on the same wavelength” in paragraph C suggests friends who …", qvi: "Cụm “on the same wavelength” ở đoạn C ám chỉ những người bạn …",
+      opts: ["live in the same neighbourhood.", "understand each other easily.", "listen to the same radio programmes.", "often disagree with each other."], ans: 1,
+      why: "Câu liền sau: <i>they rarely need to explain themselves at length</i> → họ hiểu nhau ngay, không cần giải thích dài. Đáp án C là bẫy hiểu nghĩa đen của “wavelength” (sóng radio)." },
+    { tag: "Multiple choice", q: "Which statement best sums up the writer’s conclusion?", qvi: "Câu nào tóm tắt đúng nhất kết luận của tác giả?",
+      opts: ["Friendships are a better choice than family.", "Family bonds are more valuable because they are more stable.", "Both relationships matter, but for different reasons.", "Modern cities make real friendships impossible."], ans: 2,
+      why: "Đoạn F: <i>neither relationship is superior</i>. Gia đình đem lại ổn định và lịch sử chung; bạn bè đem lại tự do và người hiểu mình → hai mối quan hệ đều quan trọng, <b>vì những lí do khác nhau</b>." }
+  ];
+
+  /* =====================================================================
+     DATA 3: speaking (connector phrases, then 8 questions)
+     ===================================================================== */
+  var PH = [
+    { id: "time", title: "Nhóm 1 · Câu giờ để suy nghĩ",
+      intro: "Giám khảo hỏi một câu khó, em đừng im lặng. Ba cụm này giúp em câu giờ 2 đến 3 giây một cách tự nhiên, nghe như người bản xứ. Quan trọng: <b>nói xong cụm này, em phải nói tiếp ý chính</b>, đừng dừng lại.",
+      items: [
+        { p: "That’s a tricky one, …", m: ["that's a tricky one"], vi: "Câu này hơi khó đấy…", when: "Dùng khi câu hỏi khó hoặc em cần nghĩ thêm.", ex: "That’s a tricky one, but I’d say my best friend is the person I trust most.", exvi: "Câu này hơi khó, nhưng mình nghĩ bạn thân là người mình tin nhất." },
+        { p: "I’ve never really thought about that before, but …", m: ["never really thought about that before"], vi: "Trước giờ mình chưa nghĩ kỹ về điều này, nhưng…", when: "Dùng khi câu hỏi bất ngờ. Nghe rất chân thật và giúp em có thêm thời gian.", ex: "I’ve never really thought about that before, but I guess we became close because of our shared hobbies.", exvi: "Trước giờ mình chưa nghĩ kỹ, nhưng chắc tụi mình thân nhau nhờ sở thích chung." },
+        { p: "Off the top of my head, …", m: ["off the top of my head"], vi: "Nói nhanh theo suy nghĩ lúc này thì…", when: "Dùng khi em đưa ra một ý nhanh, chưa suy nghĩ kỹ (ví dụ liệt kê, con số).", ex: "Off the top of my head, I’d say we meet about twice a week.", exvi: "Nói nhanh thì mình nghĩ tụi mình gặp nhau khoảng hai lần một tuần." }
+      ] },
+    { id: "op", title: "Nhóm 2 · Nêu quan điểm",
+      intro: "Part 3 cần ý kiến của em. Đừng chỉ nói “I think”. Hai cụm này vừa đa dạng vừa an toàn: một cụm cho <b>ý kiến cá nhân</b>, một cụm cho <b>thông tin em biết nhưng không chắc 100%</b>.",
+      items: [
+        { p: "The way I see it, …", m: ["the way i see it"], vi: "Theo cách nhìn của mình thì…", when: "Dùng khi nêu ý kiến cá nhân.", ex: "The way I see it, friends matter more as we get older.", exvi: "Theo mình, càng lớn thì bạn bè càng quan trọng." },
+        { p: "As far as I know, …", m: ["as far as i know"], vi: "Theo như mình biết thì…", when: "Dùng khi nói thông tin chung mà em không chắc hoàn toàn, nghe thận trọng và tự nhiên.", ex: "As far as I know, many families in my country still eat dinner together.", exvi: "Theo mình biết, nhiều gia đình ở nước mình vẫn ăn tối cùng nhau." }
+      ] },
+    { id: "add", title: "Nhóm 3 · Thêm ý",
+      intro: "Trả lời quá ngắn là lỗi rất phổ biến. Hai cụm này giúp em <b>nối thêm ý</b> mà câu văn vẫn mượt: một cụm nhẹ nhàng, một cụm nhấn mạnh.",
+      items: [
+        { p: "Another thing is that …", m: ["another thing is that"], vi: "Một điều nữa là…", when: "Dùng để thêm một ý mới, ngang hàng với ý trước.", ex: "Another thing is that we both love badminton.", exvi: "Một điều nữa là cả hai đứa đều mê cầu lông." },
+        { p: "Not only that, but …", m: ["not only that"], vi: "Không chỉ vậy, mà còn…", when: "Dùng để thêm một ý <b>mạnh hơn</b>, tạo cảm giác “còn hơn thế nữa”.", ex: "Not only that, but she also cheers me up when I’m down.", exvi: "Không chỉ vậy, cô ấy còn làm mình vui lên mỗi khi mình buồn." }
+      ] },
+    { id: "ex", title: "Nhóm 4 · Đưa ví dụ và nói về bản thân",
+      intro: "Giám khảo rất thích câu trả lời có ví dụ cụ thể. Hai cụm cuối đưa ví dụ ra rất nhẹ nhàng: một cụm để <b>minh hoạ</b>, một cụm để <b>kể chuyện của chính em</b>.",
+      items: [
+        { p: "Just to illustrate, …", m: ["just to illustrate"], vi: "Để minh hoạ cho điều đó…", when: "Dùng ngay sau một ý chung để đưa ví dụ cụ thể.", ex: "Just to illustrate, last year I failed an exam and she stayed with me all night.", exvi: "Để minh hoạ, năm ngoái mình trượt một kỳ thi và cô ấy ở bên mình cả đêm." },
+        { p: "In my case, …", m: ["in my case"], vi: "Trong trường hợp của mình thì…", when: "Dùng khi chuyển từ ý chung sang trải nghiệm riêng.", ex: "In my case, my best friend lives abroad, so we only talk online.", exvi: "Với mình thì bạn thân sống ở nước ngoài nên tụi mình chỉ nói chuyện qua mạng." }
+      ] }
+  ];
+  var PH_TEST = [
+    { q: "The examiner asks, “Why do some friendships end?” and you need a moment to think. Which phrase is best?", opts: ["That’s a tricky one, …", "In my case, …", "Just to illustrate, …"], ans: 0, why: "<b>That’s a tricky one</b> giúp em câu giờ khi câu hỏi khó. In my case dùng để kể chuyện riêng, Just to illustrate dùng để đưa ví dụ." },
+    { q: "You have made a point and now want to give a specific example. Which phrase is best?", opts: ["Just to illustrate, …", "Off the top of my head, …", "The way I see it, …"], ans: 0, why: "<b>Just to illustrate</b> = để minh hoạ, đứng ngay trước ví dụ cụ thể." },
+    { q: "You have finished your first idea and want to add another one. Which phrase is best?", opts: ["Another thing is that …", "I’ve never really thought about that before, but …", "As far as I know, …"], ans: 0, why: "<b>Another thing is that</b> = một điều nữa là, dùng để thêm ý." },
+    { q: "You want to talk about your own personal experience. Which phrase is best?", opts: ["In my case, …", "Not only that, but …", "Off the top of my head, …"], ans: 0, why: "<b>In my case</b> = trong trường hợp của mình, chuyển sang trải nghiệm riêng." },
+    { q: "You are giving general information, but you are not 100% sure it is true everywhere. Which phrase is best?", opts: ["As far as I know, …", "The way I see it, …", "In my case, …"], ans: 0, why: "<b>As far as I know</b> = theo như mình biết, thể hiện em không chắc tuyệt đối. The way I see it dùng cho ý kiến cá nhân." }
+  ];
+
+  /* Each speaking question: s55 (band 5.5 sample), s7 (band 6.5-7.0 sample, as sentences), up (upgrades), kw (keywords) */
+  var SQ = [
+    { id: "p1a", part: 1, max: 60,
+      q: "Do you prefer spending time with a large group of friends, or with one or two close friends?", vi: "Bạn thích dành thời gian với một nhóm bạn đông hay chỉ một hai người bạn thân?",
+      kw: [["close friends", "bạn thân"], ["a large group", "nhóm đông"], ["feel relaxed", "thấy thoải mái"], ["open up", "cởi mở, tâm sự"], ["lively", "sôi động"], ["have a lot in common", "có nhiều điểm chung"]],
+      s55: "I like one or two close friends. I can talk about everything with them and I feel relaxed. A big group is fun too, but it is very noisy and I can’t talk with everyone. So I prefer a small group.",
+      s7: ["@@That's a tricky one@@, but @@the way I see it@@, I'd go for one or two close friends.",
+           "With them, I can {{confide|confide in them}} about almost anything, because I know they can {{secret|keep a secret}}.",
+           "@@Not only that, but@@ we {{common|have a lot in common}}, so we're pretty much {{wave|on the same wavelength}}.",
+           "Don't get me wrong, a big group is lively and fun, but it's hard to have a deep conversation when everyone is talking at once."],
+      up: [["I like one or two close friends.", "I'd go for one or two close friends.", "“I’d go for…” là cách tự nhiên để chọn một phương án, nghe tự nhiên hơn “I like”."],
+           ["I can talk about everything with them.", "I can confide in them about almost anything.", "Dùng cụm từ vựng chính xác (confide in) thay cho “talk about everything”."],
+           ["We are the same.", "We have a lot in common, so we’re on the same wavelength.", "Thay “the same” mơ hồ bằng hai cụm cụ thể ở Mục 1."],
+           ["It is very noisy.", "Don’t get me wrong, a big group is lively, but it’s hard to have a deep conversation.", "Thừa nhận mặt tốt trước (Don’t get me wrong) rồi đưa lí do cụ thể thay cho “very noisy”."]] },
+    { id: "p1b", part: 1, max: 60,
+      q: "How do you usually keep in touch with your friends?", vi: "Bạn thường giữ liên lạc với bạn bè bằng cách nào?",
+      kw: [["send messages", "nhắn tin"], ["group chat", "nhóm chat"], ["video call", "gọi video"], ["share photos", "chia sẻ ảnh"], ["meet up", "gặp nhau"], ["at weekends", "vào cuối tuần"]],
+      s55: "I usually send messages to my friends on Messenger. Sometimes I call them. We also have a group chat. I meet my best friend at the weekend. It is easy and fast.",
+      s7: ["@@Off the top of my head@@, I'd say messaging is the main way we {{touch|keep in touch}}.",
+           "We have a group chat where we share photos and funny memes almost every day, which stops us from {{drift|drifting apart}}.",
+           "@@Another thing is that@@ we try to meet up at weekends, because nothing beats a face-to-face chat.",
+           "@@In my case@@, my best friend lives abroad, so we have a video call once a month."],
+      up: [["I usually send messages to my friends.", "I'd say messaging is the main way we keep in touch.", "Dùng đúng cụm keep in touch và mẫu “I’d say…” thay cho câu đơn giản."],
+           ["We also have a group chat.", "We have a group chat where we share photos and memes, which stops us from drifting apart.", "Dùng mệnh đề quan hệ (where…, which…) và cụm drift apart để nâng ý."],
+           ["I meet my best friend at the weekend.", "We try to meet up at weekends, because nothing beats a face-to-face chat.", "Thêm lí do cụ thể (nothing beats…) và cụm meet up thay cho “meet”."],
+           ["It is easy and fast.", "In my case, my best friend lives abroad, so we have a video call once a month.", "Kể một chi tiết riêng thay cho nhận xét chung chung “easy and fast”."]] },
+    { id: "p1c", part: 1, max: 60,
+      q: "What do you and your friends like to do together?", vi: "Bạn và bạn bè thích làm gì cùng nhau?",
+      kw: [["hang out", "đi chơi, tụ tập"], ["chat over bubble tea", "ngồi nói chuyện uống trà sữa"], ["play badminton", "chơi cầu lông"], ["spend time", "dành thời gian"], ["laugh", "cười"], ["stressful week", "một tuần căng thẳng"]],
+      s55: "We like to hang out after school. We drink milk tea and talk. Sometimes we play badminton. I think it is fun and we are close.",
+      s7: ["Mostly, we just hang out at a café and chat over a bubble tea.",
+           "We first {{bond|bonded over}} our love of badminton, so now we play together twice a week.",
+           "@@Just to illustrate@@, last Sunday we spent three hours on court and laughed the whole time.",
+           "Honestly, that's the best way to {{cheer|cheer myself up}} after a stressful week."],
+      up: [["We like to hang out after school.", "Mostly, we just hang out at a café and chat over a bubble tea.", "“Mostly” và chi tiết “chat over a bubble tea” làm câu sinh động hơn."],
+           ["Sometimes we play badminton.", "We first bonded over our love of badminton, so now we play together twice a week.", "Dùng cụm bond over để kể nguồn gốc và thêm tần suất cụ thể."],
+           ["I think it is fun.", "Just to illustrate, last Sunday we spent three hours on court and laughed the whole time.", "Thay nhận xét “fun” bằng một ví dụ có thời gian cụ thể (Just to illustrate)."],
+           ["We are close.", "That’s the best way to cheer myself up after a stressful week.", "Nêu lợi ích cụ thể với cụm cheer myself up thay cho “we are close”."]] },
+    { id: "p1d", part: 1, max: 60,
+      q: "Do you get along well with your family?", vi: "Bạn có hòa thuận với gia đình không?",
+      kw: [["get along with", "hòa thuận với"], ["close-knit", "gắn bó"], ["have dinner together", "ăn tối cùng nhau"], ["disagree", "bất đồng"], ["screen time", "thời gian dùng điện thoại"], ["look up to", "ngưỡng mộ"]],
+      s55: "Yes, I get along with my family. We have dinner together every day. Sometimes I argue with my parents about my phone, but it is not serious. I love my family.",
+      s7: ["Yes, for the most part, I {{along|get along with}} everyone in my {{knit|close-knit}} family.",
+           "@@As far as I know@@, that's quite common in Vietnam, because many families still eat dinner together every evening.",
+           "Of course, we don't always {{eye|see eye to eye}}, especially about my screen time, but we always {{makeup|make up}} quickly.",
+           "@@In my case@@, I really {{lookup|look up to}} my mum, so I usually listen to her advice in the end."],
+      up: [["Yes, I get along with my family.", "Yes, for the most part, I get along with everyone in my close-knit family.", "“For the most part” nghe tự nhiên hơn “Yes” đơn thuần; close-knit mô tả cả gia đình."],
+           ["We have dinner together every day.", "As far as I know, that’s quite common in Vietnam, because many families still eat dinner together.", "As far as I know giúp em nói về thông tin chung một cách thận trọng và tự nhiên."],
+           ["Sometimes I argue with my parents about my phone, but it is not serious.", "We don’t always see eye to eye, especially about my screen time, but we always make up quickly.", "Dùng hai cụm Mục 1 (see eye to eye, make up) thay cho argue và “not serious”."],
+           ["I love my family.", "In my case, I really look up to my mum, so I usually listen to her advice.", "Kể một lí do riêng với look up to thay cho câu chung chung “I love my family”."]] },
+    { id: "p2a", part: 2, max: 120,
+      q: "Describe a friend you can count on.", vi: "Hãy miêu tả một người bạn mà bạn có thể trông cậy.",
+      cue: ["who this person is", "how you met", "what you do together", "and explain why you can count on this person"],
+      kw: [["childhood friend / classmate", "bạn thuở nhỏ / bạn cùng lớp"], ["grade six", "lớp 6"], ["bond over", "gắn kết nhờ…"], ["reliable", "đáng tin cậy"], ["stand by me", "ở bên mình"], ["lend a sympathetic ear", "lắng nghe đồng cảm"], ["through thick and thin", "đồng cam cộng khổ"]],
+      s55: "I want to talk about my best friend, Linh. We met in grade six when we were in the same class. We both like reading and music, so we became friends fast. Now we study together and sometimes we go to the cinema. I can count on Linh because she is very kind. When I have a problem, she listens to me and helps me. Last year I failed a test and I was sad. She talked to me and made me feel better. I think she is a good friend and I am lucky to have her.",
+      s7: ["I'd like to talk about my best friend, Linh, who is someone I can always {{counton|count on}}.",
+           "We met in grade six, when our teacher happened to seat us next to each other.",
+           "At first we hardly spoke, but we soon discovered that we {{common|had a lot in common}}, and we {{bond|bonded over}} the same fantasy novels.",
+           "Nowadays, we study together at her place and, when we need a break, we go and see a film.",
+           "@@The way I see it@@, what makes Linh special is that she is incredibly {{rel|reliable}}.",
+           "@@Just to illustrate@@, last year I failed an important exam and felt completely lost, but she {{standby|stood by me}} and {{ear|lent a sympathetic ear}} for hours.",
+           "@@Not only that, but@@ she also helped me make a study plan and checked on me every day.",
+           "She has always been {{therefor|there for me}}, {{thick|through thick and thin}}, and I hope I do the same for her.",
+           "That's why, although we sometimes {{fall|fall out}} over silly things, we always {{makeup|make up}} within a day.",
+           "@@In my case@@, I can honestly say that a friend like Linh is worth more than anything."],
+      up: [["I want to talk about my best friend, Linh.", "I’d like to talk about my best friend, Linh, who is someone I can always count on.", "Dùng mệnh đề quan hệ (who is someone I can…) để trả lời thẳng vào đề."],
+           ["We both like reading and music, so we became friends fast.", "We soon discovered that we had a lot in common, and we bonded over the same fantasy novels.", "Hai cụm Mục 1 (have a lot in common, bond over) và chi tiết “fantasy novels” cụ thể hơn “reading and music”."],
+           ["Last year I failed a test and I was sad. She talked to me.", "Just to illustrate, last year I failed an important exam, but she stood by me and lent a sympathetic ear for hours.", "Dùng Just to illustrate để vào ví dụ; stood by me và lent a sympathetic ear thay cho “talked to me”."],
+           ["I think she is a good friend.", "She has always been there for me, through thick and thin.", "Hiện tại hoàn thành (has always been) và thành ngữ through thick and thin tạo kết bài giàu hình ảnh."]] },
+    { id: "p3a", part: 3, max: 90,
+      q: "Do you think friends become more important than family when people become adults?", vi: "Bạn có nghĩ khi trưởng thành, bạn bè trở nên quan trọng hơn gia đình không?",
+      kw: [["grow up / become independent", "lớn lên / tự lập"], ["move to another city", "chuyển sang thành phố khác"], ["support network", "mạng lưới hỗ trợ"], ["confide in", "tâm sự với"], ["in a real crisis", "khi gặp khủng hoảng thật sự"], ["in the long run", "về lâu dài"]],
+      s55: "Yes, I think so. When people grow up, they move out and they are busy. Friends are around them every day. Friends can understand their problems more than parents. But family is still important, so I think both are important.",
+      s7: ["@@That's a tricky one@@, because it really depends on the person.",
+           "@@The way I see it@@, friends often take on a bigger role as people become independent, since they are the ones who {{emo|offer emotional support}} on a daily basis.",
+           "When you move to another city for work, your friends become your support network, and you can {{confide|confide in}} them about things you might not want to tell your parents.",
+           "@@Another thing is that@@ your family will still {{standby|stand by}} you in a real crisis, however close your friends are.",
+           "So, in short, friends matter more day to day, but family matters more in the long run."],
+      up: [["Yes, I think so.", "That’s a tricky one, because it really depends on the person.", "Câu hỏi Part 3 mang tính trừu tượng, nên câu giờ và nói “tùy người” nghe chín chắn hơn “Yes, I think so”."],
+           ["Friends can understand their problems more than parents.", "Friends are the ones who offer emotional support on a daily basis, and you can confide in them.", "Dùng offer emotional support và confide in (Mục 1), thêm “on a daily basis” cho cụ thể."],
+           ["But family is still important.", "Another thing is that your family will still stand by you in a real crisis.", "Another thing is that + stand by thay cho “family is still important” chung chung."],
+           ["So I think both are important.", "Friends matter more day to day, but family matters more in the long run.", "Chia theo thời gian (day to day / in the long run) cho kết luận có chiều sâu."]] },
+    { id: "p3b", part: 3, max: 90,
+      q: "Why do some friendships end as people get older?", vi: "Vì sao một số tình bạn kết thúc khi con người lớn tuổi hơn?",
+      kw: [["busy schedules", "lịch bận rộn"], ["move abroad", "ra nước ngoài"], ["change priorities", "ưu tiên thay đổi"], ["keep in touch", "giữ liên lạc"], ["drift apart", "dần xa nhau"], ["fall out", "cãi nhau"]],
+      s55: "Some friends don’t meet because they are busy. They have jobs and families. Some people move to other cities. They don’t talk and then they are not close. Sometimes friends have an argument and they don’t forgive each other.",
+      s7: ["@@I've never really thought about that before, but@@ I suppose the main reason is that people simply get busy.",
+           "Once friends start working or have families of their own, they can't {{touch|keep in touch}} as often, and gradually they {{drift|drift apart}}.",
+           "@@As far as I know@@, distance plays a role too, since moving to another city makes regular meetings almost impossible.",
+           "@@Not only that, but@@ people's priorities change, so two friends who used to be {{wave|on the same wavelength}} may no longer {{eye|see eye to eye}}.",
+           "In some cases, they {{fall|fall out}} over a small thing and are too proud to {{makeup|make up}}."],
+      up: [["Some friends don’t meet because they are busy.", "I suppose the main reason is that people simply get busy.", "Mở bằng cụm câu giờ rồi nêu lí do chính một cách rõ ràng."],
+           ["They don’t talk and then they are not close.", "They can’t keep in touch as often, and gradually they drift apart.", "keep in touch và drift apart (Mục 1) diễn tả quá trình “dần dần”, chính xác hơn “not close”."],
+           ["Some people move to other cities.", "As far as I know, distance plays a role too, since moving to another city makes regular meetings almost impossible.", "As far as I know + lí do “since…” làm ý đầy đủ hơn."],
+           ["Sometimes friends have an argument and they don’t forgive each other.", "Two friends who used to be on the same wavelength may no longer see eye to eye; in some cases, they fall out and are too proud to make up.", "Dùng used to (Ngữ pháp) và 3 cụm Mục 1 để kể toàn bộ câu chuyện rạn nứt."]] },
+    { id: "p3c", part: 3, max: 90,
+      q: "How can older and younger people in a family understand each other better?", vi: "Làm thế nào để người lớn tuổi và người trẻ trong gia đình hiểu nhau hơn?",
+      kw: [["quality time", "thời gian chất lượng"], ["listen without judging", "lắng nghe không phán xét"], ["generation gap", "khoảng cách thế hệ"], ["open up", "cởi mở"], ["learn from each other", "học hỏi lẫn nhau"], ["look up to", "ngưỡng mộ"]],
+      s55: "I think they should talk more. They should eat dinner together and listen to each other. Young people should respect old people and old people should try to understand young people. Then they have a better relationship.",
+      s7: ["@@Off the top of my head@@, the first step is to spend more quality time together, such as having meals without phones.",
+           "@@The way I see it@@, the {{gap|generation gap}} isn't a problem in itself; it only becomes one when neither side is willing to listen.",
+           "@@Just to illustrate@@, if grandparents {{ear|lend a sympathetic ear}} instead of criticising, teenagers will be far more willing to open up.",
+           "@@Another thing is that@@ young people can {{lookup|look up to}} older relatives for their experience, while older people can learn about technology from them.",
+           "The more they learn from each other, the more {{knit|close-knit}} the family becomes."],
+      up: [["I think they should talk more.", "The first step is to spend more quality time together, such as having meals without phones.", "Thay lời khuyên chung chung bằng một hành động cụ thể (quality time, meals without phones)."],
+           ["Young people should respect old people.", "Young people can look up to older relatives for their experience.", "look up to (Mục 1) diễn tả sự kính trọng cụ thể hơn “respect”."],
+           ["Old people should try to understand young people.", "If grandparents lend a sympathetic ear instead of criticising, teenagers will be far more willing to open up.", "Câu điều kiện loại 1 + lend a sympathetic ear thể hiện quan hệ nguyên nhân – kết quả."],
+           ["Then they have a better relationship.", "The more they learn from each other, the more close-knit the family becomes.", "So sánh kép (The more…, the more…) nâng cấp ngữ pháp cho câu kết."]] }
+  ];
+
+  /* =====================================================================
+     DATA 4: writing (IELTS Task 2 style, current learning trend)
+     ===================================================================== */
+  var W_PROMPT = "Nowadays, many young people make friends and study together through online platforms rather than meeting in person. Do the advantages of this trend outweigh the disadvantages?";
+  var W_PROMPT_VI = "Ngày nay, nhiều bạn trẻ kết bạn và học cùng nhau qua các nền tảng trực tuyến thay vì gặp trực tiếp. Lợi ích của xu hướng này có lớn hơn bất lợi không?";
+
+  var WA = [
+    { tag: "Loại đề", q: "Câu hỏi cuối của đề là “Do the advantages of this trend outweigh the disadvantages?”. Đây là loại đề nào?",
+      opts: ["Opinion (đồng ý hay không đồng ý)", "Advantages – Disadvantages có đánh giá (outweigh)", "Problem – Solution", "Two-part question"], ans: 1,
+      why: "<b>outweigh</b> = lớn hơn, nặng hơn. Đề yêu cầu em nêu cả lợi ích lẫn bất lợi, <b>rồi kết luận bên nào nặng hơn</b>. Vì vậy phần mở bài của em phải có quan điểm rõ ràng (thesis)." },
+    { tag: "Keyword", q: "Nhóm keyword nào cần được paraphrase trong phần mở bài?",
+      opts: ["young people / make friends and study together / online platforms / rather than meeting in person", "Nowadays / many / in person", "advantages / the / of this", "trend / disadvantages / Nowadays"], ans: 0,
+      why: "Keyword là những cụm <b>mang nghĩa chính</b>: đối tượng (young people), hoạt động (make friends and study together), phương tiện (online platforms), so sánh (rather than meeting in person). Từ nối như Nowadays, many, the không cần paraphrase." },
+    { tag: "Paraphrase", q: "Cách paraphrase tốt nhất cho “make friends and study together” là gì?",
+      opts: ["build relationships and learn collaboratively", "meet teachers and take tests", "share homework and copy answers", "play games and relax"], ans: 0,
+      why: "<b>make friends</b> → <i>build relationships / form friendships</i>; <b>study together</b> → <i>learn collaboratively</i>. Các đáp án còn lại đổi mất nghĩa gốc." },
+    { tag: "Paraphrase", q: "Cách paraphrase tốt nhất cho “young people” là gì?",
+      opts: ["university lecturers", "teenagers and young adults", "parents of students", "the elderly"], ans: 1,
+      why: "<b>young people</b> → <i>teenagers, young adults, the younger generation</i>. Em đổi từ nhưng giữ nguyên đối tượng." },
+    { tag: "Paraphrase", q: "Cách paraphrase tốt nhất cho “online platforms” là gì?",
+      opts: ["traditional classrooms", "digital channels such as social networks and learning apps", "paper textbooks", "local libraries"], ans: 1,
+      why: "<b>online platforms</b> → <i>digital channels, social networks, learning apps</i>. Ba đáp án còn lại là phương tiện ngoài đời (offline)." },
+    { tag: "Paraphrase", q: "Cách paraphrase tốt nhất cho “rather than meeting in person” là gì?",
+      opts: ["as well as meeting in person", "instead of interacting face to face", "before meeting in person", "because they meet in person"], ans: 1,
+      why: "<b>rather than</b> = <i>instead of</i>; <b>meeting in person</b> = <i>interacting face to face</i>. “As well as” nghĩa là “và cả”, làm đổi nghĩa." },
+    { tag: "Thesis", q: "Câu nào ở phần mở bài trả lời ĐÚNG và ĐỦ yêu cầu của đề?",
+      opts: ["Online friendships are very popular now and many teenagers use them.", "Although forming friendships and studying together online has certain drawbacks, I believe that its benefits outweigh them.", "I agree that technology is good for the world.", "There are many advantages and disadvantages of online platforms."], ans: 1,
+      why: "Đề hỏi “có lớn hơn không?”, nên thesis phải <b>chọn một bên</b>. Đáp án A chỉ mô tả; C lạc đề (technology nói chung); D liệt kê mà không đánh giá." }
+  ];
+
+  var W_IDEAS_PRO = [["xoá rào cản địa lý", "remove geographical barriers"], ["học nhóm toàn cầu", "global study groups"], ["người nhút nhát dễ bày tỏ", "shy students express themselves"], ["linh hoạt thời gian", "flexible schedule"], ["hỗ trợ tinh thần ngoài giờ", "emotional support at any hour"]];
+  var W_IDEAS_CON = [["tình bạn hời hợt", "superficial friendships"], ["thiếu tiếp xúc trực tiếp", "lack of face-to-face contact"], ["xao nhãng vì thông báo", "distraction from notifications"], ["rủi ro quyền riêng tư", "privacy risks"], ["xa người thân ngoài đời", "drift apart from family"]];
+  var W_OUTLINE = [
+    { id: "intro", label: "Mở bài", help: "Câu 1: paraphrase đề (đổi từ, giữ nghĩa). Câu 2: quan điểm của em (lợi ích có lớn hơn bất lợi không?).", ph: "Ví dụ: Thanh thiếu niên ngày nay kết bạn và học nhóm qua mạng. Tôi cho rằng lợi ích lớn hơn bất lợi." },
+    { id: "b1", label: "Thân bài 1: lợi ích", help: "1 đến 2 lợi ích. Mỗi lợi ích có: ý chính, lí do, ví dụ ngắn.", ph: "Ví dụ: Xoá rào cản địa lý, học sinh hợp tác với bạn ở nhiều nơi. Vd: nhóm học toàn cầu." },
+    { id: "b2", label: "Thân bài 2: bất lợi", help: "1 đến 2 bất lợi. Mỗi bất lợi có: ý chính, lí do, ví dụ ngắn.", ph: "Ví dụ: Tình bạn hời hợt, khó biết ai đáng tin. Thông báo làm xao nhãng." },
+    { id: "con", label: "Kết bài", help: "Tóm tắt lại và nhắc lại quan điểm. Có thể thêm điều kiện (dùng khôn ngoan).", ph: "Ví dụ: Không thay thế hoàn toàn gặp trực tiếp nhưng nếu dùng khôn ngoan thì có lợi." }
+  ];
+  var W_OUTLINE_SUGGEST = [
+    ["Mở bài", "Paraphrase: teenagers form friendships and learn together through digital channels instead of face-to-face contact. Thesis: although there are drawbacks, the benefits outweigh them, provided that the platforms are used wisely."],
+    ["Thân bài 1 (lợi ích)", "Ý 1: online platforms remove geographical barriers, so students can collaborate worldwide (ví dụ: a global study group for a difficult topic). Ý 2: shy students express themselves more easily and gain confidence; friends can offer emotional support during exam season."],
+    ["Thân bài 2 (bất lợi)", "Ý 1: online relationships are often superficial; it is hard to know who is reliable, and someone you can count on in a crisis has usually stood by you in person. Ý 2: constant notifications distract students, and the more time they spend online, the less they keep in touch in real life."],
+    ["Kết bài", "Virtual friendships cannot replace face-to-face contact, but they offer unique opportunities. Used wisely and balanced with real-life interaction, they enrich both social and academic life."]
+  ];
+
+  /* Model essay (band 7.5). id, vi (Vietnamese to translate), hints [label, regex], model, g (grammar note) */
+  var WR = [
+    { title: "Mở bài", items: [
+      { id: "t1", vi: "Trong thời đại mà các ứng dụng học tập và mạng xã hội là một phần của cuộc sống hằng ngày, ngày càng nhiều thanh thiếu niên kết bạn và học cùng những người bạn đồng trang lứa mà họ chưa từng gặp trực tiếp.",
+        hints: [["a growing number of", /growing\s+number|increasing\s+number|more\s+and\s+more/i], ["form friendships", /(form|forms|forming|build|builds|building|make|makes|making)\s+(\w+\s+)?(friendships|friends)/i], ["peers", /peers?|classmates|people\s+of\s+(their|the\s+same)\s+age/i], ["face to face", /face[-\s]to[-\s]face|in\s+person/i]],
+        model: "In an age when ^^learning apps^^ and ^^social networks^^ are part of daily life, a ^^growing number of^^ teenagers ^^form friendships^^ and study with ^^peers^^ whom they have never met face to face.",
+        g: "<b>In an age when…</b>: mệnh đề quan hệ chỉ thời gian. <b>peers whom they have never met</b>: mệnh đề quan hệ + hiện tại hoàn thành (never met), đúng như phần Ngữ pháp em vừa học." },
+      { id: "t2", vi: "Mặc dù xu hướng này có một số hạn chế, tôi tin rằng lợi ích của nó lớn hơn những hạn chế đó, miễn là nó được sử dụng một cách khôn ngoan.",
+        hints: [["although", /although|though|while|whereas/i], ["drawbacks", /drawbacks?|disadvantages?|downsides?/i], ["outweigh", /outweigh/i], ["provided that", /provided\s+that|providing\s+that|as\s+long\s+as|so\s+long\s+as/i]],
+        model: "Although this ^^trend^^ has certain ^^drawbacks^^, I believe that its ^^benefits outweigh^^ them, provided that it is used wisely.",
+        g: "<b>Although…, I believe that…</b>: nhượng bộ rồi nêu quan điểm, đây là câu thesis chuẩn band 7. <b>provided that</b> = miễn là (điều kiện), tinh tế hơn “if”." }
+    ] },
+    { title: "Thân bài 1: lợi ích", items: [
+      { id: "t3", vi: "Lợi thế rõ ràng nhất là các nền tảng trực tuyến xoá bỏ rào cản địa lý, cho phép học sinh hợp tác với bạn học từ nhiều vùng miền, thậm chí nhiều quốc gia khác nhau.",
+        hints: [["online platforms", /online\s+platforms?|digital\s+platforms?|online\s+channels?|internet\s+platforms?/i], ["geographical barriers", /geographic(al)?\s+(barriers?|boundaries|limits|distance)/i], ["collaborate", /collaborat|cooperat|work(ing)?\s+together/i]],
+        model: "The most ^^obvious advantage^^ is that online ^^platforms^^ remove ^^geographical barriers^^, allowing students to ^^collaborate^^ with classmates from different ^^regions^^ or even different countries.",
+        g: "<b>allowing students to…</b>: cụm V-ing nêu <i>kết quả</i> của mệnh đề trước, giúp câu dài mà gọn." },
+      { id: "t4", vi: "Chẳng hạn, một người học gặp khó khăn với một chủ đề cụ thể có thể tham gia nhóm học tập toàn cầu và nhanh chóng tìm được những người bạn có chung mục tiêu và có nhiều điểm chung với mình.",
+        hints: [["struggle with", /struggl/i], ["global", /global|worldwide|international/i], ["have a lot in common", /in\s+common/i]],
+        model: "For instance, a learner who ^^struggles with^^ a ^^particular^^ topic can join a ^^global^^ study group and quickly find peers who share the same goals and {{common|have a lot in common}} with them.",
+        g: "<b>a learner who struggles with…</b> và <b>peers who share… and have…</b>: mệnh đề quan hệ với <b>who</b>. Cụm “have a lot in common” là từ Mục 1." },
+      { id: "t5", vi: "Hơn nữa, học sinh nhút nhát thường thấy dễ bày tỏ bản thân hơn sau màn hình, điều này giúp các em tự tin hơn và gắn kết với nhau nhờ những sở thích chung chứ không phải ngoại hình.",
+        hints: [["express themselves", /express/i], ["build confidence", /confiden/i], ["bond over", /bond/i]],
+        model: "Moreover, shy students often find it easier to ^^express themselves^^ behind a screen, which helps them ^^build confidence^^ and {{bond|bond over}} shared interests rather than appearance.",
+        g: "<b>…, which helps them…</b>: mệnh đề quan hệ không xác định, <b>which</b> thay cho cả ý phía trước. <b>find it easier to…</b>: it giả làm tân ngữ." },
+      { id: "t6", vi: "Những tình bạn như vậy còn có thể mang lại sự hỗ trợ về mặt tinh thần vào lúc căng thẳng, chẳng hạn mùa thi, khi một người bạn ở múi giờ khác vẫn có thể lắng nghe và thấu hiểu mình.",
+        hints: [["offer emotional support", /emotional\s+support/i], ["lend a sympathetic ear", /sympathetic\s+ear|listen/i], ["time zone", /time\s+zone/i]],
+        model: "Such friendships can also {{emo|offer emotional support}} at ^^stressful^^ times, such as exam season, when a friend in another time zone can still {{ear|lend a sympathetic ear}}.",
+        g: "<b>…, such as exam season, when…</b>: <b>when</b> mở rộng một danh từ chỉ thời gian. Hai cụm in đậm xanh đều là từ Mục 1." }
+    ] },
+    { title: "Thân bài 2: bất lợi", items: [
+      { id: "t7", vi: "Tuy nhiên, các mối quan hệ trực tuyến không phải không có rủi ro.",
+        hints: [["Nevertheless", /nevertheless|nonetheless|however|that\s+said/i], ["risks", /risks?|dangers?|downsides?/i]],
+        model: "^^Nevertheless^^, online relationships are not without ^^risks^^.",
+        g: "<b>not without risks</b>: phủ định kép, nghĩa là “có rủi ro” nhưng nói nhẹ nhàng và tinh tế hơn “have risks”. <b>Nevertheless</b> mở đầu đoạn đối lập." },
+      { id: "t8", vi: "Trước hết, chúng thường mang tính hời hợt, vì mọi người có thể thể hiện một phiên bản lý tưởng hoá của bản thân, khiến ta khó biết ai thực sự đáng tin cậy.",
+        hints: [["superficial", /superficial|shallow/i], ["idealised", /ideali[sz]ed|perfect(ed)?|polished/i], ["reliable", /reliable|trustworthy/i]],
+        model: "To begin with, they tend to be ^^superficial^^, since people can present an ^^idealised version^^ of themselves, which makes it hard to tell who is truly {{rel|reliable}}.",
+        g: "<b>which makes it hard to tell…</b>: mệnh đề quan hệ + <b>it</b> giả + tính từ. <b>since</b> = bởi vì (nhẹ hơn because trong văn viết)." },
+      { id: "t9", vi: "Một người bạn mà bạn có thể trông cậy trong lúc khủng hoảng thường là người đã ở bên bạn ngoài đời thực, chứ không chỉ là một cái tên người dùng trên màn hình.",
+        hints: [["count on", /count(s|ed)?\s+on|rely\s+on|depend\s+on/i], ["crisis", /crisis|difficult\s+times?|hard\s+times?/i], ["stand by", /stand(s)?\s+by|stood\s+by/i]],
+        model: "A friend you can {{counton|count on}} in a ^^crisis^^ is usually someone who has {{standby|stood by}} you in person, not just a username on a screen.",
+        g: "<b>A friend you can count on</b>: mệnh đề quan hệ <i>bỏ who</i> (đúng mẫu trong phần Ngữ pháp). <b>has stood by</b>: hiện tại hoàn thành." },
+      { id: "t10", vi: "Ngoài ra, thông báo liên tục có thể làm học sinh xao nhãng việc học, và càng dành nhiều thời gian trên mạng, các em càng ít có khả năng giữ liên lạc với người thân và bạn học ngoài đời.",
+        hints: [["distract", /distract/i], ["the more … the less", /the\s+more[^,]*,\s*the\s+less/i], ["keep in touch", /in\s+touch/i]],
+        model: "In addition, ^^constant notifications^^ can ^^distract^^ students from their studies, and the more time teenagers spend online, the less likely they are to {{touch|keep in touch}} with relatives and classmates in real life.",
+        g: "<b>the more…, the less likely…</b>: so sánh kép, đúng mẫu em vừa học. <b>distract someone from something</b> = làm ai xao nhãng khỏi việc gì." }
+    ] },
+    { title: "Kết bài", items: [
+      { id: "t11", vi: "Tóm lại, dù tình bạn ảo không thể thay thế hoàn toàn việc tiếp xúc trực tiếp, chúng mang lại những cơ hội hợp tác và hỗ trợ độc đáo.",
+        hints: [["In conclusion", /in\s+conclusion|to\s+conclude|in\s+short|overall/i], ["replace", /replace|substitute/i], ["unique", /unique|special|distinctive/i]],
+        model: "In conclusion, although ^^virtual^^ friendships cannot fully ^^replace^^ face-to-face contact, they offer ^^unique opportunities^^ for ^^collaboration^^ and support.",
+        g: "<b>although… , they offer…</b>: một câu nhượng bộ khác để kết bài. Em để ý: mở bài và kết bài đều dùng mẫu nhượng bộ nhưng khác từ nối (Although … / although …)." },
+      { id: "t12", vi: "Nếu được sử dụng khôn ngoan và cân bằng với giao tiếp ngoài đời thực, các nền tảng trực tuyến có thể làm phong phú cả đời sống xã hội lẫn học tập của giới trẻ.",
+        hints: [["used wisely", /used\s+(wisely|properly|sensibly|carefully)|if\s+(they\s+are\s+)?used/i], ["balanced with", /balance/i], ["enrich", /enrich|improve|enhance/i]],
+        model: "Used wisely and ^^balanced^^ with real-life ^^interaction^^, online ^^platforms^^ can ^^enrich^^ both the social and the academic lives of young people.",
+        g: "<b>Used wisely and balanced with…</b>: mệnh đề rút gọn bị động (thay cho “If they are used wisely and balanced…”). Đây là điểm ngữ pháp tinh tế nhưng không khó: bỏ chủ ngữ và to be." }
+    ] }
+  ];
+
+  var SPK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function words(s) { var m = String(s).trim().match(/\S+/g); return m ? m.length : 0; }
+  function norm(s) { return String(s).toLowerCase().replace(/[’‘]/g, "'").replace(/-/g, " ").replace(/[^a-z0-9' ]+/g, " ").replace(/\s+/g, " ").trim(); }
+  function plainText(t) {
+    return String(t).replace(/\{\{[a-z]+\|([^}]+)\}\}/g, "$1").replace(/\[\[([^\]|]+)\|[^\]]+\]\]/g, "$1").replace(/@@(.+?)@@/g, "$1").replace(/\^\^(.+?)\^\^/g, "$1");
+  }
+  function rich(t) {
+    var s = esc(t);
+    s = s.replace(/\{\{([a-z]+)\|([^}]+)\}\}/g, function (m, id, w) { return '<span class="vk" data-v="' + id + '" tabindex="0" role="button">' + w + '</span>'; });
+    s = s.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, function (m, w, mean) { return '<span class="gw" data-m="' + mean + '" tabindex="0" role="button">' + w + '</span>'; });
+    s = s.replace(/@@(.+?)@@/g, '<span class="conn">$1</span>');
+    s = s.replace(/\^\^(.+?)\^\^/g, '<mark class="ac">$1</mark>');
+    return s;
+  }
+  function lcsLen(a, b) {
+    var m = a.length, n = b.length, prev = [], cur = [], i, j;
+    for (j = 0; j <= n; j++) prev.push(0);
+    for (i = 1; i <= m; i++) {
+      cur = [0];
+      for (j = 1; j <= n; j++) cur.push(a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1]));
+      prev = cur;
+    }
+    return prev[n];
+  }
+  /* compare what the student typed with the model sentence (at most 1 wrong word is accepted) */
+  function sentCheck(user, model) {
+    var u = norm(user).split(" ").filter(Boolean), m = norm(model).split(" ").filter(Boolean);
+    var l = lcsLen(u, m), diff = Math.max(u.length, m.length) - l;
+    return { ok: u.length >= 3 && diff <= 1, same: l, total: m.length };
+  }
+  function fmt(s) { var m = Math.floor(s / 60), r = Math.floor(s % 60); return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
+
+  /* =====================================================================
+     STATE (saved in the browser; audio is never saved)
+     ===================================================================== */
+  var SKEY = "rel-friend-state-v1";
+  var S = { name: "", idx: 0, max: 0, pickM: null, pickL: null, mc: {}, vcopy: {}, mres: {}, lres: {}, ticks: {}, pr: {}, cp: {}, ol: {}, tr: {}, submitted: false };
+  var SAVE = ["name", "idx", "max", "pickM", "pickL", "mc", "vcopy", "mres", "lres", "ticks", "pr", "cp", "ol", "tr"];
+  var resumed = false;
+  function saveS() { try { var o = {}; SAVE.forEach(function (k) { o[k] = S[k]; }); localStorage.setItem(SKEY, JSON.stringify(o)); } catch (e) {} }
+  (function loadS() {
+    try {
+      var o = JSON.parse(localStorage.getItem(SKEY) || "null");
+      if (o) { SAVE.forEach(function (k) { if (o[k] !== undefined && o[k] !== null) S[k] = o[k]; }); resumed = (S.idx > 0); }
+    } catch (e) {}
+  })();
+  if (!S.pickM || !S.pickM.length) S.pickM = shuffle(VOC.map(function (v) { return v.id; })).slice(0, 8);
+  if (!S.pickL || !S.pickL.length) S.pickL = shuffle(VOC.filter(function (v) { return v.lt; })).slice(0, 5).map(function (v) { return v.id; });
+  var RECS = {};
+  SQ.forEach(function (q, i) {
+    var inPart = SQ.filter(function (x) { return x.part === q.part; });
+    q.pn = inPart.indexOf(q) + 1; q.pt = inPart.length;
+    RECS[q.id] = makeRecorder(q.max, "Hãy nghe và chép xong tất cả các câu ở trên trước, rồi mới ghi âm.");
+  });
+
+  function toast(msg) {
+    var t = $("#toast"); t.textContent = msg; t.style.display = "block";
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, 3200);
+  }
+
+  /* where each lesson word comes back later (computed from the real texts) */
+  var CORP = null;
+  function corpus() {
+    if (CORP) return CORP;
+    CORP = {
+      "Reading": PARAS.map(function (p) { return plainText(p.t); }).join(" "),
+      "Speaking": SQ.map(function (q) { return q.s7.map(plainText).join(" "); }).join(" "),
+      "Writing": WR.map(function (p) { return p.items.map(function (i) { return plainText(i.model); }).join(" "); }).join(" ")
+    };
+    return CORP;
+  }
+  function usage(v) { var c = corpus(); return Object.keys(c).filter(function (k) { return v.re.test(c[k]); }); }
+
+  /* =====================================================================
+     SPEECH + VOICE CHOICE
+     ===================================================================== */
+  var synth = window.speechSynthesis || null;
+  var voice = null, voiceURI = "", rate = 0.9, run = 0, playing = false;
+  try { voiceURI = localStorage.getItem("rel-friend-voice") || ""; } catch (e) {}
+  if (!synth || typeof SpeechSynthesisUtterance === "undefined") { document.body.classList.add("nospeech"); synth = null; }
+  var voiceSel = $("#voiceSel"), voiceBox = $("#voiceBox");
+  function enVoices() {
+    var vs = (synth && synth.getVoices()) || [];
+    return vs.filter(function (v) { return /^en/i.test(v.lang); }).sort(function (a, b) {
+      var au = /^en[-_]US/i.test(a.lang) ? 0 : 1, bu = /^en[-_]US/i.test(b.lang) ? 0 : 1;
+      return au - bu || a.name.localeCompare(b.name);
+    });
+  }
+  function voiceLabel(v) { return v.name.replace(/^(Microsoft|Google)\s+/i, "") + " (" + v.lang.replace("_", "-") + ")"; }
+  function pickVoice() {
+    if (!synth) return;
+    var vs = enVoices();
+    voice = null;
+    if (voiceURI) voice = vs.filter(function (v) { return v.voiceURI === voiceURI; })[0] || null;
+    if (!voice) voice = vs.filter(function (v) { return /^en[-_]US/i.test(v.lang) && /Google|Samantha|Microsoft|Aria|Jenny/i.test(v.name); })[0] || vs[0] || null;
+    voiceBox.style.display = vs.length ? "" : "none";
+    voiceSel.innerHTML = "";
+    var auto = document.createElement("option"); auto.value = ""; auto.textContent = "Tự động"; voiceSel.appendChild(auto);
+    vs.forEach(function (v) { var o = document.createElement("option"); o.value = v.voiceURI; o.textContent = voiceLabel(v); voiceSel.appendChild(o); });
+    voiceSel.value = voiceURI && vs.some(function (v) { return v.voiceURI === voiceURI; }) ? voiceURI : "";
+  }
+  if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+  voiceSel.addEventListener("change", function () {
+    voiceURI = voiceSel.value;
+    try { localStorage.setItem("rel-friend-voice", voiceURI); } catch (e) {}
+    pickVoice(); stopAll();
+    if (synth) synth.speak(utter("Hello! I will read the lesson for you."));
+  });
+  function utter(text, r) {
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; if (voice) { u.voice = voice; u.lang = voice.lang; } u.rate = r || rate; return u;
+  }
+  function clearNow() { $$(".now").forEach(function (e) { e.classList.remove("now"); }); }
+  function setPlaying(v) {
+    playing = v;
+    var l = $("#playLabel"), b = $("#playAll");
+    if (l) l.textContent = v ? "Dừng nghe" : "Nghe cả bài";
+    if (b) b.querySelector("svg").innerHTML = v ? '<path d="M6 6h12v12H6z"/>' : '<path d="M8 5v14l11-7z"/>';
+  }
+  function stopAll() { run++; if (synth) synth.cancel(); clearNow(); setPlaying(false); }
+  function playParas(list) {
+    if (!synth || !list.length) return;
+    stopAll();
+    var my = ++run, i = 0;
+    setPlaying(true);
+    (function next() {
+      if (my !== run) return;
+      if (i >= list.length) { clearNow(); setPlaying(false); return; }
+      var el = list[i++];
+      clearNow(); el.classList.add("now");
+      try { el.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+      var u = utter(el.getAttribute("data-text"));
+      u.onend = next;
+      u.onerror = function () { if (my === run) { clearNow(); setPlaying(false); } };
+      synth.speak(u);
+    })();
+  }
+  function sayText(t, r) {
+    if (!synth) return;
+    stopAll();
+    synth.speak(utter(t, r || Math.max(0.6, rate - 0.1)));
+  }
+
+  /* =====================================================================
+     RECORDER (one per speaking question)
+     ===================================================================== */
+  var activeRec = null;
+  function pickMime() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+    var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    for (var i = 0; i < c.length; i++) { if (MediaRecorder.isTypeSupported(c[i])) return c[i]; }
+    return "";
+  }
+  function errMsg(err) {
+    var n = err && err.name;
+    if (n === "NotAllowedError" || n === "SecurityError") return "Trình duyệt chưa cho phép dùng micro. Bấm vào biểu tượng ổ khóa cạnh địa chỉ trang, cho phép micro rồi thử lại.";
+    if (n === "NotFoundError") return "Không tìm thấy micro trên thiết bị này.";
+    return "Không ghi âm được (" + (n || "lỗi") + "). Hãy thử lại bằng Chrome hoặc Safari mới.";
+  }
+  function makeRecorder(max, offMsg) {
+    var R = { blob: null, dur: 0, url: null, enabled: false, recording: false, msg: "", ui: null, mr: null, stream: null, parts: [], tick: null, t0: 0, ctx: null, raf: 0, MAX: max || 60, offMsg: offMsg || "" };
+    var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    R.paint = function () {
+      var u = R.ui; if (!u) return;
+      u.btn.textContent = R.recording ? "Dừng ghi âm" : (R.blob ? "Ghi âm lại" : "Bắt đầu ghi âm");
+      u.btn.classList.toggle("recording", R.recording); u.btn.classList.toggle("primary", !R.recording);
+      u.btn.disabled = !supported || (!R.enabled && !R.recording);
+      u.msg.textContent = !supported ? "Trình duyệt này chưa hỗ trợ ghi âm. Hãy mở trang bằng Chrome hoặc Safari mới." : (R.msg || (R.enabled ? "" : R.offMsg));
+      if (R.blob && !R.recording) { u.done.hidden = false; u.audio.src = R.url; u.time.textContent = fmt(R.dur) + " / " + fmt(R.MAX); } else { u.done.hidden = true; }
+    };
+    R.mount = function (host) {
+      host.innerHTML = '<div class="rec-top"><button type="button" class="btn primary rb"></button><span class="rec-time">00:00 / ' + fmt(R.MAX) + '</span><div class="meter" aria-hidden="true"><i></i></div></div><p class="sub rmsg" role="status"></p><div class="rdone" hidden><audio controls></audio></div>';
+      R.ui = { btn: $(".rb", host), time: $(".rec-time", host), fill: $(".meter i", host), msg: $(".rmsg", host), done: $(".rdone", host), audio: $("audio", host) };
+      R.ui.btn.addEventListener("click", function () { if (R.recording) R.stop(); else R.start(); });
+      R.paint();
+    };
+    R.setEnabled = function (on) { R.enabled = on; R.paint(); };
+    R.meter = function (stream) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext; R.ctx = new AC();
+        var src = R.ctx.createMediaStreamSource(stream), an = R.ctx.createAnalyser(); an.fftSize = 256; src.connect(an);
+        var buf = new Uint8Array(an.frequencyBinCount);
+        (function loop() {
+          an.getByteTimeDomainData(buf);
+          var peak = 0; for (var i = 0; i < buf.length; i++) { var v = Math.abs(buf[i] - 128); if (v > peak) peak = v; }
+          if (R.ui) R.ui.fill.style.width = Math.min(100, peak / 128 * 180) + "%";
+          R.raf = requestAnimationFrame(loop);
+        })();
+      } catch (e) {}
+    };
+    R.start = function () {
+      if (activeRec && activeRec !== R) activeRec.stop();
+      stopAll(); R.msg = "";
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+        R.stream = stream; R.parts = [];
+        var mime = pickMime(), mr;
+        try { mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream); } catch (e) { mr = new MediaRecorder(stream); }
+        R.mr = mr; activeRec = R;
+        mr.ondataavailable = function (e) { if (e.data && e.data.size) R.parts.push(e.data); };
+        mr.onstop = R.finish;
+        mr.start();
+        R.t0 = Date.now(); R.recording = true; R.msg = "Đang ghi âm. Hãy đọc to cả đoạn em đã chép, nói chậm, rõ và tự nhiên.";
+        R.tick = setInterval(function () {
+          var s = (Date.now() - R.t0) / 1000; if (R.ui) R.ui.time.textContent = fmt(s) + " / " + fmt(R.MAX);
+          if (s >= R.MAX) R.stop();
+        }, 250);
+        R.meter(stream); R.paint();
+      }).catch(function (err) { R.msg = errMsg(err); R.paint(); });
+    };
+    R.stop = function () { if (R.mr && R.mr.state !== "inactive") R.mr.stop(); };
+    R.finish = function () {
+      clearInterval(R.tick); cancelAnimationFrame(R.raf); if (R.ui) R.ui.fill.style.width = "0%";
+      try { if (R.ctx) R.ctx.close(); } catch (e) {} R.ctx = null;
+      if (R.stream) R.stream.getTracks().forEach(function (t) { t.stop(); });
+      R.recording = false; if (activeRec === R) activeRec = null;
+      var dur = (Date.now() - R.t0) / 1000;
+      if (dur < 2 || !R.parts.length) { R.msg = "Bản ghi âm quá ngắn. Hãy ghi lại và đọc to cả đoạn."; R.paint(); return; }
+      var type = (R.mr && R.mr.mimeType) || pickMime() || "audio/webm";
+      if (R.url) URL.revokeObjectURL(R.url);
+      R.blob = new Blob(R.parts, { type: type }); R.url = URL.createObjectURL(R.blob); R.dur = dur; R.wav = null; R.sent = false;
+      R.msg = "Đã ghi xong. Hãy nghe lại. Nếu chưa hài lòng, bấm Ghi âm lại.";
+      R.paint();
+    };
+    return R;
+  }
+
+  /* =====================================================================
+     INFO SHEET (tap a lesson word or a glossary word)
+     ===================================================================== */
+  var sheet = $("#sheet"), sheetIn = $("#sheetIn");
+  function closeSheet() { sheet.classList.remove("show"); }
+  function openInfo(o) {
+    sheetIn.innerHTML = "";
+    var top = document.createElement("div"); top.className = "sheet-top";
+    var h = document.createElement("div"); h.className = "sheet-word"; h.textContent = o.word; h.style.flex = "1";
+    var say = document.createElement("button"); say.type = "button"; say.className = "ico listen"; say.setAttribute("aria-label", "Nghe"); say.innerHTML = SPK;
+    say.addEventListener("click", function () { sayText(o.say || o.word); });
+    top.appendChild(h); top.appendChild(say); sheetIn.appendChild(top);
+    var mean = document.createElement("div"); mean.className = "sheet-mean"; mean.textContent = o.mean; sheetIn.appendChild(mean);
+    if (o.note) { var n = document.createElement("p"); n.className = "sheet-note"; n.textContent = o.note; sheetIn.appendChild(n); }
+    var acts = document.createElement("div"); acts.className = "sheet-acts";
+    var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn primary"; ok.textContent = "Đã hiểu";
+    ok.addEventListener("click", closeSheet); acts.appendChild(ok); sheetIn.appendChild(acts);
+    sheet.classList.add("show");
+    sayText(o.say || o.word);
+  }
+  document.addEventListener("click", function (ev) {
+    var vk = ev.target.closest && ev.target.closest(".vk");
+    if (vk) { var v = VBYID[vk.getAttribute("data-v")]; if (v) openInfo({ word: v.en, mean: v.vi, note: v.ex, say: v.en }); return; }
+    var gw = ev.target.closest && ev.target.closest(".gw");
+    if (gw) { openInfo({ word: gw.textContent, mean: gw.getAttribute("data-m"), say: gw.textContent }); return; }
+    if (sheet.classList.contains("show") && !ev.target.closest("#sheetIn")) closeSheet();
+  });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") closeSheet();
+    if ((ev.key === "Enter" || ev.key === " ") && ev.target.classList && (ev.target.classList.contains("vk") || ev.target.classList.contains("gw"))) { ev.preventDefault(); ev.target.click(); }
+  });
+
+  /* =====================================================================
+     REUSABLE BLOCKS
+     ===================================================================== */
+  /* paper-and-pen reminder with a tick box */
+  function pen(el, key, html, label) {
+    var d = document.createElement("div"); d.className = "pre";
+    d.innerHTML = '<div class="pen-t">Bài tập giấy: lấy giấy và bút nhé</div><p class="pen-p">' + html + '</p><label><input type="checkbox"> ' + esc(label || "Em đã viết xong vào vở") + '</label>';
+    var c = $("input", d); c.checked = !!S.ticks[key];
+    c.addEventListener("change", function () { S.ticks[key] = c.checked; saveS(); });
+    el.appendChild(d);
+  }
+  function tick(el, key, label) {
+    var d = document.createElement("div"); d.className = "pre";
+    d.innerHTML = '<label><input type="checkbox"> ' + esc(label) + '</label>';
+    var c = $("input", d); c.checked = !!S.ticks[key];
+    c.addEventListener("change", function () { S.ticks[key] = c.checked; saveS(); });
+    el.appendChild(d);
+  }
+  function needTick(key, msg) { return S.ticks[key] ? "" : (msg || "Hãy làm bài tập giấy rồi tick vào ô xác nhận."); }
+  function head(el, kicker, title) { el.innerHTML = '<div class="s-kicker">' + esc(kicker) + '</div><h2>' + esc(title) + '</h2>'; }
+  function listenBtn(id, label) { return '<button type="button" class="ico listen" id="' + id + '" aria-label="' + esc(label || "Nghe") + '">' + SPK + '</button>'; }
+
+  /* multiple choice. mode "retry": wrong answers are crossed out until the right one is found. mode "reveal": one answer, then the explanation. */
+  function mcq(host, key, items, mode, off) {
+    off = off || 0;
+    items.forEach(function (it, i) {
+      var k = key + ":" + i, r = S.mc[k];
+      if (!r) r = S.mc[k] = { tries: 0, first: null, done: false, pick: null, wr: [], ord: null };
+      if (!r.ord) { var idx = []; for (var j = 0; j < it.opts.length; j++) idx.push(j); r.ord = it.fix ? idx : shuffle(idx); }
+      var card = document.createElement("div"); card.className = "qcard";
+      card.innerHTML = '<div class="qhead"><span class="num">Câu ' + (off + i + 1) + '</span>' + (it.tag ? '<span class="lvl">' + esc(it.tag) + '</span>' : '') + '</div>' +
+        '<p class="qtext">' + rich(it.q) + '</p>' + (it.qvi ? '<p class="qvi">' + esc(it.qvi) + '</p>' : '') + '<div class="opts"></div><div class="fb" hidden></div>';
+      var box = $(".opts", card), fb = $(".fb", card), btns = [];
+      r.ord.forEach(function (oi) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = it.opts[oi];
+        b.addEventListener("click", function () {
+          if (r.done) return;
+          r.tries++; var ok = (oi === it.ans);
+          if (r.tries === 1) { r.first = ok; r.pick = oi; }
+          if (mode === "reveal") { r.done = true; } else if (ok) { r.done = true; } else { r.wr.push(oi); }
+          saveS(); paint();
+        });
+        box.appendChild(b); btns.push({ b: b, oi: oi });
+      });
+      function paint() {
+        btns.forEach(function (x) {
+          x.b.classList.remove("right", "wrong"); x.b.disabled = false;
+          if (r.done) { x.b.disabled = true; if (x.oi === it.ans) x.b.classList.add("right"); else if (mode === "reveal" && x.oi === r.pick) x.b.classList.add("wrong"); }
+          else if (r.wr.indexOf(x.oi) >= 0) { x.b.disabled = true; x.b.classList.add("wrong"); }
+        });
+        fb.hidden = !(r.done || r.wr.length);
+        if (r.done) {
+          var good = mode === "reveal" ? r.first : true;
+          fb.className = "fb " + (good ? "ok" : "try");
+          var msg = mode === "reveal" ? (r.first ? "Chính xác!" : "Chưa đúng. Đáp án đúng đã được đánh dấu xanh.") : (r.first ? "Đúng rồi!" : "Đúng rồi! Lần sau em sẽ nhớ.");
+          fb.innerHTML = '<p class="fbmsg">' + msg + '</p><p>' + (it.why || "") + '</p>';
+        } else if (r.wr.length) {
+          fb.className = "fb try";
+          fb.innerHTML = '<p class="fbmsg">Chưa đúng. Hãy thử đáp án khác nhé.</p>';
+        }
+      }
+      paint();
+      host.appendChild(card);
+    });
+  }
+  function mcAll(key, n) { for (var i = 0; i < n; i++) { var r = S.mc[key + ":" + i]; if (!r || !r.done) return false; } return true; }
+  function mcRows(part, key, items) {
+    return items.map(function (it, i) {
+      var r = S.mc[key + ":" + i] || {};
+      return { part: part, question: plainText(it.q), answer: (r.pick !== null && r.pick !== undefined && it.opts[r.pick] !== undefined) ? it.opts[r.pick] : "", correct: it.opts[it.ans], result: (r.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (r.tries > 1 ? " (" + r.tries + " lần thử)" : "") };
+    });
+  }
+  function mcFirst(key, n) { var g = 0; for (var i = 0; i < n; i++) { var r = S.mc[key + ":" + i]; if (r && r.first) g++; } return g; }
+
+  /* a sentence the student writes, checked by a small rule */
+  function prod(host, key, cfg) {
+    var st = S.pr[key] || (S.pr[key] = { text: "", ok: false });
+    var d = document.createElement("div"); d.className = "prod";
+    d.innerHTML = '<p class="prod-q">' + cfg.prompt + '</p><textarea class="field" rows="2" placeholder="Viết bằng tiếng Anh..." aria-label="Câu của em"></textarea><div class="qacts"><button type="button" class="btn primary">Kiểm tra</button></div><div class="fb" hidden></div>';
+    var ta = $("textarea", d), fb = $(".fb", d);
+    ta.value = st.text;
+    function show(ok, html) { fb.hidden = false; fb.className = "fb " + (ok ? "ok" : "try"); fb.innerHTML = '<p>' + html + '</p>'; }
+    if (st.ok) show(true, cfg.ok);
+    ta.addEventListener("input", function () { st.text = ta.value; saveS(); });
+    $(".btn", d).addEventListener("click", function () {
+      var v = ta.value.trim();
+      if (!v) { show(false, "Hãy viết câu của em trước nhé."); return; }
+      if (words(v) < cfg.min) { st.ok = false; show(false, "Câu hơi ngắn. Hãy viết ít nhất " + cfg.min + " từ."); saveS(); return; }
+      if (cfg.test(v)) { st.ok = true; show(true, cfg.ok); } else { st.ok = false; show(false, cfg.fail); }
+      saveS();
+    });
+    host.appendChild(d);
+  }
+  function needProd(key, msg) { return S.pr[key] && S.pr[key].ok ? "" : (msg || "Hãy viết một câu của em rồi bấm Kiểm tra."); }
+
+  function chainHTML(ch, curId, big) {
+    var h = '<div class="chain' + (big ? ' big' : '') + '">';
+    ch.ids.forEach(function (id, i) {
+      var v = VBYID[id], cur = curId && ch.ids.indexOf(curId);
+      var cls = "node" + (id === curId ? " cur" : (curId && cur > i ? " past" : ""));
+      h += '<span class="' + cls + '">' + esc(v.en) + (big ? '<small>' + esc(v.vi.split(",")[0]) + '</small>' : '') + '</span>';
+      if (i < ch.ids.length - 1) h += '<span class="arrow" aria-hidden="true">→</span>';
+    });
+    return h + '</div>';
+  }
+  function accFor(v) {
+    var s = v.en.replace(/\([^)]*\)/g, "");
+    return [norm(v.en), norm(s), norm(s).replace(/\b(someone|something|somebody)\b/g, "").replace(/\s+/g, " ").trim()];
+  }
+
+  /* =====================================================================
+     SCENES
+     ===================================================================== */
+  var STEPS = ["Từ vựng", "Reading", "Ngữ pháp", "Speaking", "Writing", "Nộp bài"];
+  var SC = [];
+  var SCI = {};   /* question id -> index of its record scene */
+  function add(o) { SC.push(o); return SC.length - 1; }
+
+  /* ---------------- Step 1: vocabulary ---------------- */
+  add({ step: 0, title: "Chào mừng", render: function (el) {
+    head(el, "Bắt đầu", "Chào em!");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Hôm nay lớp mình học một chủ đề rất gần gũi: <b>Relationships</b> (các mối quan hệ), cụ thể là <b>bạn bè và gia đình</b>. Bài học đi theo thứ tự <b>Reading → Speaking → Writing</b>, và cô sẽ đi thật chậm, từng bước một, để em nắm chắc.</p>' +
+      '<p class="vex">Today, we will talk about friendship and family: the people who matter most to us.</p>' +
+      '<div class="row-actions">' + listenBtn("wsay", "Nghe câu tiếng Anh") + '</div>' +
+      '<label for="nameIn" style="display:block;margin-top:14px"><b>Bạn tên là gì?</b></label><input class="field" id="nameIn" type="text" maxlength="60" autocomplete="name" placeholder="Ví dụ: Nguyễn Minh An - lớp 10A">');
+    $("#wsay").addEventListener("click", function () { sayText("Today, we will talk about friendship and family: the people who matter most to us."); });
+    var inp = $("#nameIn"); inp.value = S.name;
+    inp.addEventListener("input", function () { S.name = inp.value; saveS(); });
+  }, need: function () { return S.name.trim().length < 2 ? "Hãy nhập tên của em để bắt đầu." : ""; } });
+
+  add({ step: 0, title: "Bản đồ bài học", render: function (el) {
+    head(el, "Bắt đầu", "Hôm nay mình đi qua 6 chặng");
+    el.insertAdjacentHTML("beforeend",
+      '<div class="rules">' +
+      '<div class="rule"><b>1 · Từ vựng</b><span>24 từ, nối thành <b>6 chuỗi</b> có logic. Mỗi từ đều quay lại ở các chặng sau, nên em gặp một lần là nhớ.</span></div>' +
+      '<div class="rule"><b>2 · Reading</b><span>Một bài đọc mức band 6, dạng True / False / Not Given và chọn đáp án.</span></div>' +
+      '<div class="rule"><b>3 · Ngữ pháp</b><span>Bonus: 4 cấu trúc dùng để nói về các mối quan hệ.</span></div>' +
+      '<div class="rule"><b>4 · Speaking</b><span>Học 9 cụm nối ý, rồi 4 câu Part 1, 1 câu Part 2, 3 câu Part 3. Mỗi câu: mẫu band 5.5 → mẫu 6.5 đến 7.0 → nghe, chép, ghi âm.</span></div>' +
+      '<div class="rule"><b>5 · Writing</b><span>Phân tích đề, tự lập dàn ý, rồi dịch Việt sang Anh bài mẫu band 7.5.</span></div>' +
+      '<div class="rule"><b>6 · Nộp bài</b><span>Gửi bài làm và bản ghi âm cho cô.</span></div></div>' +
+      '<p class="sub">Em có thể quay lại phần trước bất cứ lúc nào bằng nút Quay lại hoặc thanh tiến độ phía dưới. Bài của em được lưu trong trình duyệt, nhưng <b>bản ghi âm thì không</b>, nên đừng tải lại trang khi chưa nộp.</p>');
+    pen(el, "prep", "Chuẩn bị một cuốn vở và hai cây bút khác màu: <b>bút xanh để chép</b>, <b>bút đỏ để sửa lỗi</b>. Suốt bài học, cô sẽ nhắc em lúc nào cần viết.", "Em đã có vở và bút");
+  }, need: function () { return needTick("prep", "Hãy chuẩn bị vở và bút rồi tick vào ô xác nhận."); } });
+
+  CHAINS.forEach(function (ch) {
+    add({ step: 0, title: "Chuỗi " + ch.n + ": " + ch.title, render: function (el) {
+      head(el, "Phần 1 · Từ vựng · Chuỗi " + ch.n + "/" + CHAINS.length, ch.title + " (" + ch.en + ")");
+      el.insertAdjacentHTML("beforeend",
+        '<p class="lead">Chuỗi này có 4 từ. Em nhìn đường đi của chúng trước nhé:</p>' + chainHTML(ch, null, true) +
+        '<div class="cbox"><div class="lab">Vì sao 4 từ này nối với nhau</div><p>' + ch.story + '</p></div>');
+      pen(el, "chain:" + ch.id, "Vẽ lại chuỗi này vào vở: viết 4 cụm từ nối với nhau bằng mũi tên, rồi ghi nghĩa tiếng Việt bên dưới mỗi cụm.", "Em đã vẽ chuỗi vào vở");
+    }, need: function () { return needTick("chain:" + ch.id, "Hãy vẽ chuỗi vào vở rồi tick vào ô xác nhận."); } });
+
+    ch.ids.forEach(function (id, k) {
+      var v = VBYID[id];
+      add({ step: 0, title: v.en, render: function (el) {
+        var uses = usage(v);
+        el.innerHTML = '<div class="s-kicker">Phần 1 · Chuỗi ' + ch.n + ' · Từ ' + (k + 1) + '/' + ch.ids.length + '</div>' + chainHTML(ch, v.id, false) +
+          '<div class="vtop"><span class="vtag">' + esc(v.kind) + '</span>' + listenBtn("vsay", "Nghe từ") + '</div>' +
+          '<div class="vbig">' + esc(v.en) + '</div><div class="vvi">' + esc(v.vi) + '</div>' +
+          '<div class="cbox"><div class="lab">Cô giải thích</div><p>' + v.core + '</p></div>' +
+          '<p class="vex">' + esc(v.ex) + '<small>' + esc(v.exvi) + '</small></p>' +
+          '<div class="row-actions">' + listenBtn("exsay", "Nghe câu ví dụ") + '</div>' +
+          '<div class="uses">Em sẽ gặp lại ở: ' + (uses.length ? uses.map(function (u) { return '<span class="pill">' + u + '</span>'; }).join(" ") : '<span class="pill">các phần sau</span>') + '</div>' +
+          '<div class="linkto"><b>Nối sang từ tiếp theo:</b> ' + v.link + '</div>' +
+          '<div class="prod"><p class="prod-q">Gõ lại cụm từ để nhớ mặt chữ: <b>' + esc(v.en) + '</b></p><input class="field" id="vcp" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Gõ lại cụm từ"><div id="vcfb" role="status"></div></div>' +
+          '<p class="sub" style="margin-top:12px">Gợi ý cho vở: viết cụm từ, nghĩa, và một câu ví dụ của riêng em về bạn bè hoặc gia đình.</p>';
+        $("#vsay").addEventListener("click", function () { sayText(v.en); });
+        $("#exsay").addEventListener("click", function () { sayText(v.ex); });
+        var inp = $("#vcp"), fb = $("#vcfb"), accs = accFor(v);
+        if (S.vcopy[v.id]) { inp.value = v.en; fb.innerHTML = '<div class="note ok">Đúng rồi!</div>'; }
+        inp.addEventListener("input", function () {
+          if (accs.indexOf(norm(inp.value)) >= 0) { S.vcopy[v.id] = true; saveS(); fb.innerHTML = '<div class="note ok">Đúng rồi! Em có thể bấm Tiếp tục.</div>'; }
+          else { fb.innerHTML = ""; }
+        });
+        setTimeout(function () { sayText(v.en + ". " + v.ex); }, 250);
+      }, need: function () { return S.vcopy[v.id] ? "" : "Hãy gõ lại cụm từ để tiếp tục."; } });
+    });
+
+    add({ step: 0, title: "Điền từ: " + ch.title, render: function (el) {
+      head(el, "Phần 1 · Chuỗi " + ch.n + " · Luyện tập", "Điền từ vào câu");
+      el.insertAdjacentHTML("beforeend", '<p class="lead">Chọn cụm từ đúng cho mỗi câu. Chỗ trống <b>___</b> là nơi em điền.</p>');
+      var host = document.createElement("div"); el.appendChild(host);
+      mcq(host, "gap:" + ch.id, GAPS[ch.id], "retry");
+    }, need: function () { return mcAll("gap:" + ch.id, GAPS[ch.id].length) ? "" : "Hãy trả lời đúng cả " + GAPS[ch.id].length + " câu để tiếp tục."; } });
+  });
+
+  /* ---- review: meaning (3 choices) then listening ---- */
+  var PM = S.pickM.map(function (id) { return VBYID[id]; }).filter(Boolean);
+  var LV = S.pickL.map(function (id) { return VBYID[id]; }).filter(Boolean);
+  add({ step: 0, title: "Ôn tổng hợp", render: function (el) {
+    head(el, "Phần 1 · Ôn từ vựng", "Ôn lại: chọn nghĩa và nghe gõ");
+    el.insertAdjacentHTML("beforeend", '<p class="lead">Em đã gặp cả 24 từ. Giờ máy hỏi lại ngẫu nhiên:</p><div class="rules"><div class="rule"><b>Chọn nghĩa</b><span>' + PM.length + ' từ. Đọc từ tiếng Anh, chọn nghĩa tiếng Việt đúng trong 3 đáp án.</span></div><div class="rule"><b>Nghe và gõ</b><span>' + LV.length + ' từ. Nghe máy đọc, rồi gõ lại từ em nghe được.</span></div></div>');
+  }, need: function () { return ""; } });
+
+  PM.forEach(function (v, i) {
+    add({ step: 0, title: "Chọn nghĩa: " + v.en, render: function (el) {
+      var r = S.mres[v.id] || (S.mres[v.id] = { tries: 0, first: null, done: false, ans: "" });
+      if (!r.opts) {
+        var others = shuffle(VOC.filter(function (x) { return x.id !== v.id && x.vi !== v.vi; })).slice(0, 2).map(function (x) { return x.vi; });
+        r.opts = shuffle([v.vi].concat(others));
+      }
+      el.innerHTML = '<div class="s-kicker">Phần 1 · Chọn nghĩa ' + (i + 1) + '/' + PM.length + '</div>' +
+        '<div class="vtop">' + listenBtn("msay", "Nghe từ") + '</div>' +
+        '<div class="vbig">' + esc(v.en) + '</div><p class="sub">Từ này có nghĩa là gì?</p><div class="opts" id="mopts"></div><div id="mfb" role="status"></div>';
+      $("#msay").addEventListener("click", function () { sayText(v.en); });
+      var box = $("#mopts");
+      r.opts.forEach(function (o) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = o;
+        if (r.done) { b.disabled = true; if (o === v.vi) b.classList.add("right"); }
+        b.addEventListener("click", function () {
+          if (r.done) return;
+          r.tries++; if (r.tries === 1) { r.first = (o === v.vi); r.ans = o; }
+          if (o === v.vi) {
+            r.done = true; box.querySelectorAll("button").forEach(function (x) { x.disabled = true; if (x.textContent === v.vi) x.classList.add("right"); });
+            $("#mfb").innerHTML = '<div class="note ok">' + (r.first ? "Đúng rồi!" : "Đúng rồi! Lần sau em sẽ nhớ.") + '</div>';
+            sayText(v.en);
+          } else { b.disabled = true; b.classList.add("wrong"); $("#mfb").innerHTML = '<div class="note err">Chưa đúng. Hãy thử đáp án khác.</div>'; }
+          saveS();
+        });
+        box.appendChild(b);
+      });
+      setTimeout(function () { sayText(v.en); }, 250);
+    }, need: function () { var r = S.mres[v.id]; return r && r.done ? "" : "Hãy chọn nghĩa đúng để tiếp tục."; } });
+  });
+
+  LV.forEach(function (v, i) {
+    add({ step: 0, title: "Nghe và gõ " + (i + 1), render: function (el) {
+      var r = S.lres[v.id] || (S.lres[v.id] = { tries: 0, first: null, done: false, ans: "" });
+      el.innerHTML = '<div class="s-kicker">Phần 1 · Nghe và gõ ' + (i + 1) + '/' + LV.length + '</div>' +
+        '<p class="lead">Nghe máy đọc và gõ lại từ em nghe được (tiếng Anh).</p>' +
+        '<div class="row-actions"><button type="button" class="btn primary listen" id="lplay">' + SPK + ' Nghe</button><button type="button" class="btn listen" id="lslow">Nghe chậm</button></div>' +
+        '<div class="try"><input class="field" id="lin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Từ em nghe được"><button type="button" class="btn primary" id="lchk">Kiểm tra</button></div><div id="lfb" role="status"></div>';
+      $("#lplay").addEventListener("click", function () { if (synth) { stopAll(); synth.speak(utter(v.lt, 0.9)); } });
+      $("#lslow").addEventListener("click", function () { if (synth) { stopAll(); synth.speak(utter(v.lt, 0.6)); } });
+      var inp = $("#lin");
+      if (r.done) { inp.value = v.lt; inp.disabled = true; $("#lfb").innerHTML = '<div class="note ok">Đúng rồi: <b>' + esc(v.lt) + '</b> (' + esc(v.vi) + ')</div>'; }
+      function check() {
+        if (r.done) return;
+        var val = inp.value; if (!val.trim()) { $("#lfb").innerHTML = '<div class="note">Hãy gõ từ em nghe được.</div>'; return; }
+        var ok = norm(val) === norm(v.lt);
+        r.tries++; if (r.tries === 1) { r.first = ok; r.ans = val.trim(); }
+        if (ok) { r.done = true; inp.disabled = true; $("#lfb").innerHTML = '<div class="note ok">' + (r.first ? "Đúng rồi!" : "Đúng rồi! Lần sau em sẽ nhớ.") + ' <b>' + esc(v.lt) + '</b> = ' + esc(v.vi) + '</div>'; saveS(); return; }
+        var fb = '<div class="note err">Chưa đúng. Hãy nghe lại, nghe chậm nếu cần.</div>';
+        if (r.tries >= 3) fb += '<div class="row-actions"><button type="button" class="btn quiet" id="lshow">Xem đáp án</button></div>';
+        $("#lfb").innerHTML = fb; saveS();
+        var sh = $("#lshow"); if (sh) sh.addEventListener("click", function () { r.done = true; r.revealed = true; inp.value = v.lt; inp.disabled = true; $("#lfb").innerHTML = '<div class="note">Đáp án: <b>' + esc(v.lt) + '</b> = ' + esc(v.vi) + '</div>'; saveS(); });
+      }
+      $("#lchk").addEventListener("click", check);
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(); } });
+      if (!r.done) setTimeout(function () { if (synth) { stopAll(); synth.speak(utter(v.lt, 0.9)); } }, 300);
+    }, need: function () { var r = S.lres[v.id]; return r && r.done ? "" : "Hãy gõ từ em nghe được để tiếp tục."; } });
+  });
+
+  function gapFirst() { var g = 0, t = 0; CHAINS.forEach(function (c) { g += mcFirst("gap:" + c.id, GAPS[c.id].length); t += GAPS[c.id].length; }); return [g, t]; }
+  add({ step: 0, title: "Kết quả từ vựng", render: function (el) {
+    head(el, "Phần 1 · Từ vựng", "Kết quả của em");
+    var gf = gapFirst();
+    var mg = PM.filter(function (v) { return S.mres[v.id] && S.mres[v.id].first; }).length, lg = LV.filter(function (v) { return S.lres[v.id] && S.lres[v.id].first; }).length;
+    el.insertAdjacentHTML("beforeend",
+      '<div class="score">' + (gf[0] + mg + lg) + '/' + (gf[1] + PM.length + LV.length) + '</div><p class="sub">Số câu đúng ngay ở lần thử đầu tiên.</p>' +
+      '<div class="reslist"><div class="res"><span><b>Điền từ</b> (6 chuỗi)</span><span>' + gf[0] + '/' + gf[1] + '</span></div>' +
+      '<div class="res"><span><b>Chọn nghĩa</b></span><span>' + mg + '/' + PM.length + '</span></div>' +
+      '<div class="res"><span><b>Nghe và gõ</b></span><span>' + lg + '/' + LV.length + '</span></div></div>' +
+      '<p class="note">Câu nào em sai, hãy ghi vào vở bằng bút đỏ. Các từ này sẽ quay lại trong bài đọc ngay sau đây.</p>');
+  }, need: function () { return ""; } });
+
+  add({ step: 0, title: "Bản đồ từ", render: function (el) {
+    head(el, "Phần 1 · Từ vựng", "Bản đồ 6 chuỗi từ");
+    el.insertAdjacentHTML("beforeend", '<p class="lead">Đây là toàn bộ bản đồ từ vựng của chủ đề. Em có thể bấm vào loa để nghe lại bất kỳ cụm nào.</p>');
+    var grid = document.createElement("div"); grid.className = "mapgrid";
+    CHAINS.forEach(function (ch) {
+      var c = document.createElement("div"); c.className = "mapcard";
+      c.innerHTML = '<h4>Chuỗi ' + ch.n + ' · ' + esc(ch.title) + '</h4>' + chainHTML(ch, null, false) + '<div class="row-actions" style="margin-top:4px"></div>';
+      var acts = $(".row-actions", c);
+      ch.ids.forEach(function (id) {
+        var v = VBYID[id], b = document.createElement("button"); b.type = "button"; b.className = "btn quiet listen"; b.innerHTML = SPK + " " + esc(v.en);
+        b.addEventListener("click", function () { sayText(v.en); }); acts.appendChild(b);
+      });
+      grid.appendChild(c);
+    });
+    el.appendChild(grid);
+    pen(el, "wordmap", "Vẽ lại <b>cả 6 chuỗi</b> trên một trang giấy (mỗi chuỗi một hàng, nối bằng mũi tên). Đây là tờ “bản đồ” em sẽ nhìn lại khi nói và viết.", "Em đã vẽ bản đồ 6 chuỗi");
+  }, need: function () { return needTick("wordmap", "Hãy vẽ bản đồ 6 chuỗi vào vở rồi tick vào ô xác nhận."); } });
+
+  /* ---------------- Step 2: reading ---------------- */
+  add({ step: 1, title: "Cách làm True / False / Not Given", render: function (el) {
+    head(el, "Phần 2 · Reading", "Trước khi đọc: cách làm True / False / Not Given");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Đây là dạng bài nhiều bạn mất điểm nhất. Cô chỉ em cách nghĩ thật đơn giản nhé.</p>' +
+      '<div class="rules">' +
+      '<div class="rule"><b>True</b><span>Ý trong câu hỏi <b>giống nghĩa</b> với bài (giống nghĩa, không cần giống chữ).</span></div>' +
+      '<div class="rule"><b>False</b><span>Ý trong câu hỏi <b>trái ngược</b> với điều bài viết.</span></div>' +
+      '<div class="rule"><b>Not Given</b><span>Bài <b>không nói</b> gì để em kết luận. Dù ngoài đời điều đó có thể đúng, bài không nhắc thì vẫn là Not Given.</span></div></div>' +
+      '<div class="cbox"><div class="lab">Quy trình 4 bước</div>' +
+      '<p><b>Bước 1.</b> Gạch chân từ khoá trong câu hỏi.</p><p><b>Bước 2.</b> Tìm từ khoá (hoặc từ đồng nghĩa) trong bài. Câu hỏi đi theo thứ tự các đoạn.</p>' +
+      '<p><b>Bước 3.</b> Đọc kỹ cả câu có từ khoá, không chỉ nhìn từ khoá.</p><p><b>Bước 4.</b> So nghĩa hai câu rồi chọn True, False hoặc Not Given.</p></div>' +
+      '<div class="cbox"><div class="lab">Hai cái bẫy cô muốn em nhớ</div><p>Từ tuyệt đối như <b>every, all, always, never, only</b> thường làm câu hỏi thành <b>False</b>.</p><p>Câu hỏi nói một điều nghe rất hợp lý nhưng bài không nhắc đến thì là <b>Not Given</b>, đừng tự suy diễn.</p></div>' +
+      '<p class="sub">Trong bài đọc, từ có <b>gạch chân đậm</b> là từ em vừa học ở Phần 1. Từ có <b>gạch chấm</b> là từ khó. Chạm vào để xem nghĩa.</p>');
+    pen(el, "tfng", "Vẽ một bảng 3 cột <b>True / False / Not Given</b>. Dưới mỗi cột, ghi dấu hiệu nhận biết: <b>True = cùng nghĩa</b>, <b>False = trái nghĩa hoặc từ tuyệt đối</b>, <b>Not Given = không thấy thông tin</b>.", "Em đã vẽ bảng vào vở");
+  }, need: function () { return needTick("tfng", "Hãy vẽ bảng vào vở rồi tick vào ô xác nhận."); } });
+
+  add({ step: 1, wide: true, plain: true, title: "Đọc và trả lời", render: function (el) {
+    el.innerHTML =
+      '<div class="s-kicker">Phần 2 · Reading</div><h2>Đọc bài và trả lời ' + RQ.length + ' câu hỏi</h2>' +
+      '<p class="sub">Bài đọc ở bên trái, câu hỏi ở bên phải (trên điện thoại thì câu hỏi nằm bên dưới). Mỗi câu chỉ chọn một lần, sau đó cô sẽ giải thích vì sao đúng hoặc sai. Em nhớ gạch chân từ khoá bằng bút chì trong vở.</p>' +
+      '<div class="read-grid"><div class="read-col">' +
+        '<div class="toolbar2"><button class="btn primary listen" id="playAll" type="button">' +
+          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span id="playLabel">Nghe cả bài</span></button>' +
+          '<div class="speed listen" role="group" aria-label="Tốc độ đọc"><button type="button" data-rate="0.7" aria-pressed="false">Chậm</button><button type="button" data-rate="0.9" aria-pressed="true">Vừa</button><button type="button" data-rate="1.1" aria-pressed="false">Nhanh</button></div></div>' +
+        '<article class="card" id="reading" aria-label="Bài đọc"><h3>' + esc(RD_TITLE) + '</h3></article></div>' +
+        '<div class="q-col"><h3 style="font-family:var(--font-display);margin:0 0 4px">Questions 1 đến 7</h3><p class="sub">Do the following statements agree with the information in the text? Chọn <b>True</b>, <b>False</b> hoặc <b>Not Given</b>.</p><div id="q1"></div>' +
+        '<h3 style="font-family:var(--font-display);margin:14px 0 4px">Questions 8 đến 11</h3><p class="sub">Choose the correct answer.</p><div id="q2"></div></div></div>';
+    var art = $("#reading");
+    PARAS.forEach(function (p) {
+      var box = document.createElement("div"); box.className = "para";
+      var hd = document.createElement("div"); hd.className = "para-head";
+      var tag = document.createElement("span"); tag.className = "tag"; tag.textContent = "Đoạn " + p.tag;
+      var btn = document.createElement("button"); btn.className = "ico listen"; btn.type = "button"; btn.setAttribute("aria-label", "Nghe đoạn " + p.tag); btn.innerHTML = SPK;
+      hd.appendChild(tag); hd.appendChild(btn);
+      var para = document.createElement("p"); para.className = "text"; para.innerHTML = rich(p.t); para.setAttribute("data-text", plainText(p.t));
+      btn.addEventListener("click", function () { playParas([para]); });
+      box.appendChild(hd); box.appendChild(para); art.appendChild(box);
+    });
+    mcq($("#q1"), "rt", RQ.slice(0, 7), "reveal", 0);
+    mcq($("#q2"), "rm", RQ.slice(7), "reveal", 7);
+    $("#playAll").addEventListener("click", function () { if (playing) { stopAll(); return; } playParas($$(".text", art)); });
+    $$(".speed button").forEach(function (b) {
+      b.setAttribute("aria-pressed", parseFloat(b.getAttribute("data-rate")) === rate ? "true" : "false");
+      b.addEventListener("click", function () {
+        rate = parseFloat(b.getAttribute("data-rate"));
+        $$(".speed button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        toast("Tốc độ đọc: " + b.textContent);
+      });
+    });
+  }, need: function () {
+    var n = 0; for (var i = 0; i < 7; i++) { var r = S.mc["rt:" + i]; if (!r || !r.done) n++; } for (i = 0; i < 4; i++) { var r2 = S.mc["rm:" + i]; if (!r2 || !r2.done) n++; }
+    return n ? "Còn " + n + " câu chưa trả lời." : "";
+  } });
+
+  /* ---------------- Step 3: grammar ---------------- */
+  add({ step: 2, title: "Ngữ pháp bonus", render: function (el) {
+    head(el, "Phần 3 · Ngữ pháp", "Bonus: 4 cấu trúc để nói về các mối quan hệ");
+    var h = '<p class="lead">Em vừa đọc xong một bài viết về bạn bè và gia đình. Bây giờ cô gom lại <b>4 cấu trúc</b> mà em sẽ dùng nhiều nhất khi <b>nói và viết</b> về chủ đề này. Mỗi cấu trúc có hai bước: học (có bài tập giấy), rồi luyện tập.</p><div class="rules">';
+    GR.forEach(function (g, i) { h += '<div class="rule"><b>Cấu trúc ' + (i + 1) + '</b><span>' + esc(g.title) + '</span></div>'; });
+    el.insertAdjacentHTML("beforeend", h + '</div><p class="sub">Những cấu trúc này đều đã xuất hiện trong bài đọc và sẽ xuất hiện trong mẫu Speaking, Writing. Em đọc là nhận ra ngay.</p>');
+  }, need: function () { return ""; } });
+
+  GR.forEach(function (g, gi) {
+    add({ step: 2, title: "Cấu trúc " + (gi + 1) + ": học", render: function (el) {
+      head(el, "Phần 3 · Ngữ pháp · Cấu trúc " + (gi + 1) + "/" + GR.length, g.title);
+      var h = '<p class="lead">' + g.intro + '</p><div class="formula">' + g.formula + '</div><p>' + g.rules + '</p><h3>Ví dụ</h3>';
+      g.ex.forEach(function (e, i) { h += '<p class="vex">' + esc(e[0]) + ' <button type="button" class="ico listen exs" data-i="' + i + '" aria-label="Nghe ví dụ">' + SPK + '</button><small>' + esc(e[1]) + '</small></p>'; });
+      h += '<div class="cbox"><div class="lab">Cô dặn thêm</div><p>' + g.tip + '</p></div>';
+      el.insertAdjacentHTML("beforeend", h);
+      $$(".exs", el).forEach(function (b) { b.addEventListener("click", function () { sayText(g.ex[parseInt(b.getAttribute("data-i"), 10)][0]); }); });
+      pen(el, "gr:" + g.id, g.pen);
+    }, need: function () { return needTick("gr:" + g.id); } });
+
+    add({ step: 2, title: "Cấu trúc " + (gi + 1) + ": luyện", render: function (el) {
+      head(el, "Phần 3 · Ngữ pháp · Cấu trúc " + (gi + 1) + "/" + GR.length, "Luyện tập: " + g.title.split(":")[0]);
+      el.insertAdjacentHTML("beforeend", '<p class="lead">Làm 4 câu trắc nghiệm, rồi tự viết một câu của em.</p>');
+      var host = document.createElement("div"); el.appendChild(host);
+      mcq(host, "gr:" + g.id, g.mc, "retry");
+      prod(el, "gr:" + g.id, g.prod);
+    }, need: function () { return !mcAll("gr:" + g.id, g.mc.length) ? "Hãy trả lời đúng cả " + g.mc.length + " câu trắc nghiệm." : needProd("gr:" + g.id, "Hãy viết một câu của em rồi bấm Kiểm tra."); } });
+  });
+
+  /* ---------------- Step 4: speaking ---------------- */
+  add({ step: 3, title: "Giới thiệu Speaking", render: function (el) {
+    head(el, "Phần 4 · Speaking", "IELTS Speaking có 3 phần");
+    el.insertAdjacentHTML("beforeend",
+      '<div class="rules">' +
+      '<div class="rule"><b>Part 1</b><span>Câu hỏi quen thuộc về đời sống. Trả lời khoảng <b>2 đến 3 câu</b>, 20 đến 30 giây.</span></div>' +
+      '<div class="rule"><b>Part 2</b><span>Một đề tài với 4 gợi ý. Em có 1 phút chuẩn bị rồi nói <b>1 đến 2 phút</b>.</span></div>' +
+      '<div class="rule"><b>Part 3</b><span>Câu hỏi trừu tượng hơn. Trả lời khoảng <b>40 đến 60 giây</b>, có ý kiến và lí do.</span></div></div>' +
+      '<div class="cbox"><div class="lab">Em đừng học thuộc lòng như con vẹt</div><p>Cô muốn em học <b>khung câu</b>, <b>cụm nối ý</b> và <b>từ khoá</b>, rồi nói bằng lời của chính em. Mẫu của cô là để em bắt chước cách người nói tốt sắp xếp ý và chọn từ.</p>' +
+      '<p>Trước khi vào câu hỏi, em sẽ học <b>9 cụm nối ý</b> để câu nói mượt hơn. Đây là phần quan trọng nhất.</p></div>');
+    pen(el, "spintro", "Chép vào vở 3 dòng: <b>Part 1: 2 đến 3 câu</b>, <b>Part 2: 1 đến 2 phút</b>, <b>Part 3: 40 đến 60 giây có ý kiến và lí do</b>.", "Em đã chép vào vở");
+  }, need: function () { return needTick("spintro"); } });
+
+  PH.forEach(function (g, gi) {
+    add({ step: 3, title: g.title, render: function (el) {
+      head(el, "Phần 4 · Cụm nối ý · Nhóm " + (gi + 1) + "/" + PH.length, g.title.replace(/^Nhóm \d · /, ""));
+      el.insertAdjacentHTML("beforeend", '<p class="lead">' + g.intro + '</p>');
+      g.items.forEach(function (it, i) {
+        var c = document.createElement("div"); c.className = "cbox";
+        c.innerHTML = '<div class="lab">Cụm ' + (i + 1) + '</div><p style="font-size:20px"><b class="conn">' + esc(it.p) + '</b> <button type="button" class="ico listen" aria-label="Nghe cụm">' + SPK + '</button></p>' +
+          '<p><b>Nghĩa:</b> ' + esc(it.vi) + '</p><p><b>Khi nào dùng:</b> ' + it.when + '</p><p class="vex" style="margin:4px 0 0">' + esc(it.ex) + ' <button type="button" class="ico listen exb" aria-label="Nghe ví dụ">' + SPK + '</button><small>' + esc(it.exvi) + '</small></p>';
+        var bs = $$(".ico", c);
+        bs[0].addEventListener("click", function () { sayText(it.p.replace(/…/g, "")); });
+        bs[1].addEventListener("click", function () { sayText(it.ex); });
+        el.appendChild(c);
+      });
+      pen(el, "ph:" + g.id, "Chép các cụm của nhóm này vào vở, mỗi cụm kèm nghĩa tiếng Việt và <b>một câu của riêng em</b> về bạn thân hoặc gia đình.");
+      prod(el, "ph:" + g.id, { prompt: "Viết 1 câu về bạn thân hoặc gia đình của em, dùng ít nhất <b>một cụm</b> của nhóm này.", min: 8,
+        test: function (t) { var n = norm(t); return g.items.some(function (it) { return it.m.some(function (m) { return n.indexOf(m) >= 0; }); }); },
+        fail: "Cô chưa thấy cụm nào của nhóm này. Hãy dùng đúng cụm in đậm ở trên, ví dụ: <i>" + esc(g.items[0].ex) + "</i>", ok: "Rất tốt! Em đã dùng đúng cụm nối ý." });
+    }, need: function () { return needTick("ph:" + g.id) || needProd("ph:" + g.id); } });
+  });
+
+  add({ step: 3, title: "Chọn cụm phù hợp", render: function (el) {
+    head(el, "Phần 4 · Cụm nối ý · Luyện tập", "Chọn cụm phù hợp với tình huống");
+    el.insertAdjacentHTML("beforeend", '<p class="lead">Mỗi tình huống cần một cụm khác nhau. Em chọn cụm đúng nhất.</p>');
+    var host = document.createElement("div"); el.appendChild(host);
+    mcq(host, "phtest", PH_TEST, "retry");
+  }, need: function () { return mcAll("phtest", PH_TEST.length) ? "" : "Hãy trả lời đúng cả " + PH_TEST.length + " câu để tiếp tục."; } });
+
+  add({ step: 3, title: "Cách học mỗi câu", render: function (el) {
+    head(el, "Phần 4 · Speaking", "Mỗi câu hỏi em học qua 3 màn");
+    el.insertAdjacentHTML("beforeend",
+      '<div class="rules">' +
+      '<div class="rule"><b>Màn 1</b><span>Đọc câu hỏi, học <b>từ khoá</b>, đọc <b>mẫu band 5.5</b> (câu trả lời đơn giản, đủ ý).</span></div>' +
+      '<div class="rule"><b>Màn 2</b><span>Xem <b>mẫu band 6.5 đến 7.0</b> và những chỗ cô nâng cấp: từ vựng, cụm nối ý, ngữ pháp.</span></div>' +
+      '<div class="rule"><b>Màn 3</b><span><b>Nghe → chép → ghi âm.</b> Em nghe từng câu, gõ lại thật chính xác, rồi đọc to cả đoạn và ghi âm.</span></div></div>' +
+      '<p class="sub">Có 8 câu hỏi: 4 câu Part 1, 1 câu Part 2, 3 câu Part 3. Cần micro, nên hãy mở bài bằng Chrome hoặc Safari và bấm “Cho phép” khi trình duyệt hỏi.</p>');
+  }, need: function () { return ""; } });
+
+  SQ.forEach(function (q, qi) {
+    var rec = RECS[q.id], partLabel = "Part " + q.part + " · Câu " + q.pn + "/" + q.pt;
+    function qhead() {
+      var h = '<div class="vtop">' + listenBtn("qsay", "Nghe câu hỏi") + '</div><div class="qbig">' + esc(q.q) + '</div><p class="qvi2">' + esc(q.vi) + '</p>';
+      if (q.cue) h += '<div class="cue"><b>You should say:</b><ul>' + q.cue.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join("") + '</ul></div>';
+      return h;
+    }
+    /* screen 1: question, keywords, band 5.5 */
+    add({ step: 3, title: partLabel + ": hiểu đề", render: function (el) {
+      el.innerHTML = '<div class="s-kicker">Phần 4 · Speaking · ' + partLabel + ' · Màn 1/3</div>' + qhead() +
+        '<h3>Từ khoá để triển khai ý</h3><div class="kws" id="kws"></div>' +
+        '<h3>Mẫu band 5.5 <span class="band low">BAND 5.5</span></h3><p class="sub">Câu trả lời đơn giản, đủ ý, nhưng từ vựng và cách nối ý còn cơ bản. Em đọc to một lần.</p>' +
+        '<div class="sample"><p>' + esc(q.s55) + '</p></div><div class="row-actions">' + '<button type="button" class="btn listen" id="s55say">' + SPK + ' Nghe mẫu</button></div>';
+      $("#qsay").addEventListener("click", function () { sayText(q.q); });
+      $("#s55say").addEventListener("click", function () { sayText(q.s55); });
+      q.kw.forEach(function (k) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "kw"; b.innerHTML = esc(k[0]) + '<small>' + esc(k[1]) + '</small>';
+        b.addEventListener("click", function () { sayText(k[0]); }); $("#kws").appendChild(b);
+      });
+      tick(el, "q5:" + q.id, "Em đã đọc to mẫu band 5.5 một lần");
+      setTimeout(function () { sayText(q.q); }, 250);
+    }, need: function () { return needTick("q5:" + q.id, "Hãy đọc to mẫu band 5.5 rồi tick vào ô xác nhận."); } });
+
+    /* screen 2: band 6.5-7.0 and upgrades */
+    add({ step: 3, title: partLabel + ": nâng cấp", render: function (el) {
+      var h = '<div class="s-kicker">Phần 4 · Speaking · ' + partLabel + ' · Màn 2/3</div><div class="qbig" style="font-size:24px">' + esc(q.q) + '</div>' +
+        '<h3>Mẫu band 6.5 đến 7.0 <span class="band">BAND 6.5–7.0</span></h3><p class="sub">Chữ <b class="conn">đậm màu</b> là cụm nối ý em vừa học. Chữ <u>gạch chân</u> là từ vựng Mục 1 (chạm để xem nghĩa).</p><div class="sample">';
+      q.s7.forEach(function (s) { h += '<p>' + rich(s) + '</p>'; });
+      h += '</div><div class="row-actions"><button type="button" class="btn listen" id="s7say">' + SPK + ' Nghe mẫu</button><button type="button" class="btn listen" id="s7slow">Nghe chậm</button></div><h3>Cô đã nâng cấp những gì?</h3><div class="ups">';
+      q.up.forEach(function (u) { h += '<div class="up"><div class="a">' + esc(u[0]) + '</div><div class="b">' + esc(u[1]) + '</div><div class="why">' + esc(u[2]) + '</div></div>'; });
+      el.innerHTML = h + '</div>';
+      var full = q.s7.map(plainText).join(" ");
+      $("#s7say").addEventListener("click", function () { sayText(full, 0.9); });
+      $("#s7slow").addEventListener("click", function () { sayText(full, 0.7); });
+      tick(el, "q7:" + q.id, "Em đã đọc to mẫu band 6.5 đến 7.0 một lần và để ý các chỗ nâng cấp");
+    }, need: function () { return needTick("q7:" + q.id, "Hãy đọc to mẫu rồi tick vào ô xác nhận."); } });
+
+    /* screen 3: listen, copy, record */
+    SCI[q.id] = add({ step: 3, title: partLabel + ": nghe, chép, ghi âm", render: function (el) {
+      var sents = q.s7.map(plainText), st = S.cp[q.id] || (S.cp[q.id] = { t: [], d: [], n: [], rv: [] });
+      el.innerHTML = '<div class="s-kicker">Phần 4 · Speaking · ' + partLabel + ' · Màn 3/3</div><div class="qbig" style="font-size:24px">' + esc(q.q) + '</div>' +
+        '<p class="lead">Bước 1: nghe từng câu rồi gõ lại. Bước 2: đọc to cả đoạn và ghi âm.</p>' +
+        '<p class="sub">Em chưa được nhìn câu mẫu. Hãy nghe thật kỹ, nghe chậm nếu cần, rồi gõ đúng từng từ. Cô chấp nhận sai tối đa một từ mỗi câu.</p><div id="dict"></div><div id="after" hidden></div>';
+      var dict = $("#dict"), blocks = [];
+      sents.forEach(function (s, i) {
+        var b = document.createElement("div"); b.className = "dsent";
+        b.innerHTML = '<div class="dhead"><b>Câu ' + (i + 1) + '/' + sents.length + '</b><button type="button" class="btn listen" data-a="play">' + SPK + ' Nghe</button><button type="button" class="btn listen" data-a="slow">Nghe chậm</button></div>' +
+          '<textarea class="field" rows="2" placeholder="Nghe rồi gõ lại câu em nghe được..." aria-label="Câu ' + (i + 1) + '"></textarea><div class="qacts"><button type="button" class="btn primary" data-a="chk">Kiểm tra</button></div><div class="dfb"></div>';
+        var ta = $("textarea", b), dfb = $(".dfb", b), chk = $('[data-a="chk"]', b);
+        ta.value = st.t[i] || "";
+        $('[data-a="play"]', b).addEventListener("click", function () { if (synth) { stopAll(); synth.speak(utter(s, 0.9)); } });
+        $('[data-a="slow"]', b).addEventListener("click", function () { if (synth) { stopAll(); synth.speak(utter(s, 0.6)); } });
+        ta.addEventListener("input", function () { st.t[i] = ta.value; saveS(); });
+        function finish() { ta.disabled = true; chk.style.display = "none"; }
+        function showGood(msg) { dfb.innerHTML = '<div class="note ok">' + msg + '</div><p class="dgood"><b>Câu chuẩn:</b> ' + esc(s) + '</p>'; }
+        if (st.d[i]) { finish(); showGood(st.rv[i] ? "Em đã xem đáp án. Hãy đọc to câu này một lần." : "Đúng rồi!"); }
+        chk.addEventListener("click", function () {
+          if (st.d[i]) return;
+          var v = ta.value.trim(); if (!v) { dfb.innerHTML = '<div class="note">Hãy nghe và gõ câu em nghe được.</div>'; return; }
+          var r = sentCheck(v, s); st.n[i] = (st.n[i] || 0) + 1;
+          if (r.ok) { st.d[i] = true; finish(); showGood("Đúng rồi!"); saveS(); unlock(); if (synth && i + 1 < sents.length) setTimeout(function () { stopAll(); synth.speak(utter(sents[i + 1], 0.9)); }, 600); return; }
+          var h = '<div class="note err">Chưa khớp (đúng khoảng ' + r.same + '/' + r.total + ' từ). Hãy nghe lại chậm, chú ý các từ nhỏ như a, the và đuôi -s, -ed.</div>';
+          if (st.n[i] >= 2) h += '<div class="row-actions"><button type="button" class="btn quiet" data-a="show">Xem đáp án</button></div>';
+          dfb.innerHTML = h; saveS();
+          var sh = $('[data-a="show"]', dfb); if (sh) sh.addEventListener("click", function () { st.d[i] = true; st.rv[i] = true; finish(); showGood("Em đã xem đáp án. Hãy đọc to câu này một lần."); saveS(); unlock(); });
+        });
+        dict.appendChild(b); blocks.push(b);
+      });
+      function unlock() {
+        var all = true;
+        blocks.forEach(function (b, i) {
+          var open = i === 0 || st.d[i - 1];
+          b.classList.toggle("locked", !open);
+          $$("textarea,button", b).forEach(function (x) { if (!st.d[i]) x.disabled = !open; });
+          if (!st.d[i]) all = false;
+        });
+        var after = $("#after");
+        if (all) {
+          after.hidden = false;
+          if (!after.getAttribute("data-built")) {
+            after.setAttribute("data-built", "1");
+            var typed = sents.map(function (x, i) { return plainText(x); }).join(" ");
+            after.innerHTML = '<h3>Đoạn em vừa chép</h3><div class="sample"><p>' + esc(typed) + '</p></div>' +
+              '<p class="lead">Bước 2: đọc to cả đoạn này và ghi âm. Nói tự nhiên như đang trò chuyện, đừng đọc như robot.</p><div class="recbox" id="rechost"></div>';
+            rec.mount($("#rechost")); rec.setEnabled(true);
+          }
+        } else { after.hidden = true; }
+      }
+      unlock();
+      if (!st.d[0]) setTimeout(function () { if (synth) { stopAll(); synth.speak(utter(sents[0], 0.9)); } }, 300);
+    }, need: function () {
+      var st = S.cp[q.id], n = q.s7.length, ok = true;
+      for (var i = 0; i < n; i++) if (!(st && st.d[i])) ok = false;
+      if (!ok) return "Hãy nghe và chép xong tất cả " + n + " câu.";
+      if (!rec.blob) return "Hãy bấm ghi âm và đọc to cả đoạn.";
+      return "";
+    } });
+  });
+
+  /* ---------------- Step 5: writing ---------------- */
+  add({ step: 4, title: "Phân tích đề: lý thuyết", render: function (el) {
+    head(el, "Phần 5 · Writing", "Writing Task 2: phân tích đề trước khi viết");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Chủ đề viết hôm nay rất gần với cách học ngày nay: <b>kết bạn và học cùng nhau qua mạng</b>. Đề bài như sau:</p>' +
+      '<div class="cue"><b>' + esc(W_PROMPT) + '</b> ' + '<button type="button" class="ico listen" id="wsay" aria-label="Nghe đề">' + SPK + '</button><div class="sub" style="margin:6px 0 0">' + esc(W_PROMPT_VI) + '</div></div>' +
+      '<div class="cbox"><div class="lab">Bước 1 · Nhận diện loại đề</div><p>Cô luôn bảo học sinh: <b>đọc câu hỏi cuối của đề</b>, vì nó quyết định cách em viết. Câu <i>“Do the advantages … outweigh the disadvantages?”</i> cho em biết đây là đề <b>Advantages – Disadvantages có đánh giá</b>. Em phải: nêu lợi ích, nêu bất lợi, rồi <b>kết luận bên nào nặng hơn</b>. (Nếu đề chỉ hỏi “What are the advantages and disadvantages?” thì em không bắt buộc chọn bên.)</p></div>' +
+      '<div class="cbox"><div class="lab">Bước 2 · Gạch chân keyword</div><p>Keyword là những cụm mang nghĩa chính của đề. Ở đề này có 4 cụm: <b>young people</b> (đối tượng), <b>make friends and study together</b> (hoạt động), <b>online platforms</b> (phương tiện), <b>rather than meeting in person</b> (so sánh).</p></div>' +
+      '<div class="cbox"><div class="lab">Bước 3 · Nhận ra và dùng paraphrase</div><p>Ở mở bài, em <b>không chép nguyên văn đề</b>. Em đổi từ đồng nghĩa hoặc đổi cấu trúc nhưng giữ nguyên nghĩa. Ví dụ: <i>advantages</i> → <i>benefits</i>; <i>disadvantages</i> → <i>drawbacks</i>; <i>trend</i> → <i>phenomenon</i>. Từ <b>outweigh</b> nghĩa là “nặng hơn, lớn hơn”, em sẽ dùng lại ở thesis.</p></div>');
+    $("#wsay").addEventListener("click", function () { sayText(W_PROMPT); });
+    pen(el, "wtheory", "Chép đề vào vở. Gạch chân <b>4 keyword</b> bằng bút đỏ, rồi ghi <b>một cách paraphrase</b> cho advantages, disadvantages và trend.", "Em đã chép đề và gạch keyword");
+  }, need: function () { return needTick("wtheory", "Hãy chép đề và gạch keyword vào vở rồi tick vào ô xác nhận."); } });
+
+  add({ step: 4, title: "Phân tích đề: trắc nghiệm", render: function (el) {
+    head(el, "Phần 5 · Writing", "Luyện: loại đề, keyword, paraphrase");
+    el.insertAdjacentHTML("beforeend", '<p class="lead">Bảy câu trắc nghiệm giúp em kiểm tra cách phân tích đề. Câu nào sai, em chọn lại cho đến khi đúng và đọc kỹ lời giải thích.</p>');
+    var host = document.createElement("div"); el.appendChild(host);
+    mcq(host, "wa", WA, "retry");
+  }, need: function () { return mcAll("wa", WA.length) ? "" : "Hãy trả lời đúng cả " + WA.length + " câu để tiếp tục."; } });
+
+  add({ step: 4, title: "Lập dàn ý", render: function (el) {
+    head(el, "Phần 5 · Writing", "Tự lập dàn ý và lên ý tưởng");
+    var h = '<p class="lead">Bây giờ đến lượt em. Chưa cần viết câu hoàn chỉnh, chỉ cần ghi <b>ý chính</b> (tiếng Việt hay tiếng Anh đều được). Ý tưởng nào cũng cần ba phần: <b>ý chính, lí do, ví dụ</b>.</p>' +
+      '<h3>Ngân hàng ý tưởng (nếu em bí)</h3><p class="sub"><b>Lợi ích:</b></p><div class="ideas">';
+    W_IDEAS_PRO.forEach(function (x) { h += '<span class="idea">' + esc(x[0]) + ' <small>· ' + esc(x[1]) + '</small></span>'; });
+    h += '</div><p class="sub"><b>Bất lợi:</b></p><div class="ideas">';
+    W_IDEAS_CON.forEach(function (x) { h += '<span class="idea">' + esc(x[0]) + ' <small>· ' + esc(x[1]) + '</small></span>'; });
+    h += '</div><h3>Dàn ý của em</h3>';
+    W_OUTLINE.forEach(function (f) {
+      h += '<div class="ofield"><label for="ol_' + f.id + '">' + esc(f.label) + '</label><p class="help">' + esc(f.help) + '</p><textarea class="field" id="ol_' + f.id + '" rows="3" placeholder="' + esc(f.ph) + '"></textarea></div>';
+    });
+    h += '<div class="row-actions"><button type="button" class="btn" id="olShow">Xem dàn ý gợi ý của cô</button></div><div id="olSug" hidden></div>';
+    el.insertAdjacentHTML("beforeend", h);
+    W_OUTLINE.forEach(function (f) {
+      var ta = $("#ol_" + f.id); ta.value = S.ol[f.id] || "";
+      ta.addEventListener("input", function () { S.ol[f.id] = ta.value; saveS(); });
+    });
+    $("#olShow").addEventListener("click", function () {
+      var ok = W_OUTLINE.every(function (f) { return words(S.ol[f.id] || "") >= 4; });
+      var box = $("#olSug"); box.hidden = false;
+      if (!ok) { box.innerHTML = '<div class="note err">Hãy ghi ít nhất 4 từ ở cả 4 phần của dàn ý trước, rồi mới xem gợi ý. Em tự nghĩ trước thì mới học được nhiều nhất.</div>'; return; }
+      var s = '<div class="cbox"><div class="lab">Dàn ý gợi ý của cô</div>';
+      W_OUTLINE_SUGGEST.forEach(function (x) { s += '<p><b>' + esc(x[0]) + ':</b> ' + esc(x[1]) + '</p>'; });
+      box.innerHTML = s + '</div><p class="sub">Em so sánh với dàn ý của mình và dùng bút đỏ bổ sung những ý hay vào vở.</p>';
+    });
+  }, need: function () {
+    var miss = W_OUTLINE.filter(function (f) { return words(S.ol[f.id] || "") < 4; }).map(function (f) { return f.label; });
+    return miss.length ? "Hãy ghi ít nhất 4 từ cho: " + miss.join(", ") + "." : "";
+  } });
+
+  var WR_ITEMS = [];
+  WR.forEach(function (par, pi) {
+    par.items.forEach(function (it) { WR_ITEMS.push(it); });
+    add({ step: 4, title: "Dịch: " + par.title, render: function (el) {
+      head(el, "Phần 5 · Writing · Dịch Việt sang Anh " + (pi + 1) + "/" + WR.length, par.title);
+      el.insertAdjacentHTML("beforeend", '<p class="lead">Dịch từng câu sang tiếng Anh. Mỗi câu có <b>các từ gợi ý</b> (chip màu): em phải dùng chúng. Máy sẽ kiểm tra em đã dùng đủ chưa, rồi cô cho xem câu mẫu band 7.5 và giải thích ngữ pháp.</p>' +
+        (pi === 0 ? '<p class="sub">Chú thích màu: <mark class="ac">vàng</mark> = từ học thuật; <span class="vk">gạch chân</span> = từ Mục 1 (chạm để xem nghĩa).</p>' : ''));
+      par.items.forEach(function (it, k) {
+        var st = S.tr[it.id] || (S.tr[it.id] = { text: "", tries: 0, done: false, rv: false, first: null, got: [] });
+        var d = document.createElement("div"); d.className = "titem";
+        d.innerHTML = '<b>Câu ' + (k + 1) + '/' + par.items.length + '</b><p class="vi">' + esc(it.vi) + '</p><div class="hints"></div><textarea class="field" rows="3" placeholder="Viết bản dịch tiếng Anh của em..." aria-label="Bản dịch"></textarea>' +
+          '<div class="qacts"><button type="button" class="btn primary" data-a="chk">Kiểm tra</button></div><div class="fb" hidden></div><div class="model" hidden></div>';
+        var hints = $(".hints", d), ta = $("textarea", d), fb = $(".fb", d), mdl = $(".model", d), chk = $('[data-a="chk"]', d);
+        ta.value = st.text;
+        function paintHints(txt) { hints.innerHTML = ""; it.hints.forEach(function (h) { var s = document.createElement("span"); s.className = "h" + ((st.done || h[1].test(txt)) ? " got" : ""); s.textContent = h[0]; hints.appendChild(s); }); }
+        function showModel() {
+          mdl.hidden = false;
+          mdl.innerHTML = '<div class="cbox"><div class="lab">Câu mẫu band 7.5</div><p>' + rich(it.model) + ' <button type="button" class="ico listen" aria-label="Nghe câu mẫu">' + SPK + '</button></p><div class="lab" style="margin-top:8px">Ngữ pháp và từ vựng</div><p>' + it.g + '</p></div>';
+          $(".ico", mdl).addEventListener("click", function () { sayText(plainText(it.model), 0.85); });
+          ta.disabled = true; chk.style.display = "none";
+        }
+        paintHints(st.text);
+        if (st.done) { fb.hidden = false; fb.className = "fb ok"; fb.innerHTML = '<p class="fbmsg">' + (st.rv ? "Em đã xem đáp án. Hãy đọc to câu mẫu một lần." : "Rất tốt! Em đã dùng đủ các từ gợi ý.") + '</p>'; showModel(); }
+        ta.addEventListener("input", function () { st.text = ta.value; paintHints(ta.value); saveS(); });
+        chk.addEventListener("click", function () {
+          if (st.done) return;
+          var v = ta.value.trim(); fb.hidden = false;
+          if (!v) { fb.className = "fb"; fb.innerHTML = '<p>Hãy viết bản dịch của em trước nhé.</p>'; return; }
+          st.tries++;
+          var miss = it.hints.filter(function (h) { return !h[1].test(v); }).map(function (h) { return h[0]; });
+          if (words(v) < 6) { fb.className = "fb try"; fb.innerHTML = '<p>Câu hơi ngắn. Hãy dịch đầy đủ cả câu.</p>'; saveS(); return; }
+          if (!miss.length) { st.done = true; st.first = (st.tries === 1); fb.className = "fb ok"; fb.innerHTML = '<p class="fbmsg">Rất tốt! Em đã dùng đủ các từ gợi ý.</p>'; paintHints(v); showModel(); saveS(); return; }
+          fb.className = "fb try";
+          fb.innerHTML = '<p class="fbmsg">Em chưa dùng: ' + esc(miss.join(", ")) + '.</p><p>Hãy sửa bản dịch để có đủ các từ này.</p>' + (st.tries >= 2 ? '<div class="qacts"><button type="button" class="btn quiet" data-a="show">Xem câu mẫu</button></div>' : '');
+          saveS();
+          var sh = $('[data-a="show"]', fb); if (sh) sh.addEventListener("click", function () { st.done = true; st.rv = true; st.first = false; fb.className = "fb ok"; fb.innerHTML = '<p class="fbmsg">Em đã xem đáp án. Hãy đọc to câu mẫu một lần.</p>'; showModel(); saveS(); });
+        });
+        el.appendChild(d);
+      });
+      pen(el, "wtr" + pi, "Chép <b>câu mẫu band 7.5</b> của đoạn này vào vở (dưới bản dịch của em), rồi gạch chân các cụm từ vựng được tô màu.", "Em đã chép câu mẫu vào vở");
+    }, need: function () {
+      var left = par.items.filter(function (it) { return !(S.tr[it.id] && S.tr[it.id].done); }).length;
+      return left ? "Còn " + left + " câu chưa hoàn thành. Dịch và bấm Kiểm tra." : needTick("wtr" + pi, "Hãy chép câu mẫu vào vở rồi tick vào ô xác nhận.");
+    } });
+  });
+
+  add({ step: 4, title: "Bài mẫu band 7.5", render: function (el) {
+    head(el, "Phần 5 · Writing", "Bài mẫu band 7.5 hoàn chỉnh");
+    var total = 0, hl = 0, essay = "";
+    WR.forEach(function (par) {
+      essay += '<p>';
+      par.items.forEach(function (it) {
+        essay += rich(it.model) + " ";
+        var parts = it.model.split(/(\^\^.+?\^\^|\{\{[a-z]+\|[^}]+\}\})/);
+        parts.forEach(function (p) {
+          if (!p) return;
+          var isH = /^\^\^|^\{\{/.test(p), t = p.replace(/\^\^/g, "").replace(/\{\{[a-z]+\|([^}]+)\}\}/, "$1");
+          var n = (t.match(/[A-Za-z'’-]+/g) || []).length; total += n; if (isH) hl += n;
+        });
+      });
+      essay += '</p>';
+    });
+    var pct = total ? Math.round(hl * 100 / total) : 0;
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Đây là toàn bộ bài em vừa dịch, ghép lại. Em đọc từ đầu đến cuối một lần để thấy các đoạn nối với nhau thế nào.</p>' +
+      '<div class="legend"><span><mark class="ac">Vàng</mark> = từ vựng học thuật</span><span><span class="vk">Gạch chân</span> = từ Mục 1</span></div>' +
+      '<div class="sample essay">' + essay + '</div><div class="row-actions"><button type="button" class="btn listen" id="essay-say">' + SPK + ' Nghe cả bài</button></div>' +
+      '<div class="cbox"><div class="lab">Con số cô đếm</div><p>Bài có <b>' + total + ' từ</b>, trong đó <b>' + hl + ' từ</b> (khoảng <b>' + pct + '%</b>) là từ vựng học thuật hoặc từ Mục 1. Như vậy bài đạt chỉ tiêu ít nhất 20%.</p></div>' +
+      '<div class="cbox"><div class="lab">Những cấu trúc ngữ pháp tinh tế (nhưng không khó)</div>' +
+      '<p><b>Mệnh đề quan hệ</b>: peers whom they have never met; a friend you can count on; …, which helps them build confidence.</p>' +
+      '<p><b>Nhượng bộ</b>: Although this trend has certain drawbacks, …; although virtual friendships cannot fully replace …</p>' +
+      '<p><b>Phủ định kép</b>: online relationships are not without risks.</p>' +
+      '<p><b>So sánh kép</b>: the more time teenagers spend online, the less likely they are to …</p>' +
+      '<p><b>Mệnh đề rút gọn</b>: allowing students to collaborate …; Used wisely and balanced with real-life interaction, …</p></div>');
+    $("#essay-say").addEventListener("click", function () { sayText(WR.map(function (p) { return p.items.map(function (i) { return plainText(i.model); }).join(" "); }).join(" "), 0.9); });
+    pen(el, "wfinal", "Chép <b>một đoạn em thích nhất</b> của bài mẫu vào vở. Khi chép, em đọc thầm từng cụm và gạch chân các từ tô màu bằng bút đỏ.", "Em đã chép một đoạn vào vở");
+  }, need: function () { return needTick("wfinal", "Hãy chép một đoạn vào vở rồi tick vào ô xác nhận."); } });
+
+  /* ---------------- Step 6: submit ---------------- */
+  add({ step: 5, title: "Nộp bài", render: function (el) {
+    head(el, "Nộp bài", "Em đã hoàn thành! Nộp bài cho cô nhé.");
+    var gf = gapFirst(), mg = PM.filter(function (v) { return S.mres[v.id] && S.mres[v.id].first; }).length, lg = LV.filter(function (v) { return S.lres[v.id] && S.lres[v.id].first; }).length;
+    var rd = mcFirst("rt", 7) + mcFirst("rm", 4);
+    var grQ = 0, grT = 0; GR.forEach(function (g) { grQ += mcFirst("gr:" + g.id, g.mc.length); grT += g.mc.length; });
+    var wtr = WR_ITEMS.filter(function (i) { return S.tr[i.id] && S.tr[i.id].first; }).length;
+    var sum = '<div class="sum">' +
+      '<div class="sumrow"><h4>Học sinh</h4><p id="sumName"></p></div>' +
+      '<div class="sumrow"><h4>Phần 1 · Từ vựng</h4><p>Đúng ngay lần đầu: ' + (gf[0] + mg + lg) + '/' + (gf[1] + PM.length + LV.length) + '</p></div>' +
+      '<div class="sumrow"><h4>Phần 2 · Reading</h4><p>Đúng ngay lần đầu: ' + rd + '/' + RQ.length + '</p></div>' +
+      '<div class="sumrow"><h4>Phần 3 · Ngữ pháp</h4><p>Đúng ngay lần đầu: ' + grQ + '/' + grT + '</p></div>' +
+      '<div class="sumrow"><h4>Phần 4 · Speaking</h4><div id="sumSpeak"></div></div>' +
+      '<div class="sumrow"><h4>Phần 5 · Writing</h4><p>Dịch đúng ngay lần đầu: ' + wtr + '/' + WR_ITEMS.length + '</p></div></div>';
+    el.insertAdjacentHTML("beforeend", sum + '<div id="missing"></div><div class="row-actions"><button type="button" class="btn primary" id="subBtn">Nộp bài cho cô</button></div><div id="subMsg" role="status"></div>');
+    $("#sumName").textContent = S.name;
+    var missing = SQ.filter(function (q) { return !RECS[q.id].blob; });
+    SQ.forEach(function (q) {
+      var R = RECS[q.id], d = document.createElement("div"), p = document.createElement("p");
+      p.textContent = "Part " + q.part + " · Câu " + q.pn + ": " + q.q; d.appendChild(p);
+      if (R.url) { var a = document.createElement("audio"); a.controls = true; a.src = R.url; d.appendChild(a); }
+      $("#sumSpeak").appendChild(d);
+    });
+    if (missing.length && !S.submitted) {
+      var m = $("#missing"); m.innerHTML = '<div class="note err">Còn ' + missing.length + ' bản ghi âm chưa có (có thể do em đã tải lại trang). Bấm vào từng câu để ghi âm lại, rồi quay lại đây nộp bài:</div><div class="row-actions" id="missBtns"></div>';
+      missing.forEach(function (q) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = "Part " + q.part + " · Câu " + q.pn;
+        b.addEventListener("click", function () { show(SCI[q.id]); }); $("#missBtns").appendChild(b);
+      });
+      $("#subBtn").disabled = true;
+    }
+    $("#subBtn").addEventListener("click", submitAll);
+    if (S.submitted) markSubmitted();
+  }, need: function () { return ""; } });
+
+  /* ---------- upload helpers (same protocol as the other lessons) ---------- */
+  async function toWav(blob) {
+    var AC = window.AudioContext || window.webkitAudioContext, OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    var ab = await blob.arrayBuffer();
+    var ac = new AC();
+    var buf = await new Promise(function (res, rej) { var p = ac.decodeAudioData(ab, res, rej); if (p && p.then) p.then(res, rej); });
+    try { ac.close(); } catch (e) {}
+    var sr = 16000, len = Math.max(1, Math.ceil(buf.duration * sr));
+    var off = new OAC(1, len, sr), src = off.createBufferSource();
+    src.buffer = buf; src.connect(off.destination); src.start();
+    var out = await new Promise(function (res, rej) { off.oncomplete = function (e) { res(e.renderedBuffer); }; var p = off.startRendering(); if (p && p.then) p.then(res, rej); });
+    var f = out.getChannelData(0), n = f.length, view = new DataView(new ArrayBuffer(44 + n * 2));
+    function wr(o, s) { for (var i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); }
+    wr(0, "RIFF"); view.setUint32(4, 36 + n * 2, true); wr(8, "WAVE"); wr(12, "fmt "); view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, sr, true); view.setUint32(28, sr * 2, true);
+    view.setUint16(32, 2, true); view.setUint16(34, 16, true); wr(36, "data"); view.setUint32(40, n * 2, true);
+    for (var i = 0; i < n; i++) { var s = Math.max(-1, Math.min(1, f[i])); view.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true); }
+    return new Blob([view], { type: "audio/wav" });
+  }
+  function blobToB64(b) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(",")[1]); }; r.onerror = rej; r.readAsDataURL(b); }); }
+  async function post(obj) {
+    var body = JSON.stringify(obj), headers = { "Content-Type": "text/plain;charset=utf-8" };
+    try {
+      var r = await fetch(SCRIPT_URL, { method: "POST", headers: headers, body: body, redirect: "follow" });
+      var j = await r.json(); return j && j.ok === true;
+    } catch (e) {
+      try { await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: headers, body: body }); return true; } catch (e2) { return false; }
+    }
+  }
+  function markSubmitted() {
+    var b = $("#subBtn"); if (b) { b.disabled = true; b.textContent = "Đã nộp"; }
+    var m = $("#subMsg"); if (m) m.innerHTML = '<div class="note ok">Đã nộp bài cho cô. Em làm tốt lắm! Em có thể đóng trang này.</div>';
+  }
+  function buildDetails() {
+    var d = [];
+    CHAINS.forEach(function (c) { mcRows("Từ vựng - điền từ (chuỗi " + c.n + ")", "gap:" + c.id, GAPS[c.id]).forEach(function (x) { d.push(x); }); });
+    PM.forEach(function (v) { var m = S.mres[v.id] || {}; d.push({ part: "Từ vựng - nghĩa", question: "Nghĩa của: " + v.en, answer: m.ans || "", correct: v.vi, result: (m.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (m.tries > 1 ? " (" + m.tries + " lần thử)" : "") }); });
+    LV.forEach(function (v) { var m = S.lres[v.id] || {}; d.push({ part: "Từ vựng - nghe gõ", question: "Nghe và gõ từ: " + v.lt, answer: m.ans || "", correct: v.lt, result: (m.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (m.tries > 1 ? " (" + m.tries + " lần thử)" : "") + (m.revealed ? ", đã xem đáp án" : "") }); });
+    mcRows("Reading - True/False/Not Given", "rt", RQ.slice(0, 7)).forEach(function (x) { d.push(x); });
+    mcRows("Reading - trắc nghiệm", "rm", RQ.slice(7)).forEach(function (x) { d.push(x); });
+    GR.forEach(function (g) {
+      mcRows("Ngữ pháp - " + g.id, "gr:" + g.id, g.mc).forEach(function (x) { d.push(x); });
+      var p = S.pr["gr:" + g.id] || {}; d.push({ part: "Ngữ pháp - câu tự viết", question: plainText(g.prod.prompt), answer: p.text || "", correct: "", result: p.ok ? "✅ Đúng cấu trúc" : "❓ Chưa đạt" });
+    });
+    PH.forEach(function (g) { var p = S.pr["ph:" + g.id] || {}; d.push({ part: "Speaking - cụm nối ý", question: g.title, answer: p.text || "", correct: "", result: p.ok ? "✅ Có dùng cụm" : "❓ Chưa đạt" }); });
+    mcRows("Speaking - chọn cụm", "phtest", PH_TEST).forEach(function (x) { d.push(x); });
+    SQ.forEach(function (q) {
+      var st = S.cp[q.id] || { t: [], d: [], n: [], rv: [] }, tries = 0, rv = 0;
+      q.s7.forEach(function (s, i) { tries += st.n[i] || 0; if (st.rv[i]) rv++; });
+      d.push({ part: "Speaking Part " + q.part, question: q.q, answer: (st.t || []).join(" "), correct: q.s7.map(plainText).join(" "), result: "Đã ghi âm " + Math.round(RECS[q.id].dur) + " giây; chép " + q.s7.length + " câu, " + tries + " lần kiểm tra, xem đáp án " + rv + " câu" });
+    });
+    mcRows("Writing - phân tích đề", "wa", WA).forEach(function (x) { d.push(x); });
+    d.push({ part: "Writing - dàn ý", question: "Dàn ý của em", answer: W_OUTLINE.map(function (f) { return f.label + ": " + (S.ol[f.id] || ""); }).join(" | "), correct: "", result: "" });
+    WR_ITEMS.forEach(function (it) { var t = S.tr[it.id] || {}; d.push({ part: "Writing - dịch", question: it.vi, answer: t.text || "", correct: plainText(it.model), result: (t.first ? "✅ Đủ từ gợi ý ngay lần đầu" : "❌ Chưa đủ ngay lần đầu") + (t.rv ? ", đã xem đáp án" : "") }); });
+    return d;
+  }
+  async function submitAll() {
+    var btn = $("#subBtn"), msg = $("#subMsg");
+    if (S.submitted) return;
+    btn.disabled = true;
+    try {
+      for (var i = 0; i < SQ.length; i++) {
+        var q = SQ[i], R = RECS[q.id];
+        if (!R.blob) throw new Error("missing");
+        if (R.sent) continue;
+        msg.innerHTML = '<div class="note">Đang gửi bản ghi âm ' + (i + 1) + '/' + SQ.length + '. Em đừng đóng trang nhé.</div>';
+        if (!R.wav) { try { R.wav = await toWav(R.blob); } catch (e) { R.wav = R.blob; } }
+        var type = R.wav.type || "audio/wav";
+        var ext = type === "audio/wav" ? "wav" : (/mp4/.test(type) ? "m4a" : (/ogg/.test(type) ? "ogg" : "webm"));
+        var ok = await post({ type: "audio", name: S.name.trim(), lesson: LESSON, file: "speaking-" + q.id + "." + ext, label: "Speaking Part " + q.part + " - câu " + q.pn, score: null, dur: Math.round(R.dur), target: q.q, transcript: (S.cp[q.id] ? S.cp[q.id].t.join(" ") : ""), audio: await blobToB64(R.wav), mime: type });
+        if (!ok) throw new Error("audio");
+        R.sent = true;
+      }
+      msg.innerHTML = '<div class="note">Đang gửi bài làm...</div>';
+      var gf = gapFirst(), mg = PM.filter(function (v) { return S.mres[v.id] && S.mres[v.id].first; }).length, lg = LV.filter(function (v) { return S.lres[v.id] && S.lres[v.id].first; }).length;
+      var okSub = await post({ type: "submit", name: S.name.trim(), lesson: LESSON, summary: { recordings: SQ.length, avg: null, full: null, writes: WR_ITEMS.length + " câu dịch, " + RQ.length + " câu đọc", quiz: (gf[0] + mg + lg) + "/" + (gf[1] + PM.length + LV.length) }, details: buildDetails() });
+      if (!okSub) throw new Error("submit");
+      S.submitted = true; markSubmitted();
+      try { localStorage.removeItem(SKEY); } catch (e) {}
+    } catch (e) {
+      btn.disabled = false;
+      msg.innerHTML = '<div class="note err">Chưa gửi được (mạng yếu hoặc cô chưa mở cổng nhận bài). Em kiểm tra mạng rồi bấm <b>Nộp bài cho cô</b> lại nhé. Bài làm của em vẫn còn đó.</div>';
+    }
+  }
+
+  /* =====================================================================
+     PLAYER: steps, timeline, back / next
+     ===================================================================== */
+  var stage = $("#stage"), stepsEl = $("#steps"), tl = $("#timeline"), needMsg = $("#needMsg"), nextBtn = $("#nextBtn"), backBtn = $("#backBtn"), posLbl = $("#posLbl");
+  function firstOfStep(st) { for (var i = 0; i < SC.length; i++) if (SC[i].step === st) return i; return 0; }
+  function leave() { stopAll(); if (activeRec) activeRec.stop(); closeSheet(); }
+  function show(i) {
+    leave();
+    S.idx = i; if (i > S.max) S.max = i;
+    var sc = SC[i];
+    stage.className = "stage" + (sc.wide ? " wide" : "");
+    stage.innerHTML = ""; var el = document.createElement("section"); el.className = "scene" + (sc.plain ? " plain" : ""); stage.appendChild(el);
+    sc.render(el);
+    needMsg.textContent = "";
+    backBtn.disabled = i === 0;
+    nextBtn.style.display = i === SC.length - 1 ? "none" : "";
+    posLbl.textContent = (i + 1) + " / " + SC.length;
+    paintNav(); saveS();
+    window.scrollTo({ top: 0 });
+  }
+  function paintNav() {
+    stepsEl.innerHTML = "";
+    STEPS.forEach(function (name, st) {
+      var b = document.createElement("button"); b.type = "button";
+      var cur = SC[S.idx].step === st, reached = firstOfStep(st) <= S.max, done = reached && SC[S.idx].step > st;
+      b.className = "chip" + (cur ? " cur" : "") + (done ? " done" : "") + (!reached ? " lock" : "");
+      b.innerHTML = '<span class="n">' + (st + 1) + '</span>' + esc(name);
+      b.addEventListener("click", function () {
+        if (!reached) { needMsg.textContent = "Hãy hoàn thành phần trước để mở phần \"" + name + "\"."; return; }
+        show(firstOfStep(st));
+      });
+      stepsEl.appendChild(b);
+    });
+    tl.innerHTML = "";
+    SC.forEach(function (sc, i) {
+      var seg = document.createElement("i");
+      seg.className = (i <= S.max && i !== S.idx ? "done " : "") + (i === S.idx ? "cur " : "") + (i > 0 && SC[i - 1].step !== sc.step ? "sp" : "");
+      seg.title = sc.title;
+      if (i <= S.max && i !== S.idx) seg.addEventListener("click", function () { show(i); });
+      tl.appendChild(seg);
+    });
+  }
+  nextBtn.addEventListener("click", function () {
+    var msg = SC[S.idx].need();
+    if (msg) { needMsg.textContent = msg; return; }
+    if (S.idx < SC.length - 1) show(S.idx + 1);
+  });
+  backBtn.addEventListener("click", function () { if (S.idx > 0) show(S.idx - 1); });
+  window.addEventListener("beforeunload", function (e) { if (S.idx > 1 && !S.submitted) { e.preventDefault(); e.returnValue = ""; } });
+
+  if (S.idx >= SC.length) S.idx = 0;
+  if (S.max >= SC.length) S.max = SC.length - 1;
+  if (/[?&]debug=1/.test(location.search)) window.__L = { SC: SC, S: S, show: show, SQ: SQ, RECS: RECS };
+  show(S.idx);
+  if (resumed) toast("Đã mở lại chỗ em đang học. Nếu em đã ghi âm trước đó, hãy ghi âm lại nhé vì trình duyệt không giữ âm thanh.");
+})();
+</script>
+</body>
+</html>
