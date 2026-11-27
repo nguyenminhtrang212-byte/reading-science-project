@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Describe a Place: chiến thuật 5 bước (Speaking Part 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a guided lesson that plays one scene at a time. Header with steps, a stage in the middle, a dock with timeline and Back/Next at the bottom. */
+:root {
+  --bg: #f2f7f6;
+  --surface: #ffffff;
+  --ink: #14262a;
+  --muted: #51666a;
+  --line: #d3e2e1;
+  --accent: #0e7a70;
+  --accent-ink: #ffffff;
+  --mark: #ffe27a;
+  --mark-ink: #3b2f00;
+  --now: #cdeeea;
+  --bad: #b8400d;
+  --good: #11713b;
+  --red: #d62828;
+  --ac: #fff0b3;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1a1b; --surface: #142628; --ink: #e6f2f1; --muted: #9fbdbb; --line: #284446;
+    --accent: #5fd6c8; --accent-ink: #04201d; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #1d4a47;
+    --bad: #ff9a66; --good: #6fe0a0; --red: #ff6b6b; --ac: #4a3d0c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1a1b; --surface: #142628; --ink: #e6f2f1; --muted: #9fbdbb; --line: #284446;
+  --accent: #5fd6c8; --accent-ink: #04201d; --mark: #6b5a14; --mark-ink: #fff0b3; --now: #1d4a47;
+  --bad: #ff9a66; --good: #6fe0a0; --red: #ff6b6b; --ac: #4a3d0c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; padding-bottom: 130px; }
+button, select, textarea, input { font: inherit; color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+header.top { padding: 18px 0 8px; }
+.kicker-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.kicker { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: .02em; }
+.voice { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.voice select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 10px; min-height: 40px; max-width: 230px; font-size: 14px; color: var(--ink); }
+h1 { font-family: var(--font-display); font-size: clamp(26px, 5vw, 38px); line-height: 1.1; margin: 6px 0 12px; text-wrap: balance; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; font-size: 14px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; min-height: 36px; }
+.chip .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--line); font-size: 12px; font-weight: 600; }
+.chip.cur { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.chip.cur .n { background: var(--accent); color: var(--accent-ink); }
+.chip.done .n { background: var(--good); color: var(--bg); }
+.chip.lock { opacity: .55; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 9px 16px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 44px; text-decoration: none; color: var(--ink); }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .ico:focus-visible, .opt:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .chip:focus-visible, .vk:focus-visible, .gw:focus-visible, .node:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.recording { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn svg, .ico svg { width: 18px; height: 18px; flex: none; }
+.quiet { background: transparent; color: var(--muted); }
+.ico { border: 1px solid var(--line); background: transparent; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; color: var(--muted); flex: none; }
+.ico:hover { color: var(--accent); border-color: var(--accent); }
+.spacer { flex: 1; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+/* stage */
+.stage { max-width: 760px; margin: 12px auto 0; padding: 0 16px; }
+.stage.wide { max-width: 1120px; }
+.scene { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px; animation: rise .25s ease both; }
+.scene.plain { background: transparent; border: 0; padding: 0; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.s-kicker { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; }
+.scene h2 { font-family: var(--font-display); font-size: clamp(24px, 4.5vw, 32px); line-height: 1.15; margin: 4px 0 10px; text-wrap: balance; }
+.scene h3 { font-family: var(--font-display); font-size: 21px; margin: 18px 0 6px; }
+.lead { font-size: 18px; margin: 0 0 12px; }
+.sub { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+.note { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 15px; }
+.note.ok { border-color: var(--good); }
+.note.err { border-color: var(--bad); }
+.field { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 10px 12px; line-height: 1.5; }
+textarea.field { resize: vertical; }
+.rules { display: grid; gap: 8px; margin: 12px 0; }
+.rule { display: grid; grid-template-columns: 150px 1fr; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; align-items: center; }
+.rule b { color: var(--accent); }
+.rule .eg { color: var(--muted); font-size: 15px; }
+.cbox { margin: 12px 0; padding: 14px 16px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); font-size: 16px; }
+.cbox .lab { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+.cbox p { margin: 0 0 8px; }
+.cbox p:last-child { margin: 0; }
+.formula { margin: 12px 0; padding: 12px 16px; border-left: 5px solid var(--accent); background: var(--bg); border-radius: 8px; font-size: 17px; line-height: 1.8; }
+.pre { border: 2px dashed var(--line); border-radius: 14px; padding: 14px 16px; margin-top: 14px; }
+.pen-t { font-size: 12px; font-weight: 600; color: var(--bad); text-transform: uppercase; letter-spacing: .07em; }
+.pen-p { margin: 4px 0 10px; font-size: 16px; }
+.pre label { display: flex; gap: 10px; align-items: center; font-size: 17px; cursor: pointer; }
+.pre input { width: 22px; height: 22px; accent-color: var(--accent); flex: none; }
+
+/* vocabulary */
+.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 8px 0 12px; }
+.node { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 12px; font-size: 14px; line-height: 1.4; }
+.node.cur { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.node.past { border-color: var(--accent); color: var(--accent); }
+.arrow { color: var(--muted); font-size: 14px; }
+.chain.big .node { font-size: 17px; padding: 8px 16px; text-align: center; }
+.chain.big .node small { display: block; font-size: 13px; opacity: .85; font-weight: 400; }
+.vbig { font-family: var(--font-display); font-size: clamp(30px, 7vw, 48px); font-weight: 700; line-height: 1.12; margin: 8px 0 4px; }
+.vtop { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.vtag { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; color: var(--muted); }
+.vvi { font-size: 21px; margin-bottom: 8px; }
+.vex { margin: 10px 0 0; font-size: 18px; }
+.vex small { display: block; color: var(--muted); font-size: 15px; }
+.linkto { margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; border: 1px dashed var(--accent); font-size: 16px; }
+.uses { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 12px; font-size: 14px; color: var(--muted); }
+.uses .pill { border: 1px solid var(--accent); color: var(--accent); }
+.dots { display: flex; gap: 3px; flex-wrap: wrap; margin: 0 0 10px; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--accent); }
+.try { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.try .field { flex: 1; min-width: 180px; font-size: 20px; }
+.reslist { display: grid; gap: 6px; margin-top: 10px; }
+.res { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 16px; }
+.res .ok { color: var(--good); font-weight: 600; }
+.res .no { color: var(--bad); font-weight: 600; }
+.score { font-family: var(--font-display); font-size: 48px; font-weight: 700; line-height: 1; margin: 4px 0 8px; }
+.mapgrid { display: grid; gap: 10px; margin: 12px 0; }
+.mapcard { border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; }
+.mapcard h4 { margin: 0 0 4px; font-size: 15px; color: var(--accent); }
+.mapcard .chain { margin: 4px 0; }
+
+/* quiz cards, prod blocks */
+.qcard { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; background: var(--surface); }
+.qhead { display: flex; align-items: center; gap: 8px; }
+.num { font-weight: 600; }
+.lvl { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px; border: 1px solid var(--accent); color: var(--accent); }
+.qtext { font-size: 17px; font-weight: 500; margin: 6px 0 0; }
+.qvi { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
+.opts { display: grid; gap: 8px; margin: 12px 0 4px; }
+.opt { text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 14px; cursor: pointer; font-size: 16px; min-height: 46px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+.opt:disabled { cursor: default; color: var(--ink); }
+.fb { margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; }
+.fb p { margin: 0 0 6px; }
+.fb p:last-child { margin: 0; }
+.fb.ok { border-color: var(--good); }
+.fb.try { border-color: var(--bad); }
+.fbmsg { font-weight: 600; }
+.prod { margin-top: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }
+.prod-q { margin: 0 0 8px; font-weight: 500; }
+.qacts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+/* reading */
+.read-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 940px) { .read-grid { grid-template-columns: 1.1fr 1fr; align-items: start; } .q-col { position: sticky; top: 10px; max-height: calc(100vh - 190px); overflow: auto; padding-right: 4px; } }
+.toolbar2 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.speed { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.speed button { border: 0; background: transparent; padding: 0 12px; min-height: 42px; cursor: pointer; font-size: 14px; }
+.speed button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+article.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 4px 20px 16px; }
+article.card h3 { font-family: var(--font-display); font-size: 24px; margin: 16px 0 0; }
+.para { padding: 12px 0; border-bottom: 1px dashed var(--line); }
+.para:last-child { border-bottom: 0; }
+.para-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tag { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+.text { font-size: 19px; line-height: 1.95; margin: 0; }
+.text.now { background: var(--now); border-radius: 8px; }
+.vk { cursor: pointer; border-radius: 6px; padding: 1px 3px; border-bottom: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); }
+.vk:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.gw { cursor: pointer; border-radius: 6px; border-bottom: 2px dotted var(--muted); }
+.gw:hover { background: color-mix(in srgb, var(--muted) 14%, transparent); }
+.conn { font-weight: 600; color: var(--accent); }
+mark.ac { background: var(--ac); color: inherit; border-radius: 4px; padding: 0 2px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin: 6px 0 10px; }
+
+/* speaking */
+.qbig { font-family: var(--font-display); font-size: clamp(24px, 5vw, 34px); line-height: 1.2; margin: 6px 0 4px; }
+.qvi2 { color: var(--muted); margin: 0 0 12px; }
+.cue { margin: 10px 0; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+.cue ul { margin: 4px 0 0; padding-left: 20px; }
+.kws { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.kw { border: 1px solid var(--accent); border-radius: 12px; padding: 4px 12px; background: var(--bg); cursor: pointer; text-align: left; font-size: 15px; line-height: 1.35; }
+.kw small { display: block; color: var(--muted); font-size: 13px; }
+.band { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .06em; padding: 2px 10px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); }
+.band.low { background: var(--muted); color: var(--surface); }
+.sample { margin: 8px 0 12px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); font-size: 18px; line-height: 1.85; }
+.sample p { margin: 0 0 8px; }
+.sample p:last-child { margin: 0; }
+.ups { display: grid; gap: 8px; margin: 10px 0; }
+.up { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 15px; }
+.up .a { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 70%, transparent); }
+.up .b { font-weight: 600; margin: 2px 0; }
+.up .why { color: var(--muted); }
+.dsent { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-top: 10px; }
+.dsent.locked { opacity: .45; }
+.dhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.dhead b { flex: 1; }
+.dgood { margin-top: 8px; font-size: 17px; }
+.recbox { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--bg); margin-top: 14px; }
+.rec-top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.rec-time { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 110px; }
+.meter { flex: 1; min-width: 100px; height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .08s linear; }
+.recbox audio { width: 100%; margin-top: 12px; }
+.rmsg { margin: 10px 0 0; }
+
+/* writing */
+.ideas { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 12px; }
+.idea { border: 1px solid var(--line); border-radius: 10px; padding: 3px 10px; font-size: 14px; background: var(--bg); }
+.idea small { color: var(--muted); }
+.ofield { margin-bottom: 14px; }
+.ofield label { display: block; font-weight: 600; }
+.ofield .help { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
+.titem { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-top: 12px; }
+.titem .vi { font-size: 17px; margin: 0 0 8px; }
+.hints { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 8px; font-size: 14px; }
+.hints .h { border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 1px 10px; }
+.hints .h.got { background: var(--accent); color: var(--accent-ink); }
+.model { margin-top: 8px; font-size: 17px; line-height: 1.8; }
+.essay p { margin: 0 0 12px; font-size: 18px; line-height: 1.85; }
+.sum { display: grid; gap: 10px; margin: 12px 0; }
+.sumrow { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.sumrow h4 { margin: 0 0 4px; font-size: 15px; color: var(--accent); }
+.sumrow p { margin: 2px 0; font-size: 15px; overflow-wrap: anywhere; }
+.sumrow audio { width: 100%; margin-top: 6px; }
+.pill { font-size: 12px; border-radius: 999px; padding: 1px 8px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
+
+/* dock */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--bg); border-top: 1px solid var(--line); padding: 10px 0 12px; }
+.dock .wrap { display: grid; gap: 10px; }
+.timeline { display: flex; gap: 2px; }
+.timeline i { flex: 1; min-width: 2px; height: 6px; border-radius: 3px; background: var(--line); }
+.timeline i.sp { margin-left: 6px; }
+.timeline i.done { background: var(--accent); cursor: pointer; }
+.timeline i.cur { background: var(--ink); }
+.dock-row { display: flex; align-items: center; gap: 10px; }
+.need { flex: 1; font-size: 14px; color: var(--bad); min-height: 20px; }
+.pos { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+/* info sheet */
+#sheet { position: fixed; left: 0; right: 0; bottom: 96px; z-index: 20; display: none; padding: 0 12px; pointer-events: none; }
+#sheet.show { display: block; }
+.sheet-in { pointer-events: auto; max-width: 640px; max-height: 60vh; overflow: auto; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 40px rgba(10, 20, 35, .28); }
+.sheet-top { display: flex; align-items: center; gap: 10px; }
+.sheet-word { font-family: var(--font-display); font-size: 26px; font-weight: 700; line-height: 1.2; }
+.sheet-mean { font-size: 20px; margin: 8px 0 4px; }
+.sheet-note { color: var(--muted); font-size: 15px; margin: 0 0 4px; }
+.sheet-acts { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.nospeech .listen { display: none; }
+.toast { position: fixed; left: 50%; bottom: 110px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 30; display: none; max-width: 90vw; }
+@media (max-width: 520px) { .scene { padding: 16px 14px; } .rule { grid-template-columns: 1fr; } .text { font-size: 18px; } .pos { display: none; } .sample { font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="kicker-row">
+      <div class="kicker">Speaking Part 2 · IELTS band 5 đến 6</div>
+      <label class="voice listen" id="voiceBox" for="voiceSel"><span>Giọng đọc</span><select id="voiceSel"></select></label>
+    </div>
+    <h1>Describe a Place: 5 bước cho mọi thẻ</h1>
+    <nav class="steps" id="steps" aria-label="Các phần của bài học"></nav>
+  </header>
+</div>
+
+<main class="stage" id="stage"></main>
+
+<div class="dock">
+  <div class="wrap">
+    <div class="timeline" id="timeline" aria-hidden="true"></div>
+    <div class="dock-row">
+      <button class="btn" id="backBtn" type="button">Quay lại</button>
+      <div class="need" id="needMsg" role="status"></div>
+      <span class="pos" id="posLbl"></span>
+      <button class="btn primary" id="nextBtn" type="button">Tiếp tục</button>
+    </div>
+  </div>
+</div>
+
+<div id="sheet" role="dialog" aria-label="Nghĩa của từ"><div class="sheet-in" id="sheetIn"></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnf8X3_Xfk9F_8HQtBwSFU_s28sRjxKb0aFaHCA4ybmMJvgaztBAbdvaFzITdbVXBt/exec";
+  var LESSON = "Speaking Part 2 - Describe a place (chien thuat 5 buoc)";
+
+  /* =====================================================================
+     DATA: three place groups. Each group has the same 5 layers.
+     Markup in strings: @@text@@ = connector phrase (shown in colour)
+     ===================================================================== */
+  var G = [
+    { id: "rural", n: 1, vi: "Vùng quê", en: "The countryside",
+      intro: "Nhóm này dành cho thẻ đề kiểu: a village / a place in the countryside / your grandparents' house / a place near a river. Khung của nhóm quê: yên bình, thiên nhiên, kỷ niệm tuổi thơ.",
+      places: [["a village", "làng quê"], ["a paddy field", "cánh đồng lúa"], ["a riverbank", "bờ sông"], ["an orchard", "vườn cây ăn quả"], ["my grandparents' house", "nhà ông bà"], ["a dirt road", "con đường đất"], ["a bamboo grove", "bụi tre"], ["a pond", "cái ao"]],
+      adjs: [["peaceful", "yên bình"], ["quiet", "yên tĩnh"], ["green", "xanh mát"], ["fresh", "trong lành (nói về không khí)"], ["simple", "giản dị"], ["tranquil", "tĩnh lặng · B6+"], ["rustic", "mộc mạc · B6+"], ["picturesque", "đẹp như tranh · B6+"]],
+      feats: [["be surrounded by rice fields", "được bao quanh bởi ruộng lúa"], ["the air is fresh", "không khí trong lành"], ["there is hardly any traffic", "hầu như không có xe cộ"], ["far from the city centre", "xa trung tâm thành phố"], ["the neighbours are kind", "hàng xóm tốt bụng"], ["a sky full of stars", "bầu trời đầy sao"], ["the sound of birds and crickets", "tiếng chim và dế"], ["a strong sense of community", "tình làng nghĩa xóm · B6+"]],
+      key: ["village", "paddy", "field", "riverbank", "orchard", "pond", "grandparents", "peaceful", "quiet", "green", "fresh", "tranquil", "rustic", "simple", "picturesque", "surrounded"],
+      conns: [["Nói vị trí", "It's located in… / It lies about … km from…", "Nó nằm ở… / cách… km"], ["Thêm ý", "Besides, / What's more, / Not only… but also…", "Ngoài ra / Hơn nữa"], ["Chuyển về quá khứ", "When I was a child, / Back then, / Every summer,", "Hồi nhỏ / Lúc đó / Mỗi mùa hè"], ["Đối lập", "Although there was no…, / However,", "Mặc dù không có… / Tuy nhiên"], ["Nêu hệ quả", "That's why… / So…", "Vì vậy…"]],
+      connEx: "I'd like to talk about my grandparents' village. @@It's located in@@ Thanh Hoa, about fifty kilometres from the city. @@When I was a child,@@ I spent every summer there. @@Although@@ there was no internet, I never felt bored. @@Besides,@@ the neighbours were very kind. @@That's why@@ I miss it so much.",
+      connQ: [
+        { q: "___ I was a child, I spent every summer in my grandparents' village.", opts: ["When", "Unless", "Despite"], ans: 0, why: "When I was a child = hồi nhỏ. Đây là cầu nối quay về quá khứ." },
+        { q: "The village is quiet. ___, the people are very friendly.", opts: ["Besides", "Although", "Unless"], ans: 0, why: "Besides = ngoài ra, dùng để thêm một ý nữa." },
+        { q: "___ I had no phone there, I felt carefree.", opts: ["Although", "Because", "Unless"], ans: 0, why: "Although + mệnh đề = mặc dù. Vế sau nói điều ngược lại." }
+      ],
+      memV: [["chase dragonflies", "đuổi chuồn chuồn"], ["fly kites", "thả diều"], ["swim in the river", "bơi ở sông"], ["pick fruit", "hái trái cây"], ["help my grandparents", "giúp ông bà"], ["lie on the grass", "nằm trên cỏ"], ["listen to old stories", "nghe kể chuyện xưa"], ["catch fish", "bắt cá"]],
+      memN: [["the harvest season", "mùa gặt"], ["a bonfire", "đống lửa"], ["fireflies", "đom đóm"], ["a buffalo", "con trâu"], ["a straw hat", "nón rơm"]],
+      memA: [["carefree", "vô lo vô nghĩ"], ["unforgettable", "khó quên"], ["simple", "giản dị"], ["precious", "quý giá"], ["muddy", "lấm bùn"]],
+      frames: ["Every summer / afternoon, we would + V…", "I still remember + V-ing…", "There used to be… where we…", "It was the first time I…"],
+      memEx: "Every afternoon, my cousins and I would @@fly kites@@ in the field until sunset. I still remember @@lying on the grass@@ and @@listening to my grandmother's old stories@@.",
+      memKey: ["chase", "fly", "swim", "pick", "help", "lie", "lying", "listen", "catch", "harvest", "bonfire", "firefl", "kite", "grass", "stories", "buffalo"] },
+
+    { id: "urban", n: 2, vi: "Khu đô thị hoá", en: "A fast-changing area",
+      intro: "Nhóm này dành cho thẻ đề kiểu: a place near your home / a place that has changed / where you live now / a new area in your city. Khung của nhóm này là cũ và mới, trước và sau, cảm xúc lẫn lộn.",
+      places: [["a suburb", "vùng ngoại ô"], ["a new residential area", "khu dân cư mới"], ["an apartment block", "toà chung cư"], ["a shopping mall", "trung tâm thương mại"], ["a ring road", "đường vành đai"], ["a local market", "chợ địa phương"], ["a construction site", "công trường"], ["a small park", "công viên nhỏ"]],
+      adjs: [["developing", "đang phát triển"], ["modern", "hiện đại"], ["crowded", "đông đúc"], ["noisy", "ồn ào"], ["convenient", "tiện lợi"], ["lively", "sôi động"], ["rapidly developing", "phát triển nhanh · B6+"], ["up-and-coming", "đang lên · B6+"]],
+      feats: [["old houses are being replaced by high-rise buildings", "nhà cũ đang bị thay bằng nhà cao tầng"], ["a mix of old and new", "pha trộn cũ và mới"], ["the traffic is getting heavier", "giao thông ngày càng đông"], ["everything is within walking distance", "mọi thứ đều gần, đi bộ được"], ["the fields have disappeared", "ruộng đồng đã biến mất"], ["prices are going up", "giá cả tăng"], ["there are more facilities", "có nhiều tiện ích hơn"], ["people hardly know their neighbours", "ít người biết hàng xóm"]],
+      key: ["suburb", "residential", "apartment", "mall", "ring road", "market", "construction", "park", "developing", "modern", "crowded", "noisy", "convenient", "lively", "high-rise", "high rise", "up-and-coming"],
+      conns: [["Quá khứ so với hiện tại", "In the past, … but nowadays, … / Compared with the past, …", "Ngày trước… nhưng bây giờ… / So với trước"], ["Thời gian thay đổi", "Over the years, / Gradually, / Within a few years,", "Qua các năm / Dần dần / Chỉ vài năm"], ["Hai mặt", "On the one hand, … On the other hand, …", "Một mặt… mặt khác…"], ["Hệ quả", "As a result, / Because of that,", "Kết quả là / Vì vậy"], ["Nhượng bộ", "Even though… / Despite…", "Mặc dù / Bất chấp"]],
+      connEx: "@@In the past,@@ my neighbourhood was mostly rice fields. @@Over the years,@@ apartment blocks and a mall have appeared. @@On the one hand,@@ life is more convenient. @@On the other hand,@@ it is noisier and more crowded. @@As a result,@@ I have mixed feelings.",
+      connQ: [
+        { q: "In the past it was all fields. ___, there are apartment blocks everywhere.", opts: ["Nowadays", "Besides", "For instance"], ans: 0, why: "Nowadays = bây giờ, đối lập với In the past." },
+        { q: "It is more convenient now. ___, it is much noisier.", opts: ["On the other hand", "As a result", "In the beginning"], ans: 0, why: "On the other hand = mặt khác, nêu mặt trái của sự thay đổi." },
+        { q: "The old road was replaced by a mall. ___, I had to find a new place to cycle.", opts: ["Because of that", "Even though", "Instead of"], ans: 0, why: "Because of that = vì điều đó, nối nguyên nhân với kết quả." }
+      ],
+      memV: [["watch the area change", "nhìn khu phố thay đổi"], ["cycle along a dirt road", "đạp xe trên đường đất"], ["hang out with friends", "tụ tập với bạn"], ["move into a new flat", "chuyển vào căn hộ mới"], ["get used to the noise", "quen với tiếng ồn"], ["see the fields disappear", "thấy ruộng biến mất"], ["make new friends", "kết bạn mới"], ["play in the street", "chơi ngoài đường"]],
+      memN: [["a playground", "sân chơi"], ["my first apartment", "căn hộ đầu tiên"], ["a corner shop", "tiệm tạp hoá"], ["a car park", "bãi đỗ xe"], ["the old market", "chợ cũ"]],
+      memA: [["bittersweet", "vừa vui vừa buồn"], ["strange", "lạ lẫm"], ["exciting", "thú vị"], ["uneasy", "bất an"], ["proud", "tự hào"]],
+      frames: ["I used to… but now…", "I still remember + V-ing…", "Back then there was…, but now it has been replaced by…", "I had to get used to…"],
+      memEx: "I still remember @@cycling along a dirt road@@ with my friends after school. Now that road has become a busy street, and I've had to @@get used to the noise@@. Sometimes I @@hang out@@ at the new mall instead.",
+      memKey: ["watch", "cycl", "hang out", "move into", "used to", "disappear", "make new friends", "play in the street", "playground", "apartment", "corner shop", "car park", "old market"] },
+
+    { id: "city", n: 3, vi: "Thành phố", en: "The city",
+      intro: "Nhóm này dành cho thẻ đề kiểu: a place in a city / a place you like to visit / a famous place / a place for shopping, eating, relaxing. Khung của nhóm thành phố: sôi động, nhiều thứ để làm, cảm xúc mạnh.",
+      places: [["the city centre", "trung tâm thành phố"], ["a skyscraper", "toà nhà chọc trời"], ["a café", "quán cà phê"], ["a rooftop bar", "quán trên sân thượng"], ["a night market", "chợ đêm"], ["a riverside walkway", "lối đi bộ ven sông"], ["the old quarter", "khu phố cổ"], ["a museum", "bảo tàng"]],
+      adjs: [["bustling", "nhộn nhịp · B6+"], ["vibrant", "đầy sức sống · B6+"], ["crowded", "đông đúc"], ["lively", "sôi động"], ["modern", "hiện đại"], ["noisy", "ồn ào"], ["cosmopolitan", "đa văn hoá · B6+"], ["historic", "có tính lịch sử"]],
+      feats: [["be full of cafés and restaurants", "đầy quán cà phê và nhà hàng"], ["a mix of old and modern buildings", "pha trộn nhà cổ và hiện đại"], ["there's always something going on", "lúc nào cũng có hoạt động"], ["packed with tourists", "đầy khách du lịch"], ["lit up at night", "sáng đèn về đêm"], ["good public transport", "giao thông công cộng tốt"], ["heavy traffic", "giao thông đông đúc"], ["a wide choice of food", "nhiều món để chọn"]],
+      key: ["city centre", "centre", "skyscraper", "café", "cafe", "rooftop", "night market", "riverside", "old quarter", "museum", "bustling", "vibrant", "crowded", "lively", "modern", "cosmopolitan", "historic"],
+      conns: [["Nêu điều em thích", "What I like about it is… / One thing that stands out is…", "Điều em thích là… / Nổi bật là…"], ["Thêm ý", "Apart from that, / In addition, / What's more,", "Ngoài ra / Thêm vào đó"], ["Nhượng bộ", "Despite the noise, … / Even though it's crowded, …", "Bất chấp tiếng ồn / Dù đông"], ["Ví dụ", "For example, / such as…", "Ví dụ / chẳng hạn như"], ["Lý do", "That's why… / Because of that,", "Vì vậy…"]],
+      connEx: "@@What I like about it@@ is the mix of old and modern buildings. @@Apart from that,@@ there's always something going on, @@such as@@ street performers. @@Even though@@ it's crowded, it feels exciting. @@That's why@@ I go there almost every weekend.",
+      connQ: [
+        { q: "___ I like about the city centre is the nightlife.", opts: ["What", "That", "Which"], ans: 0, why: "What I like about… is… là mẫu câu rất tự nhiên để nêu điều em thích." },
+        { q: "___ the noise, I love living in the city.", opts: ["Despite", "Because", "Unless"], ans: 0, why: "Despite + danh từ = bất chấp. Sau Despite là the noise (danh từ)." },
+        { q: "There are many cafés. ___, there are street performers every weekend.", opts: ["Apart from that", "Although", "Otherwise"], ans: 0, why: "Apart from that = ngoài ra, để thêm một ý mới." }
+      ],
+      memV: [["wander around", "đi lang thang"], ["stroll along the river", "dạo dọc bờ sông"], ["try street food", "thử đồ ăn đường phố"], ["take photos", "chụp ảnh"], ["meet up with friends", "gặp bạn bè"], ["get lost", "bị lạc"], ["queue for grilled corn", "xếp hàng mua bắp nướng"], ["watch the fireworks", "xem pháo hoa"]],
+      memN: [["street performers", "nghệ sĩ đường phố"], ["fireworks", "pháo hoa"], ["a souvenir", "quà lưu niệm"], ["my first trip alone", "chuyến đi một mình đầu tiên"], ["a rooftop view", "khung cảnh trên cao"]],
+      memA: [["thrilling", "hồi hộp, phấn khích"], ["magical", "kỳ diệu"], ["overwhelming", "choáng ngợp"], ["lively", "sôi động"], ["tiring but fun", "mệt nhưng vui"]],
+      frames: ["On New Year's Eve / At weekends, we would…", "I still remember + V-ing…", "It was the first time I…", "I got lost, but…"],
+      memEx: "On New Year's Eve, my friends and I @@strolled along the river@@ and @@queued for@@ grilled corn. I still remember @@watching the fireworks@@ together. It was crowded, but it felt @@magical@@.",
+      memKey: ["wander", "stroll", "street food", "photo", "meet up", "lost", "queue", "firework", "souvenir", "performer", "rooftop", "trip"] }
+  ];
+
+  /* emotions by group */
+  var EMO = {
+    rural: [["nostalgic", "nhớ nhung quá khứ"], ["carefree", "vô lo vô nghĩ"], ["relaxed", "thư giãn"], ["grateful", "biết ơn"], ["homesick", "nhớ nhà"]],
+    urban: [["bittersweet", "vừa vui vừa buồn"], ["uneasy", "bất an"], ["proud", "tự hào"], ["a little sad", "hơi buồn"], ["excited", "hào hứng"]],
+    city: [["thrilled", "phấn khích"], ["amazed", "kinh ngạc"], ["overwhelmed", "choáng ngợp"], ["inspired", "được truyền cảm hứng"], ["independent", "thấy mình tự lập"]]
+  };
+  var EMO_Q = [
+    { q: "Years later, you smell fresh rice and want to go back to your grandparents' village. You feel ___.", opts: ["nostalgic", "overwhelmed", "disappointed"], ans: 0, why: "nostalgic = nhớ nhung quá khứ đẹp. Rất hay dùng cho kỷ niệm ở quê." },
+    { q: "Your childhood playground has become a car park. You feel ___.", opts: ["uneasy and a little sad", "thrilled", "relaxed"], ans: 0, why: "Nơi cũ mất đi thì cảm xúc thường là buồn hoặc bất an. Đây là cảm xúc hay gặp ở nhóm khu đô thị hoá." },
+    { q: "You see fireworks over the river for the first time. You feel ___.", opts: ["thrilled", "homesick", "bored"], ans: 0, why: "thrilled = phấn khích. Thường dùng cho trải nghiệm mạnh ở thành phố." }
+  ];
+  var REASON_Q = [
+    { q: "It was the first time I travelled alone, ___ I remember it so well.", opts: ["that's why", "however", "although"], ans: 0, why: "That's why + mệnh đề = vì thế. Nó nối lý do với kết quả." },
+    { q: "I remember the place so well ___ it was where I learned to swim.", opts: ["because", "so", "but"], ans: 0, why: "because + mệnh đề đưa ra lý do." },
+    { q: "The main reason ___ I miss it is that life there was simple.", opts: ["why", "what", "whom"], ans: 0, why: "The main reason why… is that… là khung câu giải thích lý do rất gọn." }
+  ];
+  var HOPE_Q = [
+    { q: "I hope ___ back there next summer.", opts: ["to go", "going", "went"], ans: 0, why: "hope to + V nguyên mẫu." },
+    { q: "If I had the chance, I ___ take my family there.", opts: ["would", "will", "am"], ans: 0, why: "If + quá khứ đơn, would + V. Đây là câu điều kiện loại 2, nói về điều em mong muốn." },
+    { q: "I wish the fields ___ disappeared so quickly.", opts: ["hadn't", "didn't", "haven't"], ans: 0, why: "I wish + quá khứ hoàn thành (hadn't + V3) = ước điều đã xảy ra mà không xảy ra khác đi. Cấu trúc B6+." }
+  ];
+
+  var CARDS = [
+    { id: "c1", n: 1, g: "rural", q: "Describe a place in the countryside that you have visited.",
+      cue: ["where it is", "what it looks like", "what you did there", "and explain why you remember it well."],
+      ph: { where: "village near Hue / grandparents / summer", look: "peaceful, green / surrounded by rice fields", mem: "would fly kites / still remember lying on grass", feel: "nostalgic + simple, carefree life", hope: "hope to go back with my parents" },
+      model: [
+        "I'd like to talk about my grandparents' village in Thanh Hoa, which I visited almost every summer when I was a child. @@It's located@@ about fifty kilometres from the city centre, and it's surrounded by green paddy fields. The village is peaceful and a bit rustic, and the air there is much fresher than in the city.",
+        "What I remember best is the harvest season. @@Every afternoon,@@ my cousins and I would run to the fields, chase dragonflies and fly kites until the sun went down. I still remember lying on the grass and listening to my grandmother's old stories.",
+        "@@That's why@@ I feel so nostalgic whenever I think about that place: life was simple, but I felt carefree and safe. @@Besides,@@ the neighbours were very kind, so I never felt lonely. I really hope to go back there next summer and take my parents with me, because I'd love them to see how beautiful it still is."
+      ] },
+    { id: "c2", n: 2, g: "urban", q: "Describe a place in your area that has changed a lot.",
+      cue: ["where it is", "what it was like in the past", "what it is like now", "and explain how you feel about the change."],
+      ph: { where: "suburb / edge of the city", look: "before: rice fields, market / now: apartment blocks, mall", mem: "used to cycle on dirt road / still remember", feel: "mixed feelings: proud but a little sad", hope: "hope more parks / wish it hadn't changed so fast" },
+      model: [
+        "I'd like to describe the area where I live, which has changed a lot over the past ten years. It's a suburb on the edge of the city, and @@in the past@@ it was mostly rice fields and a small local market. @@Nowadays,@@ however, there are high-rise apartment blocks, a big shopping mall and a wide ring road.",
+        "@@On the one hand,@@ it's more convenient than before, because everything is within walking distance. @@On the other hand,@@ it's noisier and more crowded, and the air isn't as fresh. I still remember cycling along a dirt road with my friends after school, but that road has been replaced by a busy street.",
+        "@@Because of that,@@ I have mixed feelings: I'm proud that my neighbourhood is developing, but I also feel a little sad about the fields that have disappeared. I hope the local government will build more parks, so that children can still play outside as I used to."
+      ] },
+    { id: "c3", n: 3, g: "city", q: "Describe a place in a city that you enjoy visiting.",
+      cue: ["where it is", "what it looks like", "what you do there", "and explain why you like it."],
+      ph: { where: "riverside walkway / city centre / weekends", look: "bustling, vibrant / full of cafés", mem: "New Year's Eve / queued for grilled corn / fireworks", feel: "thrilled, independent / first time without parents", hope: "would love to go back with my cousins" },
+      model: [
+        "I'd like to talk about the riverside walkway in the centre of Da Nang, which is my favourite place to go at weekends. It's a bustling and vibrant area, full of cafés and street food stalls, and at night it's lit up with colourful lights. @@What I like about it@@ is the mix of modern buildings and old bridges. @@Apart from that,@@ there's always something going on, @@such as@@ street performers and small festivals.",
+        "I first went there on New Year's Eve with my friends, and I still remember queueing for grilled corn and watching the fireworks over the river. It was crowded, but we felt thrilled and totally amazed.",
+        "@@That's why@@ the place is special to me: it was the first time I celebrated a holiday without my parents, and it made me feel independent. @@Even though@@ it can be noisy, I'd love to go back there next year and take my cousins, so they can enjoy the atmosphere too."
+      ] }
+  ];
+  var GBYID = {}; G.forEach(function (g) { GBYID[g.id] = g; });
+
+  var CUES = [
+    ["Describe a place in the countryside you have visited", "Nhóm 1 · Quê", "Tả cảnh yên bình, kể trò chơi thời nhỏ", "Hy vọng quay lại cùng gia đình"],
+    ["Describe a place where you like to relax", "Nhóm 1 hoặc 3", "Quê: bờ sông, vườn. Thành phố: công viên, quán cà phê yên tĩnh", "Hy vọng giữ được sự yên tĩnh"],
+    ["Describe a place near water (river, lake, sea)", "Nhóm 1 hoặc 3", "Bờ sông quê hoặc lối đi bộ ven sông ở thành phố", "Hy vọng quay lại vào mùa khác"],
+    ["Describe a place in your area that has changed a lot", "Nhóm 2 · Khu đô thị hoá", "Trước và sau, mặt tốt và mặt trái", "I wish it hadn't changed so fast / I hope there will be more parks"],
+    ["Describe the place where you live now", "Nhóm 2", "Tiện ích, hàng xóm, thay đổi gần đây", "Hy vọng chuyển sang nhà lớn hơn hoặc khu yên tĩnh hơn"],
+    ["Describe a place in a city that you enjoy visiting", "Nhóm 3 · Thành phố", "Sôi động, đồ ăn, hoạt động, một kỷ niệm cụ thể", "Hy vọng đưa gia đình, bạn bè đến"],
+    ["Describe a famous place in your country", "Nhóm 3", "Lịch sử, du khách, một lần em đến", "Hy vọng nơi này được giữ gìn"],
+    ["Describe a place you would like to visit", "Nhóm bất kỳ", "Thay kỷ niệm bằng điều em nghe, thấy trên mạng. Dùng would và If I had the chance", "Phần Hope chính là trọng tâm"],
+    ["Describe a house or flat you would like to live in", "Nhóm 1 hoặc 2", "Tả nhà mơ ước bằng It would have… / which overlooks…", "Phần Hope chính là trọng tâm"],
+    ["Describe a place you went to as a child", "Nhóm 1, 2 hoặc 3", "Used to và would, I still remember + V-ing", "Hy vọng nơi đó vẫn như xưa"]
+  ];
+
+
+  var SPK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function words(s) { var m = String(s).trim().match(/\S+/g); return m ? m.length : 0; }
+  function norm(s) { return String(s).toLowerCase().replace(/[’‘]/g, "'").replace(/-/g, " ").replace(/[^a-z0-9' ]+/g, " ").replace(/\s+/g, " ").trim(); }
+  function plainText(t) {
+    return String(t).replace(/\{\{[a-z]+\|([^}]+)\}\}/g, "$1").replace(/\[\[([^\]|]+)\|[^\]]+\]\]/g, "$1").replace(/@@(.+?)@@/g, "$1").replace(/\^\^(.+?)\^\^/g, "$1");
+  }
+  function rich(t) {
+    var s = esc(t);
+    s = s.replace(/\{\{([a-z]+)\|([^}]+)\}\}/g, function (m, id, w) { return '<span class="vk" data-v="' + id + '" tabindex="0" role="button">' + w + '</span>'; });
+    s = s.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, function (m, w, mean) { return '<span class="gw" data-m="' + mean + '" tabindex="0" role="button">' + w + '</span>'; });
+    s = s.replace(/@@(.+?)@@/g, '<span class="conn">$1</span>');
+    s = s.replace(/\^\^(.+?)\^\^/g, '<mark class="ac">$1</mark>');
+    return s;
+  }
+  function lcsLen(a, b) {
+    var m = a.length, n = b.length, prev = [], cur = [], i, j;
+    for (j = 0; j <= n; j++) prev.push(0);
+    for (i = 1; i <= m; i++) {
+      cur = [0];
+      for (j = 1; j <= n; j++) cur.push(a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1]));
+      prev = cur;
+    }
+    return prev[n];
+  }
+  /* compare what the student typed with the model sentence (at most 1 wrong word is accepted) */
+  function sentCheck(user, model) {
+    var u = norm(user).split(" ").filter(Boolean), m = norm(model).split(" ").filter(Boolean);
+    var l = lcsLen(u, m), diff = Math.max(u.length, m.length) - l;
+    return { ok: u.length >= 3 && diff <= 1, same: l, total: m.length };
+  }
+  function fmt(s) { var m = Math.floor(s / 60), r = Math.floor(s % 60); return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
+
+  /* =====================================================================
+     SPEECH + VOICE CHOICE
+     ===================================================================== */
+  var synth = window.speechSynthesis || null;
+  var voice = null, voiceURI = "", rate = 0.9, run = 0, playing = false;
+  try { voiceURI = localStorage.getItem("rel-friend-voice") || ""; } catch (e) {}
+  if (!synth || typeof SpeechSynthesisUtterance === "undefined") { document.body.classList.add("nospeech"); synth = null; }
+  var voiceSel = $("#voiceSel"), voiceBox = $("#voiceBox");
+  function enVoices() {
+    var vs = (synth && synth.getVoices()) || [];
+    return vs.filter(function (v) { return /^en/i.test(v.lang); }).sort(function (a, b) {
+      var au = /^en[-_]US/i.test(a.lang) ? 0 : 1, bu = /^en[-_]US/i.test(b.lang) ? 0 : 1;
+      return au - bu || a.name.localeCompare(b.name);
+    });
+  }
+  function voiceLabel(v) { return v.name.replace(/^(Microsoft|Google)\s+/i, "") + " (" + v.lang.replace("_", "-") + ")"; }
+  function pickVoice() {
+    if (!synth) return;
+    var vs = enVoices();
+    voice = null;
+    if (voiceURI) voice = vs.filter(function (v) { return v.voiceURI === voiceURI; })[0] || null;
+    if (!voice) voice = vs.filter(function (v) { return /^en[-_]US/i.test(v.lang) && /Google|Samantha|Microsoft|Aria|Jenny/i.test(v.name); })[0] || vs[0] || null;
+    voiceBox.style.display = vs.length ? "" : "none";
+    voiceSel.innerHTML = "";
+    var auto = document.createElement("option"); auto.value = ""; auto.textContent = "Tự động"; voiceSel.appendChild(auto);
+    vs.forEach(function (v) { var o = document.createElement("option"); o.value = v.voiceURI; o.textContent = voiceLabel(v); voiceSel.appendChild(o); });
+    voiceSel.value = voiceURI && vs.some(function (v) { return v.voiceURI === voiceURI; }) ? voiceURI : "";
+  }
+  if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+  voiceSel.addEventListener("change", function () {
+    voiceURI = voiceSel.value;
+    try { localStorage.setItem("rel-friend-voice", voiceURI); } catch (e) {}
+    pickVoice(); stopAll();
+    if (synth) synth.speak(utter("Hello! I will read the lesson for you."));
+  });
+  function utter(text, r) {
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; if (voice) { u.voice = voice; u.lang = voice.lang; } u.rate = r || rate; return u;
+  }
+  function clearNow() { $$(".now").forEach(function (e) { e.classList.remove("now"); }); }
+  function setPlaying(v) {
+    playing = v;
+    var l = $("#playLabel"), b = $("#playAll");
+    if (l) l.textContent = v ? "Dừng nghe" : "Nghe cả bài";
+    if (b) b.querySelector("svg").innerHTML = v ? '<path d="M6 6h12v12H6z"/>' : '<path d="M8 5v14l11-7z"/>';
+  }
+  function stopAll() { run++; if (synth) synth.cancel(); clearNow(); setPlaying(false); }
+  function playParas(list) {
+    if (!synth || !list.length) return;
+    stopAll();
+    var my = ++run, i = 0;
+    setPlaying(true);
+    (function next() {
+      if (my !== run) return;
+      if (i >= list.length) { clearNow(); setPlaying(false); return; }
+      var el = list[i++];
+      clearNow(); el.classList.add("now");
+      try { el.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+      var u = utter(el.getAttribute("data-text"));
+      u.onend = next;
+      u.onerror = function () { if (my === run) { clearNow(); setPlaying(false); } };
+      synth.speak(u);
+    })();
+  }
+  function sayText(t, r) {
+    if (!synth) return;
+    stopAll();
+    synth.speak(utter(t, r || Math.max(0.6, rate - 0.1)));
+  }
+
+  /* =====================================================================
+     RECORDER (one per speaking question)
+     ===================================================================== */
+  var activeRec = null;
+  function pickMime() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return "";
+    var c = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    for (var i = 0; i < c.length; i++) { if (MediaRecorder.isTypeSupported(c[i])) return c[i]; }
+    return "";
+  }
+  function errMsg(err) {
+    var n = err && err.name;
+    if (n === "NotAllowedError" || n === "SecurityError") return "Trình duyệt chưa cho phép dùng micro. Bấm vào biểu tượng ổ khóa cạnh địa chỉ trang, cho phép micro rồi thử lại.";
+    if (n === "NotFoundError") return "Không tìm thấy micro trên thiết bị này.";
+    return "Không ghi âm được (" + (n || "lỗi") + "). Hãy thử lại bằng Chrome hoặc Safari mới.";
+  }
+  function makeRecorder(max, offMsg) {
+    var R = { blob: null, dur: 0, url: null, enabled: false, recording: false, msg: "", ui: null, mr: null, stream: null, parts: [], tick: null, t0: 0, ctx: null, raf: 0, MAX: max || 60, offMsg: offMsg || "" };
+    var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    R.paint = function () {
+      var u = R.ui; if (!u) return;
+      u.btn.textContent = R.recording ? "Dừng ghi âm" : (R.blob ? "Ghi âm lại" : "Bắt đầu ghi âm");
+      u.btn.classList.toggle("recording", R.recording); u.btn.classList.toggle("primary", !R.recording);
+      u.btn.disabled = !supported || (!R.enabled && !R.recording);
+      u.msg.textContent = !supported ? "Trình duyệt này chưa hỗ trợ ghi âm. Hãy mở trang bằng Chrome hoặc Safari mới." : (R.msg || (R.enabled ? "" : R.offMsg));
+      if (R.blob && !R.recording) { u.done.hidden = false; u.audio.src = R.url; u.time.textContent = fmt(R.dur) + " / " + fmt(R.MAX); } else { u.done.hidden = true; }
+    };
+    R.mount = function (host) {
+      host.innerHTML = '<div class="rec-top"><button type="button" class="btn primary rb"></button><span class="rec-time">00:00 / ' + fmt(R.MAX) + '</span><div class="meter" aria-hidden="true"><i></i></div></div><p class="sub rmsg" role="status"></p><div class="rdone" hidden><audio controls></audio></div>';
+      R.ui = { btn: $(".rb", host), time: $(".rec-time", host), fill: $(".meter i", host), msg: $(".rmsg", host), done: $(".rdone", host), audio: $("audio", host) };
+      R.ui.btn.addEventListener("click", function () { if (R.recording) R.stop(); else R.start(); });
+      R.paint();
+    };
+    R.setEnabled = function (on) { R.enabled = on; R.paint(); };
+    R.meter = function (stream) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext; R.ctx = new AC();
+        var src = R.ctx.createMediaStreamSource(stream), an = R.ctx.createAnalyser(); an.fftSize = 256; src.connect(an);
+        var buf = new Uint8Array(an.frequencyBinCount);
+        (function loop() {
+          an.getByteTimeDomainData(buf);
+          var peak = 0; for (var i = 0; i < buf.length; i++) { var v = Math.abs(buf[i] - 128); if (v > peak) peak = v; }
+          if (R.ui) R.ui.fill.style.width = Math.min(100, peak / 128 * 180) + "%";
+          R.raf = requestAnimationFrame(loop);
+        })();
+      } catch (e) {}
+    };
+    R.start = function () {
+      if (activeRec && activeRec !== R) activeRec.stop();
+      stopAll(); R.msg = "";
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+        R.stream = stream; R.parts = [];
+        var mime = pickMime(), mr;
+        try { mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream); } catch (e) { mr = new MediaRecorder(stream); }
+        R.mr = mr; activeRec = R;
+        mr.ondataavailable = function (e) { if (e.data && e.data.size) R.parts.push(e.data); };
+        mr.onstop = R.finish;
+        mr.start();
+        R.t0 = Date.now(); R.recording = true; R.msg = "Đang ghi âm. Hãy nói tự nhiên theo dàn ý, cố gắng nói đủ 1,5 đến 2 phút.";
+        R.tick = setInterval(function () {
+          var s = (Date.now() - R.t0) / 1000; if (R.ui) R.ui.time.textContent = fmt(s) + " / " + fmt(R.MAX);
+          if (s >= R.MAX) R.stop();
+        }, 250);
+        R.meter(stream); R.paint();
+      }).catch(function (err) { R.msg = errMsg(err); R.paint(); });
+    };
+    R.stop = function () { if (R.mr && R.mr.state !== "inactive") R.mr.stop(); };
+    R.finish = function () {
+      clearInterval(R.tick); cancelAnimationFrame(R.raf); if (R.ui) R.ui.fill.style.width = "0%";
+      try { if (R.ctx) R.ctx.close(); } catch (e) {} R.ctx = null;
+      if (R.stream) R.stream.getTracks().forEach(function (t) { t.stop(); });
+      R.recording = false; if (activeRec === R) activeRec = null;
+      var dur = (Date.now() - R.t0) / 1000;
+      if (dur < 2 || !R.parts.length) { R.msg = "Bản ghi âm quá ngắn. Hãy ghi lại và đọc to cả đoạn."; R.paint(); return; }
+      var type = (R.mr && R.mr.mimeType) || pickMime() || "audio/webm";
+      if (R.url) URL.revokeObjectURL(R.url);
+      R.blob = new Blob(R.parts, { type: type }); R.url = URL.createObjectURL(R.blob); R.dur = dur; R.wav = null; R.sent = false;
+      R.msg = "Đã ghi xong. Hãy nghe lại. Nếu chưa hài lòng, bấm Ghi âm lại.";
+      R.paint();
+    };
+    return R;
+  }
+
+  /* =====================================================================
+     INFO SHEET (tap a lesson word or a glossary word)
+     ===================================================================== */
+  var sheet = $("#sheet"), sheetIn = $("#sheetIn");
+  function closeSheet() { sheet.classList.remove("show"); }
+  function openInfo(o) {
+    sheetIn.innerHTML = "";
+    var top = document.createElement("div"); top.className = "sheet-top";
+    var h = document.createElement("div"); h.className = "sheet-word"; h.textContent = o.word; h.style.flex = "1";
+    var say = document.createElement("button"); say.type = "button"; say.className = "ico listen"; say.setAttribute("aria-label", "Nghe"); say.innerHTML = SPK;
+    say.addEventListener("click", function () { sayText(o.say || o.word); });
+    top.appendChild(h); top.appendChild(say); sheetIn.appendChild(top);
+    var mean = document.createElement("div"); mean.className = "sheet-mean"; mean.textContent = o.mean; sheetIn.appendChild(mean);
+    if (o.note) { var n = document.createElement("p"); n.className = "sheet-note"; n.textContent = o.note; sheetIn.appendChild(n); }
+    var acts = document.createElement("div"); acts.className = "sheet-acts";
+    var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn primary"; ok.textContent = "Đã hiểu";
+    ok.addEventListener("click", closeSheet); acts.appendChild(ok); sheetIn.appendChild(acts);
+    sheet.classList.add("show");
+    sayText(o.say || o.word);
+  }
+  document.addEventListener("click", function (ev) {
+    var vk = ev.target.closest && ev.target.closest(".vk");
+    if (vk) { var v = VBYID[vk.getAttribute("data-v")]; if (v) openInfo({ word: v.en, mean: v.vi, note: v.ex, say: v.en }); return; }
+    var gw = ev.target.closest && ev.target.closest(".gw");
+    if (gw) { openInfo({ word: gw.textContent, mean: gw.getAttribute("data-m"), say: gw.textContent }); return; }
+    if (sheet.classList.contains("show") && !ev.target.closest("#sheetIn")) closeSheet();
+  });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") closeSheet();
+    if ((ev.key === "Enter" || ev.key === " ") && ev.target.classList && (ev.target.classList.contains("vk") || ev.target.classList.contains("gw"))) { ev.preventDefault(); ev.target.click(); }
+  });
+
+  /* =====================================================================
+     REUSABLE BLOCKS
+     ===================================================================== */
+  /* paper-and-pen reminder with a tick box */
+  function pen(el, key, html, label) {
+    var d = document.createElement("div"); d.className = "pre";
+    d.innerHTML = '<div class="pen-t">Bài tập giấy: lấy giấy và bút nhé</div><p class="pen-p">' + html + '</p><label><input type="checkbox"> ' + esc(label || "Em đã viết xong vào vở") + '</label>';
+    var c = $("input", d); c.checked = !!S.ticks[key];
+    c.addEventListener("change", function () { S.ticks[key] = c.checked; saveS(); });
+    el.appendChild(d);
+  }
+  function tick(el, key, label) {
+    var d = document.createElement("div"); d.className = "pre";
+    d.innerHTML = '<label><input type="checkbox"> ' + esc(label) + '</label>';
+    var c = $("input", d); c.checked = !!S.ticks[key];
+    c.addEventListener("change", function () { S.ticks[key] = c.checked; saveS(); });
+    el.appendChild(d);
+  }
+  function needTick(key, msg) { return S.ticks[key] ? "" : (msg || "Hãy làm bài tập giấy rồi tick vào ô xác nhận."); }
+  function head(el, kicker, title) { el.innerHTML = '<div class="s-kicker">' + esc(kicker) + '</div><h2>' + esc(title) + '</h2>'; }
+  function listenBtn(id, label) { return '<button type="button" class="ico listen" id="' + id + '" aria-label="' + esc(label || "Nghe") + '">' + SPK + '</button>'; }
+
+  /* multiple choice. mode "retry": wrong answers are crossed out until the right one is found. mode "reveal": one answer, then the explanation. */
+  function mcq(host, key, items, mode, off) {
+    off = off || 0;
+    items.forEach(function (it, i) {
+      var k = key + ":" + i, r = S.mc[k];
+      if (!r) r = S.mc[k] = { tries: 0, first: null, done: false, pick: null, wr: [], ord: null };
+      if (!r.ord) { var idx = []; for (var j = 0; j < it.opts.length; j++) idx.push(j); r.ord = it.fix ? idx : shuffle(idx); }
+      var card = document.createElement("div"); card.className = "qcard";
+      card.innerHTML = '<div class="qhead"><span class="num">Câu ' + (off + i + 1) + '</span>' + (it.tag ? '<span class="lvl">' + esc(it.tag) + '</span>' : '') + '</div>' +
+        '<p class="qtext">' + rich(it.q) + '</p>' + (it.qvi ? '<p class="qvi">' + esc(it.qvi) + '</p>' : '') + '<div class="opts"></div><div class="fb" hidden></div>';
+      var box = $(".opts", card), fb = $(".fb", card), btns = [];
+      r.ord.forEach(function (oi) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = it.opts[oi];
+        b.addEventListener("click", function () {
+          if (r.done) return;
+          r.tries++; var ok = (oi === it.ans);
+          if (r.tries === 1) { r.first = ok; r.pick = oi; }
+          if (mode === "reveal") { r.done = true; } else if (ok) { r.done = true; } else { r.wr.push(oi); }
+          saveS(); paint();
+        });
+        box.appendChild(b); btns.push({ b: b, oi: oi });
+      });
+      function paint() {
+        btns.forEach(function (x) {
+          x.b.classList.remove("right", "wrong"); x.b.disabled = false;
+          if (r.done) { x.b.disabled = true; if (x.oi === it.ans) x.b.classList.add("right"); else if (mode === "reveal" && x.oi === r.pick) x.b.classList.add("wrong"); }
+          else if (r.wr.indexOf(x.oi) >= 0) { x.b.disabled = true; x.b.classList.add("wrong"); }
+        });
+        fb.hidden = !(r.done || r.wr.length);
+        if (r.done) {
+          var good = mode === "reveal" ? r.first : true;
+          fb.className = "fb " + (good ? "ok" : "try");
+          var msg = mode === "reveal" ? (r.first ? "Chính xác!" : "Chưa đúng. Đáp án đúng đã được đánh dấu xanh.") : (r.first ? "Đúng rồi!" : "Đúng rồi! Lần sau em sẽ nhớ.");
+          fb.innerHTML = '<p class="fbmsg">' + msg + '</p><p>' + (it.why || "") + '</p>';
+        } else if (r.wr.length) {
+          fb.className = "fb try";
+          fb.innerHTML = '<p class="fbmsg">Chưa đúng. Hãy thử đáp án khác nhé.</p>';
+        }
+      }
+      paint();
+      host.appendChild(card);
+    });
+  }
+  function mcAll(key, n) { for (var i = 0; i < n; i++) { var r = S.mc[key + ":" + i]; if (!r || !r.done) return false; } return true; }
+  function mcRows(part, key, items) {
+    return items.map(function (it, i) {
+      var r = S.mc[key + ":" + i] || {};
+      return { part: part, question: plainText(it.q), answer: (r.pick !== null && r.pick !== undefined && it.opts[r.pick] !== undefined) ? it.opts[r.pick] : "", correct: it.opts[it.ans], result: (r.first ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (r.tries > 1 ? " (" + r.tries + " lần thử)" : "") };
+    });
+  }
+  function mcFirst(key, n) { var g = 0; for (var i = 0; i < n; i++) { var r = S.mc[key + ":" + i]; if (r && r.first) g++; } return g; }
+
+  /* a sentence the student writes, checked by a small rule */
+  function prod(host, key, cfg) {
+    var st = S.pr[key] || (S.pr[key] = { text: "", ok: false });
+    var d = document.createElement("div"); d.className = "prod";
+    d.innerHTML = '<p class="prod-q">' + cfg.prompt + '</p><textarea class="field" rows="2" placeholder="Viết bằng tiếng Anh..." aria-label="Câu của em"></textarea><div class="qacts"><button type="button" class="btn primary">Kiểm tra</button></div><div class="fb" hidden></div>';
+    var ta = $("textarea", d), fb = $(".fb", d);
+    ta.value = st.text;
+    function show(ok, html) { fb.hidden = false; fb.className = "fb " + (ok ? "ok" : "try"); fb.innerHTML = '<p>' + html + '</p>'; }
+    if (st.ok) show(true, cfg.ok);
+    ta.addEventListener("input", function () { st.text = ta.value; saveS(); });
+    $(".btn", d).addEventListener("click", function () {
+      var v = ta.value.trim();
+      if (!v) { show(false, "Hãy viết câu của em trước nhé."); return; }
+      if (words(v) < cfg.min) { st.ok = false; show(false, "Câu hơi ngắn. Hãy viết ít nhất " + cfg.min + " từ."); saveS(); return; }
+      if (cfg.test(v)) { st.ok = true; show(true, cfg.ok); } else { st.ok = false; show(false, cfg.fail); }
+      saveS();
+    });
+    host.appendChild(d);
+  }
+  function needProd(key, msg) { return S.pr[key] && S.pr[key].ok ? "" : (msg || "Hãy viết một câu của em rồi bấm Kiểm tra."); }
+
+  /* =====================================================================
+     STATE (saved in the browser; audio is never saved)
+     ===================================================================== */
+  var VBYID = {};
+  var SKEY = "describe-place-state-v1";
+  var S = { name: "", idx: 0, max: 0, mc: {}, ticks: {}, pr: {}, ol: {}, submitted: false };
+  var SAVE = ["name", "idx", "max", "mc", "ticks", "pr", "ol"];
+  var resumed = false;
+  function saveS() { try { var o = {}; SAVE.forEach(function (k) { o[k] = S[k]; }); localStorage.setItem(SKEY, JSON.stringify(o)); } catch (e) {} }
+  (function loadS() {
+    try {
+      var o = JSON.parse(localStorage.getItem(SKEY) || "null");
+      if (o) { SAVE.forEach(function (k) { if (o[k] !== undefined && o[k] !== null) S[k] = o[k]; }); resumed = (S.idx > 0); }
+    } catch (e) {}
+  })();
+  function toast(msg) {
+    var t = $("#toast"); t.textContent = msg; t.style.display = "block";
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, 3200);
+  }
+  var RECS = {};
+  CARDS.forEach(function (c) {
+    var R = makeRecorder(150, "Hãy điền đủ 5 dòng dàn ý ở trên trước, rồi mới ghi âm.");
+    var op = R.paint; R.paint = function () { op(); if (R.hook) R.hook(); };
+    RECS[c.id] = R;
+  });
+
+  /* ---------- small helpers for this lesson ---------- */
+  function chips(arr) {
+    return '<div class="kws">' + arr.map(function (x) {
+      var say = x[0].replace(/…/g, "").replace(/\s\/\s/g, ". ").replace(/_+/g, "");
+      return '<button type="button" class="kw" data-s="' + esc(say) + '">' + esc(x[0]) + '<small>' + esc(x[1]) + '</small></button>';
+    }).join("") + '</div>';
+  }
+  function bindChips(el) { $$(".kw", el).forEach(function (b) { b.addEventListener("click", function () { sayText(b.getAttribute("data-s")); }); }); }
+  function countKeys(text, keys) { var n = " " + norm(text) + " ", c = 0; keys.forEach(function (k) { if (n.indexOf(norm(k)) >= 0) c++; }); return c; }
+  function sampleBlock(html, plain) {
+    return '<div class="sample">' + html + '</div><div class="row-actions"><button type="button" class="btn listen" data-say="' + esc(plain) + '">' + SPK + ' Nghe đoạn mẫu</button></div>';
+  }
+  function bindSay(el) { $$("[data-say]", el).forEach(function (b) { b.addEventListener("click", function () { sayText(b.getAttribute("data-say"), 0.9); }); }); }
+  function sectionH(t) { return '<h3>' + esc(t) + '</h3>'; }
+  /* =====================================================================
+     SCENES
+     ===================================================================== */
+  var STEPS = ["Khung 5 bước", "Quê", "Khu đô thị", "Thành phố", "Cảm xúc, lý do, hy vọng", "Nói Part 2", "Nộp bài"];
+  var SC = [];
+  function add(o) { SC.push(o); return SC.length - 1; }
+  var CARD_IDX = {};
+
+  /* ---------------- Step 0: the frame ---------------- */
+  add({ step: 0, title: "Chào mừng", render: function (el) {
+    head(el, "Speaking Part 2 · Describe a place", "Một khung để nói được mọi thẻ Describe a place");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Thẻ Part 2 về nơi chốn có rất nhiều đề, nhưng cách nói chỉ có một khung. Hôm nay em học khung đó, rồi đổ từ vựng vào theo từng loại nơi chốn: <b>vùng quê</b>, <b>khu đô thị hoá</b> và <b>thành phố</b>.</p>' +
+      '<p class="sub">Bài kéo dài khoảng 60 đến 75 phút. Em cần vở, bút và micro. Em nghe được từng cụm bằng cách bấm vào ô của cụm đó.</p>' +
+      '<div class="ofield"><label for="nm">Tên của em</label><input id="nm" class="field" type="text" autocomplete="name" placeholder="Ví dụ: Minh Anh"></div>' +
+      '<div class="row-actions"><button type="button" class="btn listen" id="wsay">' + SPK + ' Nghe lời chào</button></div>');
+    var inp = $("#nm"); inp.value = S.name;
+    inp.addEventListener("input", function () { S.name = inp.value; saveS(); });
+    $("#wsay").addEventListener("click", function () { sayText("Today, we will learn one frame to describe any place: where it is, what it looks like, a memory, how you felt and why, and what you hope."); });
+  }, need: function () { return S.name.trim().length < 2 ? "Hãy nhập tên của em để bắt đầu." : ""; } });
+
+  add({ step: 0, title: "Khung 5 bước", render: function (el) {
+    head(el, "Khung chiến thuật", "5 bước, nói được 1,5 đến 2 phút");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Mỗi thẻ Part 2 đều có 4 gợi ý. Em đừng trả lời 4 ý rời rạc. Hãy đi theo 5 bước dưới đây, và dùng cầu nối giữa các bước.</p>' +
+      '<div class="chain big">' +
+      '<span class="node cur">1. WHERE<small>Ở đâu, khi nào, với ai</small></span><span class="arrow">→</span>' +
+      '<span class="node">2. LOOK<small>Tính từ + đặc điểm</small></span><span class="arrow">→</span>' +
+      '<span class="node">3. MEMORY<small>Việc em đã làm</small></span><span class="arrow">→</span>' +
+      '<span class="node">4. FEELING + REASON<small>Cảm xúc và vì sao</small></span><span class="arrow">→</span>' +
+      '<span class="node">5. HOPE<small>Điều em mong</small></span></div>' +
+      '<div class="mapgrid">' +
+      '<div class="mapcard"><h4>Cầu nối từ bước 1 sang 2</h4><p>It’s located in… and it’s… / What it looks like is…</p></div>' +
+      '<div class="mapcard"><h4>Cầu nối từ bước 2 sang 3</h4><p>When I was a child, … / Back then, … / Every summer, …</p></div>' +
+      '<div class="mapcard"><h4>Cầu nối từ bước 3 sang 4</h4><p>That’s why… / Because of that… / It made me feel…</p></div>' +
+      '<div class="mapcard"><h4>Cầu nối từ bước 4 sang 5</h4><p>Even now, … / Looking ahead, … / I really hope…</p></div></div>' +
+      '<p class="sub">Vì sao có khung này? Giám khảo chấm sự liên kết ý (coherence) và độ phong phú từ vựng. Khung giúp em không bị đứng hình và luôn có điều để nói tiếp.</p>');
+    pen(el, "frame", "Vẽ 5 ô nối nhau trong vở: <b>WHERE → LOOK → MEMORY → FEELING + REASON → HOPE</b>. Dưới mỗi ô, chép lại một cầu nối ở trên.", "Em đã vẽ khung vào vở");
+  }, need: function () { return needTick("frame", "Hãy vẽ khung vào vở rồi tick vào ô xác nhận."); } });
+
+  add({ step: 0, title: "Một khung, mọi thẻ", render: function (el) {
+    head(el, "Khung chiến thuật", "Gặp thẻ nào em cũng chọn được nhóm");
+    var h = '<p class="lead">Nhìn đề, em hỏi mình: đây là nơi ở quê, nơi đang thay đổi, hay nơi ở thành phố? Rồi dùng từ vựng nhóm đó. Dưới đây là các đề hay gặp.</p><div class="mapgrid">';
+    CUES.forEach(function (c) { h += '<div class="mapcard"><h4>' + esc(c[0]) + '</h4><p><b>' + esc(c[1]) + '</b></p><p>Kỷ niệm: ' + esc(c[2]) + '</p><p>Hy vọng: ' + esc(c[3]) + '</p></div>'; });
+    h += '</div>';
+    el.insertAdjacentHTML("beforeend", h);
+  }, need: function () { return ""; } });
+
+  /* ---------------- Steps 1 to 3: one block per place group ---------------- */
+  G.forEach(function (g, gi) {
+    var st = gi + 1, P = "Nhóm " + g.n + " · " + g.vi;
+
+    add({ step: st, title: g.vi + ": nơi chốn, tính từ, đặc điểm", render: function (el) {
+      head(el, P + " · Bước 1 và 2", "Nơi chốn, tính từ và đặc điểm");
+      el.insertAdjacentHTML("beforeend",
+        '<p class="lead">' + esc(g.intro) + '</p>' +
+        sectionH("Địa điểm thường gặp") + chips(g.places) +
+        sectionH("Tính từ để tả") + chips(g.adjs) +
+        sectionH("Đặc điểm hay nói") + chips(g.feats) +
+        '<p class="sub">Bấm vào từng ô để nghe. Em đọc to theo một lần rồi mới làm bài viết bên dưới.</p>');
+      bindChips(el);
+      prod(el, "v:" + g.id, {
+        prompt: "Viết 2 câu tả một nơi thuộc nhóm <b>" + esc(g.vi) + "</b> mà em biết. Dùng ít nhất 2 từ trong khung (một địa điểm và một tính từ).",
+        min: 8,
+        test: function (v) { return countKeys(v, g.key) >= 2; },
+        ok: "Tốt lắm! Câu của em có từ vựng của nhóm " + esc(g.vi) + ".",
+        fail: "Em dùng ít nhất 2 từ trong khung (ví dụ một địa điểm và một tính từ) nhé."
+      });
+    }, need: function () { return needProd("v:" + g.id, "Hãy viết câu và bấm Kiểm tra để tiếp tục."); } });
+
+    add({ step: st, title: g.vi + ": từ nối", render: function (el) {
+      head(el, P + " · Cầu nối giữa các ý", "Từ nối thường dùng cho nhóm này");
+      el.insertAdjacentHTML("beforeend", '<p class="lead">Từ nối giúp em chuyển từ ý này sang ý khác mà không bị ngắt quãng.</p>');
+      var h = '<div class="mapgrid">';
+      g.conns.forEach(function (c) { h += '<div class="mapcard"><h4>' + esc(c[0]) + '</h4>' + chips([[c[1], c[2]]]) + '</div>'; });
+      h += '</div>' + sectionH("Đoạn mẫu có cầu nối (chữ màu là cầu nối)") + sampleBlock('<p>' + rich(g.connEx) + '</p>', plainText(g.connEx)) + sectionH("Chọn cầu nối đúng");
+      el.insertAdjacentHTML("beforeend", h);
+      bindChips(el); bindSay(el);
+      mcq(el, "c:" + g.id, g.connQ, "retry", 0);
+    }, need: function () { return mcAll("c:" + g.id, g.connQ.length) ? "" : "Hãy trả lời đúng cả " + g.connQ.length + " câu để tiếp tục."; } });
+
+    add({ step: st, title: g.vi + ": kỷ niệm", render: function (el) {
+      head(el, P + " · Bước 3", "Động từ, danh từ, tính từ để kể kỷ niệm");
+      el.insertAdjacentHTML("beforeend",
+        '<p class="lead">Kỷ niệm phải đi cùng nơi chốn. Hãy chọn việc mà một người ở nhóm <b>' + esc(g.vi) + '</b> thật sự hay làm.</p>' +
+        sectionH("Động từ và cụm động từ") + chips(g.memV) +
+        sectionH("Danh từ") + chips(g.memN) +
+        sectionH("Tính từ cảm nhận") + chips(g.memA) +
+        sectionH("Khung câu để kể") + '<ul>' + g.frames.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul>' +
+        sectionH("Đoạn mẫu") + sampleBlock('<p>' + rich(g.memEx) + '</p>', plainText(g.memEx)));
+      bindChips(el); bindSay(el);
+      prod(el, "m:" + g.id, {
+        prompt: "Viết 2 câu kể một kỷ niệm của em ở một nơi thuộc nhóm <b>" + esc(g.vi) + "</b>. Dùng ít nhất 2 cụm trong khung. Nếu em chưa từng ở nơi như vậy, hãy tưởng tượng.",
+        min: 10,
+        test: function (v) { return countKeys(v, g.memKey) >= 2; },
+        ok: "Rất tốt! Em đã kể được kỷ niệm bằng từ vựng của nhóm.",
+        fail: "Em dùng ít nhất 2 cụm trong khung kỷ niệm (ví dụ fly kites, lie on the grass) nhé."
+      });
+    }, need: function () { return needProd("m:" + g.id, "Hãy viết câu và bấm Kiểm tra để tiếp tục."); } });
+  });
+
+  /* ---------------- Step 4: emotion, reason, hope ---------------- */
+  add({ step: 4, title: "Cảm xúc", render: function (el) {
+    head(el, "Bước 4 · Cảm xúc", "Cảm xúc đi theo kiểu nơi chốn");
+    el.insertAdjacentHTML("beforeend", '<p class="lead">Mỗi loại nơi chốn thường gợi một cảm xúc khác nhau. Chọn đúng cảm xúc sẽ làm câu chuyện thật hơn.</p>');
+    var h = '<div class="mapgrid">';
+    G.forEach(function (g) { h += '<div class="mapcard"><h4>' + esc(g.vi) + '</h4>' + chips(EMO[g.id]) + '</div>'; });
+    h += '</div><p class="sub">Khung câu: <b>It made me feel + adj</b> · <b>I felt + adj</b> · <b>I get + adj whenever…</b> · <b>I have mixed feelings about it</b>.</p>' + sectionH("Chọn cảm xúc phù hợp");
+    el.insertAdjacentHTML("beforeend", h);
+    bindChips(el);
+    mcq(el, "e", EMO_Q, "retry", 0);
+  }, need: function () { return mcAll("e", EMO_Q.length) ? "" : "Hãy trả lời đúng cả " + EMO_Q.length + " câu để tiếp tục."; } });
+
+  add({ step: 4, title: "Lý do", render: function (el) {
+    head(el, "Bước 4 · Lý do", "Giải thích vì sao em nhớ hay thích nơi đó");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Đề luôn có câu cuối: and explain why… Em cần một lý do rõ ràng, không chỉ nói I like it.</p>' +
+      sectionH("Khung câu nêu lý do") +
+      chips([["I remember it so well because…", "Em nhớ rõ vì…"], ["The main reason is that…", "Lý do chính là…"], ["That's why…", "Vì vậy…"], ["It was the first time I…", "Đó là lần đầu em…"], ["It reminds me of…", "Nó làm em nhớ đến…"], ["It taught me that…", "Nó dạy em rằng…"]]) +
+      '<p class="sub">Mẹo: lý do nên liên quan đến cảm xúc em vừa nói. Ví dụ: <i>I felt carefree. That’s why I remember it so well.</i></p>');
+    bindChips(el);
+    mcq(el, "r", REASON_Q, "retry", 0);
+    prod(el, "reason", {
+      prompt: "Viết 2 câu: một câu nêu cảm xúc và một câu nêu lý do về một nơi em nhớ. Dùng because, that's why hoặc the reason.",
+      min: 10,
+      test: function (v) { return /\b(because|that's why|thats why|the (main )?reason|reminds me|first time)\b/i.test(norm(v)); },
+      ok: "Tốt! Em đã có một lý do rõ ràng.",
+      fail: "Câu của em cần có because, that's why, the reason, hoặc it was the first time."
+    });
+  }, need: function () { return mcAll("r", REASON_Q.length) ? needProd("reason") : "Hãy trả lời đúng cả " + REASON_Q.length + " câu trước."; } });
+
+  add({ step: 4, title: "Hy vọng", render: function (el) {
+    head(el, "Bước 5 · Hy vọng", "Kết bài bằng điều em mong muốn");
+    el.insertAdjacentHTML("beforeend",
+      '<p class="lead">Kết thúc bằng một mong muốn giúp bài nói có điểm dừng tự nhiên và cho em thêm cơ hội dùng ngữ pháp tốt.</p>' +
+      sectionH("Khung câu hy vọng") +
+      chips([["I hope to go back there one day.", "Em hy vọng một ngày nào đó quay lại."], ["I'd love to take my family there.", "Em muốn đưa gia đình đến đó."], ["I'm planning to visit again next summer.", "Em dự định đến lại vào hè sau."], ["I hope it will stay as peaceful as it is now.", "Em hy vọng nơi đó vẫn yên bình như bây giờ."], ["If I had the chance, I would…", "Nếu có cơ hội, em sẽ… · B6+"], ["I wish it hadn't changed so much.", "Giá mà nó không thay đổi nhiều như vậy. · B6+"]]) +
+      '<p class="sub">Dùng câu B6+ ở thẻ khu đô thị hoá, vì nơi đó thay đổi nhiều nên em dễ có điều tiếc nuối.</p>');
+    bindChips(el);
+    mcq(el, "h", HOPE_Q, "retry", 0);
+    prod(el, "hope", {
+      prompt: "Viết 1 câu hy vọng về một nơi em biết. Dùng hope, would love, wish, planning to hoặc If I had the chance.",
+      min: 6,
+      test: function (v) { return /\b(hope|wish|would love|d love|planning to|one day|if i (had|could))\b/i.test(norm(v)); },
+      ok: "Hay lắm! Đây là cách kết bài tự nhiên.",
+      fail: "Câu của em cần có hope, wish, would love, planning to hoặc if I had the chance."
+    });
+  }, need: function () { return mcAll("h", HOPE_Q.length) ? needProd("hope") : "Hãy trả lời đúng cả " + HOPE_Q.length + " câu trước."; } });
+
+  /* ---------------- Step 5: three cue cards ---------------- */
+  var OL = [
+    { id: "where", label: "1. WHERE", help: "Nơi nào, ở đâu, khi nào, với ai" },
+    { id: "look", label: "2. LOOK", help: "2 tính từ và 1 đặc điểm" },
+    { id: "mem", label: "3. MEMORY", help: "Một việc em làm (used to, would, I still remember + V-ing)" },
+    { id: "feel", label: "4. FEELING + REASON", help: "Cảm xúc và vì sao" },
+    { id: "hope", label: "5. HOPE", help: "Điều em mong muốn" }
+  ];
+  CARDS.forEach(function (c) {
+    var R = RECS[c.id], g = GBYID[c.g];
+    CARD_IDX[c.id] = add({ step: 5, title: "Thẻ " + c.n + ": " + g.vi, render: function (el) {
+      head(el, "Speaking Part 2 · Thẻ " + c.n + "/3 · " + g.vi, c.q);
+      var cue = '<div class="cue"><b>You should say:</b><ul>' + c.cue.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>';
+      el.insertAdjacentHTML("beforeend",
+        cue +
+        '<p class="sub">Em có 1 phút để lập dàn ý. Chỉ viết từ khoá, không viết cả câu. Mở lại các khung ở bước trước nếu cần. Mỗi dòng ít nhất 2 từ.</p>' +
+        '<div class="row-actions"><button type="button" class="btn listen" id="qsay">' + SPK + ' Nghe đề</button></div><div id="olist"></div>' +
+        '<h3>Ghi âm</h3><p class="lead">Nói 1,5 đến 2 phút theo dàn ý. Đừng đọc, hãy nhìn dàn ý và nói tự nhiên.</p><div class="recbox" id="rechost"></div><div id="mdl" hidden></div>');
+      $("#qsay").addEventListener("click", function () { sayText(c.q + ". " + c.cue.join(". ")); });
+      var olist = $("#olist");
+      OL.forEach(function (f) {
+        var k = c.id + ":" + f.id, d = document.createElement("div"); d.className = "ofield";
+        d.innerHTML = '<label for="o_' + f.id + '">' + esc(f.label) + '</label><p class="help">' + esc(f.help) + '</p><input id="o_' + f.id + '" class="field" type="text" placeholder="Ví dụ: ' + esc(c.ph[f.id]) + '">';
+        var inp = $("input", d); inp.value = S.ol[k] || "";
+        inp.addEventListener("input", function () { S.ol[k] = inp.value; saveS(); upd(); });
+        olist.appendChild(d);
+      });
+      function filled() { return OL.every(function (f) { return words(S.ol[c.id + ":" + f.id] || "") >= 2; }); }
+      function upd() { R.setEnabled(filled()); }
+      function reveal() {
+        var m = $("#mdl"); if (!m) return;
+        if (!(R.blob && !R.recording)) { m.hidden = true; return; }
+        if (m.getAttribute("data-built")) { m.hidden = false; return; }
+        m.setAttribute("data-built", "1"); m.hidden = false;
+        var plain = c.model.map(plainText).join(" ");
+        m.innerHTML = '<h3>Bài mẫu để so sánh</h3><p class="sub">Đây là bài mẫu do cô soạn, nội dung là ví dụ tưởng tượng. Em hãy nghe, rồi so với bài em vừa nói: em dùng mấy cầu nối? Có cụm nào em muốn lấy dùng lần sau?</p>' +
+          sampleBlock(c.model.map(function (p) { return '<p>' + rich(p) + '</p>'; }).join(""), plain);
+        bindSay(m);
+      }
+      R.hook = reveal;
+      R.mount($("#rechost")); upd();
+    }, need: function () {
+      var ok = OL.every(function (f) { return words(S.ol[c.id + ":" + f.id] || "") >= 2; });
+      if (!ok) return "Hãy điền đủ 5 dòng dàn ý (mỗi dòng ít nhất 2 từ).";
+      if (!R.blob) return "Hãy ghi âm bài nói của em.";
+      if (R.dur < 30) return "Bản ghi còn ngắn (" + Math.round(R.dur) + " giây). Hãy ghi lại và nói thêm, ít nhất 30 giây.";
+      return "";
+    } });
+  });
+
+  /* ---------------- Step 6: submit ---------------- */
+  var ALLQ = [["Cầu nối", "c:rural", G[0].connQ], ["Cầu nối", "c:urban", G[1].connQ], ["Cầu nối", "c:city", G[2].connQ], ["Cảm xúc", "e", EMO_Q], ["Lý do", "r", REASON_Q], ["Hy vọng", "h", HOPE_Q]];
+  function quizScore() { var g = 0, t = 0; ALLQ.forEach(function (a) { g += mcFirst(a[1], a[2].length); t += a[2].length; }); return [g, t]; }
+  add({ step: 6, title: "Nộp bài", render: function (el) {
+    head(el, "Nộp bài", "Em đã hoàn thành! Nộp bài cho cô nhé.");
+    var qs = quizScore();
+    el.insertAdjacentHTML("beforeend",
+      '<div class="sum"><div class="sumrow"><h4>Học sinh</h4><p id="sumName"></p></div>' +
+      '<div class="sumrow"><h4>Trắc nghiệm</h4><p>Đúng ngay lần đầu: ' + qs[0] + '/' + qs[1] + '</p></div>' +
+      '<div class="sumrow"><h4>Speaking Part 2</h4><div id="sumSpeak"></div></div></div>' +
+      '<div id="missing"></div><div class="row-actions"><button type="button" class="btn primary" id="subBtn">Nộp bài cho cô</button></div><div id="subMsg" role="status"></div>');
+    $("#sumName").textContent = S.name;
+    var missing = CARDS.filter(function (c) { return !RECS[c.id].blob; });
+    CARDS.forEach(function (c) {
+      var R = RECS[c.id], d = document.createElement("div"), p = document.createElement("p");
+      p.textContent = "Thẻ " + c.n + ": " + c.q; d.appendChild(p);
+      if (R.url) { var a = document.createElement("audio"); a.controls = true; a.src = R.url; d.appendChild(a); }
+      $("#sumSpeak").appendChild(d);
+    });
+    if (missing.length && !S.submitted) {
+      var m = $("#missing"); m.innerHTML = '<div class="note err">Còn ' + missing.length + ' bản ghi âm chưa có (có thể do em đã tải lại trang). Bấm vào từng thẻ để ghi âm lại, rồi quay lại đây nộp bài:</div><div class="row-actions" id="missBtns"></div>';
+      missing.forEach(function (c) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = "Thẻ " + c.n;
+        b.addEventListener("click", function () { show(CARD_IDX[c.id]); }); $("#missBtns").appendChild(b);
+      });
+      $("#subBtn").disabled = true;
+    }
+    $("#subBtn").addEventListener("click", submitAll);
+    if (S.submitted) markSubmitted();
+  }, need: function () { return ""; } });
+
+  /* ---------- upload helpers ---------- */
+  async function toWav(blob) {
+    var AC = window.AudioContext || window.webkitAudioContext, OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    var ab = await blob.arrayBuffer();
+    var ac = new AC();
+    var buf = await new Promise(function (res, rej) { var p = ac.decodeAudioData(ab, res, rej); if (p && p.then) p.then(res, rej); });
+    try { ac.close(); } catch (e) {}
+    var sr = 16000, len = Math.max(1, Math.ceil(buf.duration * sr));
+    var off = new OAC(1, len, sr), src = off.createBufferSource();
+    src.buffer = buf; src.connect(off.destination); src.start();
+    var out = await new Promise(function (res, rej) { off.oncomplete = function (e) { res(e.renderedBuffer); }; var p = off.startRendering(); if (p && p.then) p.then(res, rej); });
+    var f = out.getChannelData(0), n = f.length, view = new DataView(new ArrayBuffer(44 + n * 2));
+    function wr(o, s) { for (var i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); }
+    wr(0, "RIFF"); view.setUint32(4, 36 + n * 2, true); wr(8, "WAVE"); wr(12, "fmt "); view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, sr, true); view.setUint32(28, sr * 2, true);
+    view.setUint16(32, 2, true); view.setUint16(34, 16, true); wr(36, "data"); view.setUint32(40, n * 2, true);
+    for (var i = 0; i < n; i++) { var s = Math.max(-1, Math.min(1, f[i])); view.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true); }
+    return new Blob([view], { type: "audio/wav" });
+  }
+  function blobToB64(b) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(",")[1]); }; r.onerror = rej; r.readAsDataURL(b); }); }
+  async function post(obj) {
+    var body = JSON.stringify(obj), headers = { "Content-Type": "text/plain;charset=utf-8" };
+    try {
+      var r = await fetch(SCRIPT_URL, { method: "POST", headers: headers, body: body, redirect: "follow" });
+      var j = await r.json(); return j && j.ok === true;
+    } catch (e) {
+      try { await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: headers, body: body }); return true; } catch (e2) { return false; }
+    }
+  }
+  function markSubmitted() {
+    var b = $("#subBtn"); if (b) { b.disabled = true; b.textContent = "Đã nộp"; }
+    var m = $("#subMsg"); if (m) m.innerHTML = '<div class="note ok">Đã nộp bài cho cô. Em làm tốt lắm! Em có thể đóng trang này.</div>';
+  }
+  function buildDetails() {
+    var d = [];
+    G.forEach(function (g) {
+      var v = S.pr["v:" + g.id] || {}, m = S.pr["m:" + g.id] || {};
+      d.push({ part: "Nhóm " + g.vi + " - tả nơi chốn", question: "2 câu tả nơi chốn", answer: v.text || "", correct: "", result: v.ok ? "✅ Có từ vựng nhóm" : "❓ Chưa đạt" });
+      d.push({ part: "Nhóm " + g.vi + " - kỷ niệm", question: "2 câu kể kỷ niệm", answer: m.text || "", correct: "", result: m.ok ? "✅ Có cụm kỷ niệm" : "❓ Chưa đạt" });
+    });
+    ALLQ.forEach(function (a) { mcRows(a[0], a[1], a[2]).forEach(function (x) { d.push(x); }); });
+    var r = S.pr.reason || {}, h = S.pr.hope || {};
+    d.push({ part: "Lý do - câu tự viết", question: "Cảm xúc và lý do", answer: r.text || "", correct: "", result: r.ok ? "✅ Có lý do" : "❓ Chưa đạt" });
+    d.push({ part: "Hy vọng - câu tự viết", question: "Một câu hy vọng", answer: h.text || "", correct: "", result: h.ok ? "✅ Có cấu trúc hy vọng" : "❓ Chưa đạt" });
+    CARDS.forEach(function (c) {
+      d.push({ part: "Speaking Part 2 - thẻ " + c.n, question: c.q, answer: OL.map(function (f) { return f.label + ": " + (S.ol[c.id + ":" + f.id] || ""); }).join(" | "), correct: "", result: "Đã ghi âm " + Math.round(RECS[c.id].dur) + " giây" });
+    });
+    return d;
+  }
+  async function submitAll() {
+    var btn = $("#subBtn"), msg = $("#subMsg");
+    if (S.submitted) return;
+    btn.disabled = true;
+    try {
+      for (var i = 0; i < CARDS.length; i++) {
+        var c = CARDS[i], R = RECS[c.id];
+        if (!R.blob) throw new Error("missing");
+        if (R.sent) continue;
+        msg.innerHTML = '<div class="note">Đang gửi bản ghi âm ' + (i + 1) + '/' + CARDS.length + '. Em đừng đóng trang nhé.</div>';
+        if (!R.wav) { try { R.wav = await toWav(R.blob); } catch (e) { R.wav = R.blob; } }
+        var type = R.wav.type || "audio/wav";
+        var ext = type === "audio/wav" ? "wav" : (/mp4/.test(type) ? "m4a" : (/ogg/.test(type) ? "ogg" : "webm"));
+        var ok = await post({ type: "audio", name: S.name.trim(), lesson: LESSON, file: "part2-" + c.id + "." + ext, label: "Speaking Part 2 - the " + c.n + " (" + c.g + ")", score: null, dur: Math.round(R.dur), target: c.q, transcript: OL.map(function (f) { return f.label + ": " + (S.ol[c.id + ":" + f.id] || ""); }).join(" | "), audio: await blobToB64(R.wav), mime: type });
+        if (!ok) throw new Error("audio");
+        R.sent = true;
+      }
+      msg.innerHTML = '<div class="note">Đang gửi bài làm...</div>';
+      var qs = quizScore();
+      var okSub = await post({ type: "submit", name: S.name.trim(), lesson: LESSON, summary: { recordings: CARDS.length, avg: null, full: null, writes: "8 câu tự viết", quiz: qs[0] + "/" + qs[1] }, details: buildDetails() });
+      if (!okSub) throw new Error("submit");
+      S.submitted = true; markSubmitted();
+      try { localStorage.removeItem(SKEY); } catch (e) {}
+    } catch (e) {
+      btn.disabled = false;
+      msg.innerHTML = '<div class="note err">Chưa gửi được (mạng yếu hoặc cô chưa mở cổng nhận bài). Em kiểm tra mạng rồi bấm <b>Nộp bài cho cô</b> lại nhé. Bài làm của em vẫn còn đó.</div>';
+    }
+  }
+
+  /* =====================================================================
+     PLAYER: steps, timeline, back / next
+     ===================================================================== */
+  var stage = $("#stage"), stepsEl = $("#steps"), tl = $("#timeline"), needMsg = $("#needMsg"), nextBtn = $("#nextBtn"), backBtn = $("#backBtn"), posLbl = $("#posLbl");
+  function firstOfStep(st) { for (var i = 0; i < SC.length; i++) if (SC[i].step === st) return i; return 0; }
+  function leave() { stopAll(); if (activeRec) activeRec.stop(); closeSheet(); }
+  function show(i) {
+    leave();
+    S.idx = i; if (i > S.max) S.max = i;
+    var sc = SC[i];
+    stage.className = "stage" + (sc.wide ? " wide" : "");
+    stage.innerHTML = ""; var el = document.createElement("section"); el.className = "scene" + (sc.plain ? " plain" : ""); stage.appendChild(el);
+    sc.render(el);
+    needMsg.textContent = "";
+    backBtn.disabled = i === 0;
+    nextBtn.style.display = i === SC.length - 1 ? "none" : "";
+    posLbl.textContent = (i + 1) + " / " + SC.length;
+    paintNav(); saveS();
+    window.scrollTo({ top: 0 });
+  }
+  function paintNav() {
+    stepsEl.innerHTML = "";
+    STEPS.forEach(function (name, st) {
+      var b = document.createElement("button"); b.type = "button";
+      var cur = SC[S.idx].step === st, reached = firstOfStep(st) <= S.max, done = reached && SC[S.idx].step > st;
+      b.className = "chip" + (cur ? " cur" : "") + (done ? " done" : "") + (!reached ? " lock" : "");
+      b.innerHTML = '<span class="n">' + (st + 1) + '</span>' + esc(name);
+      b.addEventListener("click", function () {
+        if (!reached) { needMsg.textContent = "Hãy hoàn thành phần trước để mở phần \"" + name + "\"."; return; }
+        show(firstOfStep(st));
+      });
+      stepsEl.appendChild(b);
+    });
+    tl.innerHTML = "";
+    SC.forEach(function (sc, i) {
+      var seg = document.createElement("i");
+      seg.className = (i <= S.max && i !== S.idx ? "done " : "") + (i === S.idx ? "cur " : "") + (i > 0 && SC[i - 1].step !== sc.step ? "sp" : "");
+      seg.title = sc.title;
+      if (i <= S.max && i !== S.idx) seg.addEventListener("click", function () { show(i); });
+      tl.appendChild(seg);
+    });
+  }
+  nextBtn.addEventListener("click", function () {
+    var msg = SC[S.idx].need();
+    if (msg) { needMsg.textContent = msg; return; }
+    if (S.idx < SC.length - 1) show(S.idx + 1);
+  });
+  backBtn.addEventListener("click", function () { if (S.idx > 0) show(S.idx - 1); });
+  window.addEventListener("beforeunload", function (e) { if (S.idx > 1 && !S.submitted) { e.preventDefault(); e.returnValue = ""; } });
+
+  if (S.idx >= SC.length) S.idx = 0;
+  if (S.max >= SC.length) S.max = SC.length - 1;
+  if (/[?&]debug=1/.test(location.search)) window.__L = { SC: SC, S: S, show: show, RECS: RECS };
+  show(S.idx);
+  if (resumed) toast("Đã mở lại chỗ em đang học. Nếu em đã ghi âm trước đó, hãy ghi âm lại nhé vì trình duyệt không giữ âm thanh.");
+})();
+</script>
+</body>
+</html>
