@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammar 2: so sánh – từ tính từ đến trạng từ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f2f5f9; --surface: #ffffff; --ink: #14202e; --muted: #55667a; --line: #d9e1ea;
+  --accent: #1d5fd1; --accent-ink: #ffffff; --soft: #eef3fc;
+  --bad: #b8400d; --good: #11713b; --badbg: #fbe9e1; --goodbg: #e2f4e8; --warm: #fff6dc; --warmline: #e8c96a;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1620; --surface: #162130; --ink: #e8eef6; --muted: #9db0c6; --line: #2a3a50;
+    --accent: #8ab4ff; --accent-ink: #08203f; --soft: #14263d;
+    --bad: #ff9a66; --good: #6fe0a0; --badbg: #3a2418; --goodbg: #14301f; --warm: #33290f; --warmline: #6b5a14; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.65; padding-bottom: 130px; }
+button, select, input { font: inherit; color: inherit; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+header.top { padding: 18px 0 8px; }
+.kicker-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.kicker { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: .02em; }
+.voice { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.voice select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 10px; min-height: 40px; max-width: 220px; font-size: 14px; }
+h1 { font-family: var(--font-display); font-size: clamp(24px, 5vw, 34px); line-height: 1.15; margin: 6px 0 12px; text-wrap: balance; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13.5px; display: inline-flex; gap: 6px; align-items: center; min-height: 34px; cursor: pointer; }
+.chip .n { display: inline-grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: var(--line); font-size: 11.5px; font-weight: 600; }
+.chip.cur { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.chip.cur .n { background: var(--accent); color: var(--accent-ink); }
+.chip.done .n { background: var(--good); color: #fff; }
+.chip.lock { opacity: .55; cursor: not-allowed; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 18px; min-height: 46px; font-weight: 500; cursor: pointer; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; margin: 14px 0; }
+.card h2 { font-family: var(--font-display); font-size: 24px; line-height: 1.25; margin: 4px 0 8px; }
+.card h3 { font-size: 18px; margin: 18px 0 6px; color: var(--accent); }
+.muted { color: var(--muted); }
+.badge { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: .03em; padding: 3px 10px; border-radius: 999px; background: var(--soft); color: var(--accent); border: 1px solid var(--line); }
+.teacher { display: flex; gap: 12px; align-items: flex-start; background: var(--warm); border: 1px solid var(--warmline); border-radius: 16px; padding: 12px 14px; margin: 12px 0; }
+.teacher .av { flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 600; font-size: 14px; }
+.teacher .tx { font-size: 16.5px; }
+.formula { background: var(--soft); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; padding: 10px 14px; margin: 10px 0; font-weight: 600; font-size: 18px; }
+.ex { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+.ex .t { font-size: 18px; }
+.ex b { color: var(--accent); }
+.spk { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); font-size: 17px; cursor: pointer; flex: none; }
+.spk.big { width: 58px; height: 58px; font-size: 24px; background: var(--accent); color: var(--accent-ink); }
+table.t { width: 100%; border-collapse: collapse; font-size: 16px; margin: 8px 0; }
+table.t th, table.t td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+table.t th { background: var(--soft); }
+table.m td:nth-child(1) { color: var(--bad); }
+table.m td:nth-child(2) { color: var(--good); font-weight: 600; }
+.opts { display: grid; gap: 10px; margin-top: 14px; }
+.opts.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 520px) { .opts.two { grid-template-columns: 1fr; } }
+.opt { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 12px 16px; min-height: 54px; text-align: left; cursor: pointer; font-size: 18px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--good); background: var(--goodbg); }
+.opt.wrong { border-color: var(--bad); background: var(--badbg); opacity: .8; }
+.opt:disabled { cursor: default; }
+.q { font-size: 20px; line-height: 1.55; margin: 6px 0 4px; }
+.q .sentence { font-size: 20px; }
+.fillrow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+input.ans { flex: 1; min-width: 200px; border: 2px solid var(--line); border-radius: 12px; padding: 10px 14px; min-height: 50px; font-size: 18px; background: var(--surface); }
+input.ans:disabled { opacity: .8; }
+input.ans.right { border-color: var(--good); background: var(--goodbg); }
+.fb { margin-top: 14px; padding: 12px 16px; border-radius: 12px; font-size: 16.5px; }
+.fb.ok { background: var(--goodbg); border: 1px solid var(--good); }
+.fb.no { background: var(--badbg); border: 1px solid var(--bad); }
+.fb.info { background: var(--soft); border: 1px solid var(--line); }
+.tick { display: flex; gap: 10px; align-items: center; margin-top: 16px; font-size: 16px; cursor: pointer; }
+.tick input { width: 22px; height: 22px; accent-color: var(--accent); }
+input.name { width: 100%; max-width: 380px; border: 2px solid var(--line); border-radius: 12px; padding: 10px 14px; min-height: 48px; background: var(--surface); }
+.dock { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding: 10px 0 14px; }
+.dock .wrap { display: grid; gap: 8px; }
+.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); transition: width .25s; }
+.dockrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.dockrow .lbl { font-size: 14px; color: var(--muted); text-align: center; flex: 1; }
+.note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--soft); border: 1px solid var(--line); }
+.note.ok { background: var(--goodbg); border-color: var(--good); }
+.note.err { background: var(--badbg); border-color: var(--bad); }
+.stage { min-height: 300px; }
+table.res { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 10px; }
+table.res td, table.res th { border-top: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="kicker-row">
+      <div class="kicker">Ôn thi HK1 · Ngữ pháp lớp 8 · Link 2/4</div>
+      <label class="voice">Giọng đọc <select id="voiceSel" aria-label="Chọn giọng đọc"></select></label>
+    </div>
+    <h1>Grammar 2: so sánh – từ tính từ đến trạng từ</h1>
+    <div class="steps" id="steps"></div>
+  </header>
+  <main class="stage" id="stage"></main>
+</div>
+<div class="dock">
+  <div class="wrap">
+    <div class="bar"><i id="barfill" style="width:0"></i></div>
+    <div class="dockrow">
+      <button class="btn" id="back">← Quay lại</button>
+      <div class="lbl" id="lbl"></div>
+      <button class="btn primary" id="next">Tiếp tục →</button>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnf8X3_Xfk9F_8HQtBwSFU_s28sRjxKb0aFaHCA4ybmMJvgaztBAbdvaFzITdbVXBt/exec";
+  var CFG = {"id": "g2-comparison", "lesson": "HK1 Grammar 2 - so sanh trang tu", "kicker": "Ôn thi HK1 · Ngữ pháp lớp 8 · Link 2/4", "hello": "Chào em, hôm nay mình học so sánh của trạng từ", "intro": "<p>Muốn so sánh trạng từ giỏi, em phải nhớ lại so sánh tính từ ở lớp 6–7. Vì vậy bài này bắt đầu bằng vài câu ôn nhẹ nhàng, rồi cô giảng bài mới, em luyện, tìm lỗi và làm thử thách.</p><p>Em cứ làm chậm, cô sẽ giải thích sau mỗi câu.</p>", "steps": ["Mở đầu", "Ôn lại", "Bài mới", "Luyện cùng cô", "Bẫy cần tránh", "Thử thách", "Nộp bài"], "scenes": [{"k": "intro", "step": 0}, {"k": "teach", "step": 1, "title": "Khởi động: so sánh tính từ ở lớp 6–7", "html": "<div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Hôm nay chúng ta học so sánh của <b>trạng từ</b>, một chủ điểm rất hay vào đề. Nhưng muốn học trạng từ, em phải nắm vững tính từ trước. Cô hỏi em 5 câu ôn lại nhé.</div></div><p>Cô hỏi về so sánh hơn của tính từ, tính từ bất quy tắc, và sự khác nhau giữa tính từ và trạng từ.</p>", "badge": "Ôn lại", "tickText": "Em đã sẵn sàng"}, {"k": "q", "step": 1, "stage": "Ôn lại", "it": {"t": "mc", "p": "So sánh hơn của <b>tall</b>:", "o": ["taller", "more tall", "tallest", "tallier"], "a": 0, "x": "Tính từ ngắn thêm <b>-er</b>: tall → <b>taller</b>.", "hint": ""}, "lead": ""}, {"k": "q", "step": 1, "stage": "Ôn lại", "it": {"t": "mc", "p": "So sánh hơn của <b>beautiful</b>:", "o": ["beautifuler", "more beautiful", "most beautiful", "beautifulest"], "a": 1, "x": "Tính từ dài (từ 2 âm tiết trở lên, trừ vài từ) dùng <b>more</b>: <b>more beautiful</b>.", "hint": ""}, "lead": ""}, {"k": "q", "step": 1, "stage": "Ôn lại", "it": {"t": "fill", "p": "good → ____ (so sánh hơn)", "acc": ["better"], "x": "<b>good → better</b> là dạng bất quy tắc, em phải học thuộc. Tương tự bad → worse.", "hint": "Từ bất quy tắc, không thêm er."}, "lead": ""}, {"k": "q", "step": 1, "stage": "Ôn lại", "it": {"t": "mc", "p": "Trong câu <i>He runs slowly</i>, đâu là <b>trạng từ</b>?", "o": ["He", "runs", "slowly", "He runs"], "a": 2, "x": "<b>slowly</b> bổ nghĩa cho động từ runs và trả lời câu hỏi “như thế nào?”. Đây là trạng từ.", "hint": ""}, "lead": ""}, {"k": "q", "step": 1, "stage": "Ôn lại", "it": {"t": "mc", "p": "She is a ____ singer.", "o": ["good", "well"], "a": 0, "x": "Trước danh từ <b>singer</b> ta dùng tính từ <b>good</b>. Còn <b>well</b> là trạng từ: <i>She sings well.</i>", "hint": ""}, "lead": ""}, {"k": "teach", "step": 2, "title": "Cô giảng: trạng từ khác tính từ ở đâu?", "html": "<div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Em nhớ nhé: <b>tính từ</b> đứng cạnh danh từ (a <b>good</b> singer), còn <b>trạng từ</b> đứng cạnh động từ (sings <b>well</b>). Nhiều bạn nhầm hai từ này ngay từ đầu nên so sánh sai luôn.</div></div><table class=\"t \"><tr><th>Cách tạo trạng từ</th><th>Ví dụ</th></tr><tr><td>tính từ + <b>-ly</b></td><td>slow → <b>slowly</b>, careful → <b>carefully</b>, quick → <b>quickly</b></td></tr><tr><td>tận cùng -y: đổi y thành i + ly</td><td>happy → <b>happily</b></td></tr><tr><td>giữ nguyên dạng</td><td>fast, hard, early, late</td></tr><tr><td>bất quy tắc</td><td>good → <b>well</b></td></tr></table><div class=\"ex\"><span class=\"t\">She dances <b>beautifully</b>.</span> <button class=\"spk\" data-say=\"She dances beautifully.\" aria-label=\"Nghe\">🔊</button></div><div class=\"ex\"><span class=\"t\">He runs <b>fast</b>.</span> <button class=\"spk\" data-say=\"He runs fast.\" aria-label=\"Nghe\">🔊</button></div><div class=\"ex\"><span class=\"t\">They worked <b>hard</b>.</span> <button class=\"spk\" data-say=\"They worked hard.\" aria-label=\"Nghe\">🔊</button></div><div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Lưu ý: <b>hard</b> là trạng từ nghĩa là “chăm chỉ”, còn <b>hardly</b> nghĩa là “hầu như không”, hai từ này khác nghĩa hoàn toàn đấy em.</div></div>", "badge": "", "tickText": "Em đã đọc và hiểu"}, {"k": "teach", "step": 2, "title": "Cô giảng: so sánh hơn của trạng từ", "html": "<div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Em đã biết so sánh tính từ rồi, nên phần này gần như giống hệt, chỉ khác ở chỗ chọn <b>er</b> hay <b>more</b>. Cô chia thành hai nhóm để em dễ nhớ.</div></div><table class=\"t \"><tr><th>Loại trạng từ</th><th>Công thức</th><th>Ví dụ</th></tr><tr><td>Ngắn (fast, hard, early, late)</td><td>adv + <b>er</b> + than</td><td>Nam runs <b>faster</b> than Hoa.<br>Lan gets up <b>earlier</b> than Minh.</td></tr><tr><td>Dài, đuôi -ly (slowly, carefully)</td><td><b>more</b> + adv + than</td><td>She speaks <b>more slowly</b> than me.<br>He drives <b>more carefully</b> than his dad.</td></tr><tr><td>Bất quy tắc</td><td>well → <b>better</b>; badly → <b>worse</b>; far → farther / further</td><td>He sings <b>better</b> than I do.</td></tr></table><div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Mẹo nhỏ: <b>early</b> tận cùng bằng y, nên đổi thành i rồi thêm er: <b>earlier</b>, giống happy → happier ở lớp 7.</div></div>", "badge": "", "tickText": "Em đã đọc và hiểu"}, {"k": "teach", "step": 2, "title": "Cô giảng: so sánh bằng và không bằng", "html": "<div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Hai dạng này rất hay bị hỏi trong bài viết lại câu. Em cần nhớ: giữa <b>as ... as</b> luôn là dạng gốc của trạng từ hoặc tính từ, không đổi gì cả.</div></div><div class=\"formula\">as + <b>adv / adj</b> + as</div><div class=\"formula\">not as + <b>adv / adj</b> + as</div><div class=\"ex\"><span class=\"t\">She sings <b>as beautifully as</b> her sister.</span> <button class=\"spk\" data-say=\"She sings as beautifully as her sister.\" aria-label=\"Nghe\">🔊</button></div><div class=\"ex\"><span class=\"t\">Hoa doesn't run <b>as fast as</b> Nam.</span> <button class=\"spk\" data-say=\"Hoa doesn't run as fast as Nam.\" aria-label=\"Nghe\">🔊</button></div><h3>Chuyển câu: hai cách nói cùng một ý</h3><table class=\"t \"><tr><th>So sánh hơn</th><th>Không bằng</th></tr><tr><td>Nam runs <b>faster than</b> Hoa.</td><td>Hoa doesn't run <b>as fast as</b> Nam.</td></tr><tr><td>My brother plays better than I do.</td><td>I don't play <b>as well as</b> my brother.</td></tr></table><div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Để chuyển câu, em đổi chỗ hai người so sánh, rồi dùng <b>not as ... as</b>. Em đọc lại câu một lần để chắc rằng nghĩa vẫn giữ nguyên nhé.</div></div>", "badge": "", "tickText": "Em đã chép lại hai cách chuyển câu"}, {"k": "q", "step": 3, "stage": "Luyện cùng cô", "it": {"t": "mc", "p": "Nam runs ____ than Hoa.", "o": ["faster", "more fast", "fastest", "more faster"], "a": 0, "x": "<b>fast</b> là trạng từ ngắn nên thêm <b>-er</b>: faster. Không dùng more fast.", "hint": ""}, "lead": ""}, {"k": "q", "step": 3, "stage": "Luyện cùng cô", "it": {"t": "fill", "p": "She speaks English ____ (fluently) than her brother.", "acc": ["more fluently"], "x": "<b>fluently</b> là trạng từ dài đuôi -ly nên dùng <b>more fluently</b>.", "hint": "Trạng từ đuôi -ly dùng more."}, "lead": ""}, {"k": "q", "step": 3, "stage": "Luyện cùng cô", "it": {"t": "mc", "p": "My mother cooks ____ than my father.", "o": ["gooder", "more well", "better", "more good"], "a": 2, "x": "<b>well → better</b> là dạng bất quy tắc. Không bao giờ nói more good hay gooder.", "hint": ""}, "lead": ""}, {"k": "q", "step": 3, "stage": "Luyện cùng cô", "it": {"t": "fill", "p": "Tom drives ____ (carefully) than his sister.", "acc": ["more carefully"], "x": "<b>more carefully</b>. Trạng từ dài thì dùng more.", "hint": ""}, "lead": ""}, {"k": "q", "step": 3, "stage": "Luyện cùng cô", "it": {"t": "mc", "p": "She doesn't sing as ____ as her sister.", "o": ["beautiful", "beautifully", "more beautifully", "beautifuler"], "a": 1, "x": "Sau động từ <b>sing</b> cần trạng từ <b>beautifully</b>. Giữa as ... as giữ nguyên dạng gốc, không thêm more.", "hint": ""}, "lead": ""}, {"k": "q", "step": 3, "stage": "Luyện cùng cô", "it": {"t": "fill", "p": "Lan gets up ____ (early) than Minh.", "acc": ["earlier"], "x": "<b>early → earlier</b>: đổi y thành i rồi thêm er.", "hint": ""}, "lead": ""}, {"k": "teach", "step": 4, "title": "Cô chỉ ra những lỗi các em hay mắc", "html": "<div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Ở phần so sánh, cô thấy các bạn hay mắc sáu lỗi sau. Em đọc cột bên trái và tự kiểm tra xem mình có từng viết như vậy không nhé.</div></div><table class=\"t m\"><tr><th>Em hay viết (sai)</th><th>Cách đúng</th><th>Vì sao</th></tr><tr><td>He runs <u>more fast</u> than me.</td><td>He runs <u>faster</u> than me.</td><td>fast là trạng từ ngắn, dùng -er.</td></tr><tr><td>She dances <u>more good</u>.</td><td>She dances <u>better</u>.</td><td>good/well → better, bất quy tắc.</td></tr><tr><td>He speaks <u>more slow</u>.</td><td>He speaks <u>more slowly</u>.</td><td>Sau more phải là trạng từ có -ly.</td></tr><tr><td>as <u>more quickly</u> as</td><td>as <u>quickly</u> as</td><td>Giữa as ... as không thêm more.</td></tr><tr><td>He speaks English <u>good</u>.</td><td>He speaks English <u>well</u>.</td><td>Bổ nghĩa cho động từ cần trạng từ.</td></tr><tr><td>She is <u>more tall</u>.</td><td>She is <u>taller</u>.</td><td>Tính từ ngắn dùng -er.</td></tr></table><div class=\"teacher\"><div class=\"av\">Cô</div><div class=\"tx\">Bây giờ em tìm lỗi trong ba câu nhé, cô tin em làm được.</div></div>", "badge": "", "tickText": "Em đã đọc kỹ sáu lỗi"}, {"k": "q", "step": 4, "stage": "Bẫy cần tránh", "it": {"t": "mc", "p": "<span class=\"sentence\">She sings more good than her sister.</span>", "o": ["She", "sings", "more good", "than her sister"], "a": 2, "x": "Sai ở <b>more good</b>. Phải là <b>better</b>.", "hint": "Đọc to cả câu, chỗ nào nghe 'chưa ổn' thì thử sửa.", "tag": "Tìm lỗi sai"}, "lead": ""}, {"k": "q", "step": 4, "stage": "Bẫy cần tránh", "it": {"t": "mc", "p": "<span class=\"sentence\">He walks more slow than me.</span>", "o": ["He", "walks", "more slow", "than me"], "a": 2, "x": "Sai ở <b>more slow</b>. Sau more cần trạng từ: <b>more slowly</b>.", "hint": "Đọc to cả câu, chỗ nào nghe 'chưa ổn' thì thử sửa.", "tag": "Tìm lỗi sai"}, "lead": ""}, {"k": "q", "step": 4, "stage": "Bẫy cần tránh", "it": {"t": "mc", "p": "<span class=\"sentence\">Hoa doesn't swim as more fast as Mai.</span>", "o": ["doesn't", "swim", "as more fast", "as Mai"], "a": 2, "x": "Sai ở <b>as more fast</b>. Giữa as ... as chỉ dùng dạng gốc: <b>as fast as</b>.", "hint": "Đọc to cả câu, chỗ nào nghe 'chưa ổn' thì thử sửa.", "tag": "Tìm lỗi sai"}, "lead": ""}, {"k": "q", "step": 5, "stage": "Thử thách", "it": {"t": "fill", "p": "Nam runs faster than Hoa. = Hoa doesn't run ____ Nam.", "acc": ["as fast as"], "x": "<b>as fast as</b>. Đổi chỗ hai người và dùng not as ... as.", "hint": "Ba từ: as + fast + as.", "tag": "Viết lại câu"}, "lead": ""}, {"k": "q", "step": 5, "stage": "Thử thách", "it": {"t": "fill", "p": "My brother plays the guitar better than I do. = I don't play the guitar ____ my brother.", "acc": ["as well as"], "x": "<b>as well as</b>. better là so sánh hơn của well, nên chuyển về as well as.", "hint": "Ba từ, dạng gốc của better.", "tag": "Viết lại câu"}, "lead": ""}, {"k": "q", "step": 5, "stage": "Thử thách", "it": {"t": "fill", "p": "This test was ____ (easy) than the last one.", "acc": ["easier"], "x": "<b>easy → easier</b>. Em đã học ở lớp 7: đổi y thành i rồi thêm er.", "hint": ""}, "lead": ""}, {"k": "q", "step": 5, "stage": "Thử thách", "it": {"t": "fill", "p": "They arrived ____ (late) than we expected.", "acc": ["later"], "x": "<b>late → later</b>. Trạng từ ngắn thêm -er (late đã có e nên chỉ thêm r).", "hint": ""}, "lead": ""}, {"k": "q", "step": 5, "stage": "Thử thách", "it": {"t": "fill", "p": "He explains the lesson ____ (clearly) than the other teacher.", "acc": ["more clearly"], "x": "<b>more clearly</b>. Đuôi -ly thì dùng more.", "hint": ""}, "lead": ""}, {"k": "q", "step": 5, "stage": "Thử thách", "it": {"t": "mc", "p": "The countryside is ____ than the city.", "o": ["peaceful", "more peaceful", "peacefuler", "more peacefully"], "a": 1, "x": "Sau <b>is</b> cần tính từ, và <b>peaceful</b> là tính từ dài nên dùng <b>more peaceful</b>.", "hint": ""}, "lead": ""}, {"k": "end", "step": 6}]};
+  var LESSON = CFG.lesson, KEY = "gram-" + CFG.id;
+  var $ = function (s) { return document.querySelector(s); };
+  function strip(h) { var d = document.createElement("div"); d.innerHTML = h; return d.textContent; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function norm(s) { return String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/[^a-z0-9'\s-]/g, " ").replace(/\s+/g, " ").trim(); }
+
+  var S = { i: 0, name: "", tick: {}, res: {}, submitted: false };
+  try { var sv = JSON.parse(localStorage.getItem(KEY) || "null"); if (sv && typeof sv === "object") { S.name = sv.name || ""; S.tick = sv.tick || {}; S.res = sv.res || {}; S.submitted = !!sv.submitted; S.i = sv.i || 0; } } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+  /* speech */
+  var synth = window.speechSynthesis || null, voices = [], voiceName = "";
+  function loadVoices() {
+    if (!synth) return;
+    voices = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
+    var sel = $("#voiceSel"); sel.innerHTML = "";
+    if (!voices.length) { sel.innerHTML = "<option>Máy chưa có giọng đọc</option>"; return; }
+    voices.sort(function (a, b) { return (/en-GB/i.test(b.lang) ? 1 : 0) - (/en-GB/i.test(a.lang) ? 1 : 0); });
+    voices.forEach(function (v) { var o = document.createElement("option"); o.value = v.name; o.textContent = v.name + " (" + v.lang + ")"; sel.appendChild(o); });
+    if (!voiceName) voiceName = voices[0].name;
+    sel.value = voiceName;
+  }
+  if (synth) { loadVoices(); synth.onvoiceschanged = loadVoices; }
+  $("#voiceSel").addEventListener("change", function (e) { voiceName = e.target.value; });
+  function say(t) {
+    if (!synth) { alert("Trình duyệt này chưa hỗ trợ đọc mẫu. Em thử mở bằng Chrome hoặc Safari."); return; }
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; u.rate = 0.9;
+    var v = voices.filter(function (x) { return x.name === voiceName; })[0]; if (v) { u.voice = v; u.lang = v.lang; }
+    synth.speak(u);
+  }
+  function bindSay(root) { Array.prototype.forEach.call(root.querySelectorAll("[data-say]"), function (b) { b.onclick = function (ev) { ev.stopPropagation(); say(b.getAttribute("data-say")); }; }); }
+
+  /* scenes */
+  var SC = CFG.scenes.map(function (s, n) { s.id = "s" + n; return s; });
+  var NQ = SC.filter(function (s) { return s.k === "q"; }).length;
+  var qn = 0; SC.forEach(function (s) { if (s.k === "q") s.n = ++qn; });
+  if (S.i >= SC.length || S.i < 0) S.i = 0;
+
+  function solved(id) { var r = S.res[id]; return !!(r && r.done); }
+  function sceneOk(s) {
+    if (s.k === "intro") return S.name.trim().length >= 2;
+    if (s.k === "teach") return !!S.tick[s.id];
+    if (s.k === "q") return solved(s.id);
+    return false;
+  }
+  function maxOpen() { var m = 0; for (var j = 0; j < SC.length; j++) { m = j; if (!sceneOk(SC[j])) break; } return m; }
+  function stepReach(st) { for (var j = 0; j < SC.length; j++) if (SC[j].step === st) return j <= maxOpen(); return false; }
+  function renderSteps() {
+    var cur = SC[S.i].step, h = "";
+    CFG.steps.forEach(function (nm, st) {
+      var cls = "chip" + (st === cur ? " cur" : "") + (st < cur ? " done" : "") + (stepReach(st) ? "" : " lock");
+      h += '<button class="' + cls + '" data-st="' + st + '"><span class="n">' + (st < cur ? "✓" : st + 1) + "</span>" + nm + "</button>";
+    });
+    $("#steps").innerHTML = h;
+    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (b) {
+      b.onclick = function () {
+        var st = +b.getAttribute("data-st"); if (!stepReach(st)) return;
+        for (var j = 0; j < SC.length; j++) if (SC[j].step === st) { S.i = j; break; }
+        save(); render();
+      };
+    });
+  }
+
+  function sceneIntro() {
+    return '<div class="card"><span class="badge">' + CFG.kicker + '</span><h2>' + CFG.hello + '</h2>' + CFG.intro +
+      '<label for="nm"><b>Em tên là gì?</b></label><br><input class="name" id="nm" autocomplete="name" placeholder="Họ và tên" value="' + esc(S.name) + '"></div>';
+  }
+  function sceneTeach(s) {
+    return '<div class="card">' + (s.badge ? '<span class="badge">' + s.badge + "</span>" : "") + "<h2>" + s.title + "</h2>" + s.html +
+      '<label class="tick"><input type="checkbox" id="tk"' + (S.tick[s.id] ? " checked" : "") + "> " + (s.tickText || "Em đã đọc và hiểu") + "</label></div>";
+  }
+  function qScene(s) {
+    var it = s.it, r = S.res[s.id] || { tries: 0, wrong: [] }, done = !!r.done, h = "";
+    var tags = { mc: "Chọn đáp án", fill: "Điền từ", err: "Tìm lỗi sai", rw: "Viết lại câu" };
+    h += '<div class="card"><div class="muted">Câu ' + s.n + "/" + NQ + " · <b>" + s.stage + "</b> · " + (it.tag || tags[it.t]) + "</div>";
+    if (s.lead) h += '<div class="teacher"><div class="av">Cô</div><div class="tx">' + s.lead + "</div></div>";
+    h += '<div class="q">' + it.p + (it.say ? ' <button class="spk" data-say="' + esc(it.say) + '" aria-label="Nghe">🔊</button>' : "") + "</div>";
+    if (it.t === "mc") {
+      h += '<div class="opts' + (it.o.length === 2 ? " two" : "") + '">';
+      it.o.forEach(function (o, j) {
+        var c = "opt"; if (r.wrong && r.wrong.indexOf(j) > -1) c += " wrong"; if (done && j === it.a) c += " right";
+        var dis = done || (r.wrong && r.wrong.indexOf(j) > -1);
+        h += '<button class="' + c + '" data-o="' + j + '"' + (dis ? " disabled" : "") + "><span>" + o + "</span></button>";
+      });
+      h += "</div>";
+    } else {
+      var val = done ? (r.shown ? "" : r.ans) : "";
+      h += '<div class="fillrow"><input class="ans' + (done && !r.shown ? " right" : "") + '" id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Gõ đáp án của em" value="' + esc(val) + '"' + (done ? " disabled" : "") + '><button class="btn primary" id="chk"' + (done ? " disabled" : "") + ">Kiểm tra</button></div>";
+    }
+    if (done) h += '<div class="fb ' + (r.shown ? "info" : "ok") + '">' + (r.shown ? "<b>Đáp án:</b> " + (it.t === "mc" ? "" : "<b>" + it.acc[0] + "</b>. ") : "<b>Đúng rồi!</b> ") + it.x + "</div>";
+    else if (r.tries > 0) h += '<div class="fb no"><b>Chưa đúng rồi, em thử lại nhé.</b> ' + (it.hint || "Đọc kỹ lại đề và nhớ phần cô vừa giảng.") + "</div>";
+    return h + "</div>";
+  }
+  function maxTries(it) { return it.t === "mc" ? 2 : 3; }
+  function answerMC(s, val) {
+    var it = s.it, r = S.res[s.id] || (S.res[s.id] = { tries: 0, first: null, done: false, shown: false, wrong: [], ans: "" });
+    if (r.done) return;
+    var ok = (val === it.a); r.tries++; if (r.first === null) r.first = ok;
+    r.ans = strip(it.o[val]);
+    if (ok) r.done = true; else { r.wrong.push(val); if (r.tries >= maxTries(it)) { r.done = true; r.shown = true; } }
+    save(); render();
+  }
+  function answerFill(s, text) {
+    var it = s.it, r = S.res[s.id] || (S.res[s.id] = { tries: 0, first: null, done: false, shown: false, wrong: [], ans: "" });
+    if (r.done || !text.trim()) return;
+    var ok = it.acc.some(function (a) { return norm(a) === norm(text); });
+    r.tries++; if (r.first === null) r.first = ok; r.ans = text.trim();
+    if (ok) r.done = true; else { r.wrong.push(text); if (r.tries >= maxTries(it)) { r.done = true; r.shown = true; } }
+    save(); render();
+    if (!r.done) { var a = $("#ans"); if (a) a.focus(); }
+  }
+  function stageStats() {
+    var by = {}, order = [];
+    SC.forEach(function (s) { if (s.k !== "q") return; if (!by[s.stage]) { by[s.stage] = { ok: 0, total: 0 }; order.push(s.stage); } by[s.stage].total++; var r = S.res[s.id]; if (r && r.first && !r.shown) by[s.stage].ok++; });
+    return { by: by, order: order };
+  }
+  function scoreInfo() { var st = stageStats(), ok = 0, t = 0; st.order.forEach(function (k) { ok += st.by[k].ok; t += st.by[k].total; }); return { ok: ok, total: t }; }
+  function sceneEnd() {
+    var st = stageStats(), sc = scoreInfo(), h = '<div class="card"><h2>Em đã đi hết bài học rồi!</h2>';
+    h += "<p>Em làm đúng ngay lần đầu <b>" + sc.ok + "/" + sc.total + "</b> câu.</p><table class=\"res\"><tr><th>Phần</th><th>Đúng lần đầu</th></tr>";
+    st.order.forEach(function (k) { h += "<tr><td>" + k + "</td><td>" + st.by[k].ok + "/" + st.by[k].total + "</td></tr>"; });
+    h += "</table>";
+    var pct = sc.total ? sc.ok / sc.total : 0;
+    h += '<div class="teacher"><div class="av">Cô</div><div class="tx">' + (pct >= 0.85 ? "Em làm rất tốt! Kiến thức của em đã vững. Cô tự hào về em." : pct >= 0.6 ? "Em đã nắm được phần lớn rồi. Em xem lại những câu bên dưới, hôm sau làm lại một lần nữa là chắc hẳn nhé." : "Không sao đâu em, sai là cách học nhanh nhất. Em đọc lại phần Bài mới và Bẫy cần tránh, rồi làm lại, cô tin em sẽ tiến bộ.") + "</div></div>";
+    var miss = SC.filter(function (s) { if (s.k !== "q") return false; var r = S.res[s.id]; return !(r && r.first); });
+    if (miss.length) { h += "<b>Những câu cần ôn lại:</b><table class=\"res\">"; miss.forEach(function (s) { h += "<tr><td>Câu " + s.n + "</td><td>" + strip(s.it.p).slice(0, 90) + "<br>" + s.it.x + "</td></tr>"; }); h += "</table>"; }
+    h += '<div style="margin-top:16px"><button class="btn primary" id="subBtn"' + (S.submitted ? " disabled" : "") + ">" + (S.submitted ? "Đã nộp" : "Nộp bài cho cô") + '</button></div><div id="subMsg">' + (S.submitted ? '<div class="note ok">Đã nộp bài cho cô. Em có thể đóng trang này.</div>' : "") + "</div></div>";
+    return h;
+  }
+
+  function render() {
+    var s = SC[S.i], st = $("#stage");
+    st.innerHTML = s.k === "intro" ? sceneIntro() : s.k === "teach" ? sceneTeach(s) : s.k === "q" ? qScene(s) : sceneEnd();
+    bindSay(st);
+    if (s.k === "intro") $("#nm").oninput = function (e) { S.name = e.target.value; save(); upd(); };
+    if (s.k === "teach") $("#tk").onchange = function (e) { S.tick[s.id] = e.target.checked; save(); upd(); };
+    if (s.k === "q") {
+      if (s.it.t === "mc") Array.prototype.forEach.call(st.querySelectorAll("[data-o]"), function (b) { b.onclick = function () { answerMC(s, +b.getAttribute("data-o")); }; });
+      else { var a = $("#ans"), c = $("#chk"); c.onclick = function () { answerFill(s, a.value); }; a.onkeydown = function (e) { if (e.key === "Enter") answerFill(s, a.value); }; }
+    }
+    if (s.k === "end") { var b = $("#subBtn"); if (b) b.onclick = submitAll; }
+    renderSteps(); upd(); window.scrollTo(0, 0);
+  }
+  function upd() {
+    var s = SC[S.i];
+    $("#barfill").style.width = Math.round((S.i / (SC.length - 1)) * 100) + "%";
+    $("#lbl").textContent = (S.i + 1) + " / " + SC.length;
+    $("#back").disabled = S.i === 0;
+    var nx = $("#next"); nx.style.visibility = s.k === "end" ? "hidden" : "visible"; nx.disabled = !sceneOk(s);
+    renderSteps();
+  }
+  $("#back").onclick = function () { if (S.i > 0) { S.i--; save(); render(); } };
+  $("#next").onclick = function () { if (sceneOk(SC[S.i]) && S.i < SC.length - 1) { S.i++; save(); render(); } };
+
+  async function post(obj) {
+    var body = JSON.stringify(obj), headers = { "Content-Type": "text/plain;charset=utf-8" };
+    try { var r = await fetch(SCRIPT_URL, { method: "POST", headers: headers, body: body, redirect: "follow" }); var j = await r.json(); return j && j.ok === true; }
+    catch (e) { try { await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: headers, body: body }); return true; } catch (e2) { return false; } }
+  }
+  async function submitAll() {
+    var btn = $("#subBtn"), msg = $("#subMsg"); if (S.submitted) return;
+    btn.disabled = true; msg.innerHTML = '<div class="note">Đang gửi bài. Em đừng đóng trang nhé.</div>';
+    var details = [], sc = scoreInfo();
+    SC.forEach(function (s) {
+      if (s.k !== "q") return;
+      var r = S.res[s.id] || {}, it = s.it, correct = it.t === "mc" ? strip(it.o[it.a]) : it.acc[0];
+      details.push({ part: s.stage, question: strip(it.p), answer: r.ans || "", correct: correct, result: (r.first && !r.shown ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (r.tries > 1 ? " (" + r.tries + " lượt thử)" : "") + (r.shown ? ", đã xem đáp án" : "") });
+    });
+    var ok = await post({ type: "submit", name: S.name.trim(), lesson: LESSON, summary: { recordings: 0, avg: null, full: null, writes: "Grammar", quiz: sc.ok + "/" + sc.total }, details: details });
+    if (!ok) { msg.innerHTML = '<div class="note err">Chưa gửi được. Em kiểm tra mạng rồi bấm lại nhé.</div>'; btn.disabled = false; return; }
+    S.submitted = true; save(); btn.textContent = "Đã nộp";
+    msg.innerHTML = '<div class="note ok">Đã nộp bài cho cô. Em làm tốt lắm! Em có thể đóng trang này.</div>';
+  }
+  render();
+})();
+</script>
+</body>
+</html>
