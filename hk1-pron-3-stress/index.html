@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pronunciation 3: trọng âm (word stress)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f2f5f9; --surface: #ffffff; --ink: #14202e; --muted: #55667a; --line: #d9e1ea;
+  --accent: #6b3fc4; --accent-ink: #ffffff; --soft: #f4effb;
+  --bad: #b8400d; --good: #11713b; --badbg: #fbe9e1; --goodbg: #e2f4e8;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1620; --surface: #162130; --ink: #e8eef6; --muted: #9db0c6; --line: #2a3a50;
+    --accent: #b79cff; --accent-ink: #1c0f3d; --soft: #241a3a;
+    --bad: #ff9a66; --good: #6fe0a0; --badbg: #3a2418; --goodbg: #14301f; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; padding-bottom: 130px; }
+button, select, input { font: inherit; color: inherit; }
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+header.top { padding: 18px 0 8px; }
+.kicker-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.kicker { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: .02em; }
+.voice { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.voice select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 10px; min-height: 40px; max-width: 230px; font-size: 14px; }
+h1 { font-family: var(--font-display); font-size: clamp(24px, 5vw, 36px); line-height: 1.15; margin: 6px 0 12px; text-wrap: balance; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; font-size: 14px; display: inline-flex; gap: 6px; align-items: center; min-height: 36px; cursor: pointer; }
+.chip .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--line); font-size: 12px; font-weight: 600; }
+.chip.cur { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.chip.cur .n { background: var(--accent); color: var(--accent-ink); }
+.chip.done .n { background: var(--good); color: #fff; }
+.chip.lock { opacity: .55; cursor: not-allowed; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 18px; min-height: 46px; font-weight: 500; cursor: pointer; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.sm { min-height: 38px; padding: 6px 12px; font-size: 15px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; margin: 14px 0; }
+.card h2 { font-family: var(--font-display); font-size: 24px; margin: 0 0 6px; }
+.muted { color: var(--muted); }
+.ipa-big { font-size: 28px; font-weight: 600; color: var(--accent); }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+.col { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--soft); }
+.col h3 { margin: 0 0 4px; font-size: 20px; color: var(--accent); }
+.col .how { font-size: 14.5px; color: var(--muted); margin-bottom: 8px; }
+.w { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px dashed var(--line); }
+.w:first-of-type { border-top: 0; }
+.w b { min-width: 86px; }
+.w .ipa { color: var(--muted); font-size: 15px; }
+.w .vi { margin-left: auto; font-size: 14px; color: var(--muted); text-align: right; }
+.spk { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); font-size: 18px; cursor: pointer; flex: none; }
+.spk.big { width: 60px; height: 60px; font-size: 26px; background: var(--accent); color: var(--accent-ink); }
+.tip { border-left: 4px solid var(--accent); background: var(--soft); padding: 10px 14px; border-radius: 0 12px 12px 0; margin: 12px 0; font-size: 15.5px; }
+.pairs { font-size: 15px; margin-top: 8px; }
+.opts { display: grid; gap: 10px; margin-top: 14px; }
+.opts.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 520px) { .opts.two { grid-template-columns: 1fr; } }
+.opt { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 12px 16px; min-height: 54px; text-align: left; cursor: pointer; font-size: 19px; }
+.opt u { text-decoration-thickness: 3px; text-underline-offset: 4px; text-decoration-color: var(--accent); }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--good); background: var(--goodbg); }
+.opt.wrong { border-color: var(--bad); background: var(--badbg); opacity: .8; }
+.opt:disabled { cursor: default; }
+.sylrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.syl { border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px 20px; font-size: 26px; font-weight: 600; cursor: pointer; min-width: 70px; }
+.syl.right { border-color: var(--good); background: var(--goodbg); }
+.syl.wrong { border-color: var(--bad); background: var(--badbg); opacity: .8; }
+.fb { margin-top: 14px; padding: 12px 16px; border-radius: 12px; font-size: 16px; }
+.fb.ok { background: var(--goodbg); border: 1px solid var(--good); }
+.fb.no { background: var(--badbg); border: 1px solid var(--bad); }
+.fb.info { background: var(--soft); border: 1px solid var(--line); }
+.tick { display: flex; gap: 10px; align-items: center; margin-top: 14px; font-size: 16px; cursor: pointer; }
+.tick input { width: 22px; height: 22px; accent-color: var(--accent); }
+input.name { width: 100%; max-width: 380px; border: 2px solid var(--line); border-radius: 12px; padding: 10px 14px; min-height: 48px; background: var(--surface); }
+.rule { padding: 10px 0; border-top: 1px dashed var(--line); }
+.rule:first-of-type { border-top: 0; }
+.rule .ex { font-size: 20px; font-weight: 600; color: var(--accent); letter-spacing: .01em; }
+table.res { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 10px; }
+table.res td, table.res th { border-top: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
+.dock { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding: 10px 0 14px; }
+.dock .wrap { display: grid; gap: 8px; }
+.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); transition: width .25s; }
+.dockrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.dockrow .lbl { font-size: 14px; color: var(--muted); text-align: center; flex: 1; }
+.note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--soft); border: 1px solid var(--line); }
+.note.ok { background: var(--goodbg); border-color: var(--good); }
+.note.err { background: var(--badbg); border-color: var(--bad); }
+.stage { min-height: 300px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="kicker-row">
+      <div class="kicker">Ôn thi HK1 · Tiếng Anh 8 · Link 3/3</div>
+      <label class="voice">Giọng đọc <select id="voiceSel" aria-label="Chọn giọng đọc"></select></label>
+    </div>
+    <h1>Pronunciation 3: trọng âm (word stress)</h1>
+    <div class="steps" id="steps"></div>
+  </header>
+  <main class="stage" id="stage"></main>
+</div>
+<div class="dock">
+  <div class="wrap">
+    <div class="bar"><i id="barfill" style="width:0"></i></div>
+    <div class="dockrow">
+      <button class="btn" id="back">← Quay lại</button>
+      <div class="lbl" id="lbl"></div>
+      <button class="btn primary" id="next">Tiếp tục →</button>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnf8X3_Xfk9F_8HQtBwSFU_s28sRjxKb0aFaHCA4ybmMJvgaztBAbdvaFzITdbVXBt/exec";
+  var CFG = {"id": "stress", "lesson": "HK1 Pronunciation 3 - trong am", "hello": "Pronunciation 3: trọng âm", "intro": "Bài này luyện cách tìm <b>trọng âm</b> của từ 2 đến 4 âm tiết bằng quy tắc về loại từ và đuôi từ. Em cần tai nghe hoặc loa để bấm 🔊.", "steps": ["Mở đầu", "Học", "Luyện", "Nộp bài"], "groups": [{"title": "Quy tắc 1: từ 2 âm tiết", "sub": "Dấu ˈ đặt ngay trước âm tiết được nhấn.", "rules": [{"t": "Danh từ và tính từ 2 âm tiết: thường nhấn âm 1", "ex": "ˈteacher · ˈpicture · ˈhappy · ˈfamous", "say": ["teacher", "picture", "happy", "famous"]}, {"t": "Động từ 2 âm tiết: thường nhấn âm 2", "ex": "reˈlax · enˈjoy · preˈfer · deˈcide · exˈplain", "say": ["relax", "enjoy", "prefer", "decide", "explain"], "n": "Ngoại lệ hay gặp: ˈvisit, ˈlisten, ˈanswer, ˈtravel (đuôi -it, -en, -er, -el nhấn âm 1)."}, {"t": "Một số danh từ và tính từ 2 âm tiết nhấn âm 2", "ex": "hoˈtel · poˈlice · guiˈtar · aˈlone · poˈlite", "say": ["hotel", "police", "guitar", "alone", "polite"], "n": "Phải học thuộc theo từng từ."}], "tip": "Mẹo nhanh: <b>động từ → âm 2</b>, <b>danh từ/tính từ → âm 1</b>. Có ngoại lệ nên nghe kỹ bằng 🔊."}, {"title": "Quy tắc 2: đuôi quyết định trọng âm", "sub": "Nhìn đuôi từ là đoán được trọng âm.", "rules": [{"t": "Đuôi -tion, -sion, -ic, -ity, -ian, -ial: nhấn ngay âm trước đuôi", "ex": "traˈdition · ˌceleˈbration · fanˈtastic · acˈtivity · traˈditional", "say": ["tradition", "celebration", "fantastic", "activity", "traditional"]}, {"t": "Đuôi -ee, -eer, -ese: nhấn chính đuôi đó", "ex": "ˌvolunˈteer · ˌVietnaˈmese · ˌengiˈneer · ˌrefuˈgee", "say": ["volunteer", "Vietnamese", "engineer", "refugee"]}, {"t": "Đuôi -ful, -less, -ness, -ly, -ing, -ed, -er: không đổi trọng âm của từ gốc", "ex": "ˈbeauty → ˈbeautiful · sucˈcess → sucˈcessful · ˈcare → ˈcareless", "say": ["beautiful", "successful", "careless"]}], "tip": "Đây là dạng hay vào đề: bốn từ cùng đuôi nhưng một từ nhấn khác. Hãy tìm đuôi trước rồi mới đếm âm tiết."}, {"title": "Quy tắc 3: từ dài và từ ghép", "sub": "Từ vựng Unit 1 đến 6 có nhiều từ 3 đến 4 âm tiết.", "rules": [{"t": "Danh từ ghép: nhấn âm tiết của từ đầu", "ex": "ˈfireworks · ˈcountdown · ˈlifestyle · ˈbirthday", "say": ["fireworks", "countdown", "lifestyle", "birthday"]}, {"t": "Từ 3 âm tiết kết thúc -ous, -al, -ant, -ent: thường nhấn âm 1 hoặc 2, cần nghe kỹ", "ex": "ˈdangerous · ˈcomfortable · imˈportant · conˈvenient", "say": ["dangerous", "comfortable", "important", "convenient"]}, {"t": "Một số từ trong bài Unit 1 đến 6", "ex": "ˈfestival · ˈcustom · ˈtourist · reˈunion · ˈancestor · ˈethnic · ˈheritage · miˈnority", "say": ["festival", "custom", "tourist", "reunion", "ancestor", "ethnic", "heritage", "minority"]}], "tip": "Bấm 🔊 từng từ, gõ nhịp tay vào âm tiết nhấn rồi đọc to. Nhấn là đọc <b>to hơn, dài hơn và cao hơn</b>."}], "items": [{"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "teacher", "syl": ["tea", "cher"], "a": 0, "x": "<b>ˈteacher</b>: danh từ 2 âm tiết, nhấn âm 1.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "relax", "syl": ["re", "lax"], "a": 1, "x": "<b>reˈlax</b>: động từ 2 âm tiết, nhấn âm 2.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "enjoy", "syl": ["en", "joy"], "a": 1, "x": "<b>enˈjoy</b>: động từ 2 âm tiết, nhấn âm 2.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "hotel", "syl": ["ho", "tel"], "a": 1, "x": "<b>hoˈtel</b>: danh từ nhưng nhấn âm 2, phải học thuộc.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "festival", "syl": ["fes", "ti", "val"], "a": 0, "x": "<b>ˈfestival</b>: nhấn âm 1.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "tradition", "syl": ["tra", "di", "tion"], "a": 1, "x": "<b>traˈdition</b>: đuôi -tion nên nhấn âm ngay trước đuôi.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "celebration", "syl": ["ce", "le", "bra", "tion"], "a": 2, "x": "<b>ˌceleˈbration</b>: đuôi -tion nên nhấn âm ngay trước đuôi (bra).", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "Vietnamese", "syl": ["Viet", "nam", "ese"], "a": 2, "x": "<b>ˌVietnaˈmese</b>: đuôi -ese nhận trọng âm.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "volunteer", "syl": ["vol", "un", "teer"], "a": 2, "x": "<b>ˌvolunˈteer</b>: đuôi -eer nhận trọng âm.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "important", "syl": ["im", "por", "tant"], "a": 1, "x": "<b>imˈportant</b>: nhấn âm 2.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "community", "syl": ["com", "mu", "ni", "ty"], "a": 1, "x": "<b>comˈmunity</b>: đuôi -ity nên nhấn âm ngay trước đuôi (mu).", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "tap", "g": "Trọng âm", "p": "Nghe từ và bấm vào âm tiết có <u>trọng âm</u>.", "say": "independent", "syl": ["in", "de", "pen", "dent"], "a": 2, "x": "<b>ˌindeˈpendent</b>: nhấn âm 3.", "hint": "Nhớ quy tắc ở phần Học, đọc to từ rồi thử lại."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["teacher", "picture", "hotel", "window"], "a": 2, "x": "<b>hoˈtel</b> nhấn âm 2. ˈteacher, ˈpicture, ˈwindow nhấn âm 1.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["enjoy", "prefer", "relax", "listen"], "a": 3, "x": "<b>ˈlisten</b> nhấn âm 1. enˈjoy, preˈfer, reˈlax nhấn âm 2.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["tradition", "invention", "collection", "education"], "a": 3, "x": "<b>ˌeduˈcation</b> nhấn âm 3 (4 âm tiết). traˈdition, inˈvention, colˈlection nhấn âm 2. Đều nhấn ngay trước -tion.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["festival", "custom", "tourist", "reunion"], "a": 3, "x": "<b>reˈunion</b> nhấn âm 2. ˈfestival, ˈcustom, ˈtourist nhấn âm 1.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["Vietnamese", "volunteer", "engineer", "popular"], "a": 3, "x": "<b>ˈpopular</b> nhấn âm 1. Vietnaˈmese, volunˈteer, engiˈneer nhấn vào đuôi.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["beautiful", "dangerous", "comfortable", "delicious"], "a": 3, "x": "<b>deˈlicious</b> nhấn âm 2. ˈbeautiful, ˈdangerous, ˈcomfortable nhấn âm 1.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["important", "convenient", "traditional", "favourite"], "a": 3, "x": "<b>ˈfavourite</b> nhấn âm 1. imˈportant, conˈvenient, traˈditional nhấn âm 2.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["activity", "community", "popularity", "ability"], "a": 2, "x": "<b>ˌpopuˈlarity</b> nhấn âm 3. acˈtivity, comˈmunity, aˈbility nhấn âm 2. Đuôi -ity nhấn ngay trước đuôi.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["explain", "agree", "visit", "decide"], "a": 2, "x": "<b>ˈvisit</b> nhấn âm 1. exˈplain, aˈgree, deˈcide nhấn âm 2.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}, {"t": "sodd", "g": "Trọng âm", "p": "Chọn từ có trọng âm rơi vào âm tiết <u>khác</u> với ba từ còn lại.", "o": ["peaceful", "careful", "useful", "successful"], "a": 3, "x": "<b>sucˈcessful</b> nhấn âm 2 vì từ gốc sucˈcess. ˈpeaceful, ˈcareful, ˈuseful nhấn âm 1. Đuôi -ful không đổi trọng âm.", "hint": "Đọc từng từ và gõ nhịp vào âm tiết nhấn, rồi so sánh vị trí."}]};
+  var LESSON = CFG.lesson;
+  var KEY = "pron-" + CFG.id;
+  var $ = function (s) { return document.querySelector(s); };
+  function strip(h) { var d = document.createElement("div"); d.innerHTML = h; return d.textContent; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  var S = { i: 0, name: "", tick: {}, res: {}, submitted: false };
+  try { var sv = JSON.parse(localStorage.getItem(KEY) || "null"); if (sv && typeof sv === "object") { S.name = sv.name || ""; S.tick = sv.tick || {}; S.res = sv.res || {}; S.submitted = !!sv.submitted; S.i = sv.i || 0; } } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+  /* ---------- speech ---------- */
+  var synth = window.speechSynthesis || null, voices = [], voiceName = "";
+  function loadVoices() {
+    if (!synth) return;
+    voices = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
+    var sel = $("#voiceSel"); sel.innerHTML = "";
+    if (!voices.length) { sel.innerHTML = "<option>Máy chưa có giọng đọc</option>"; return; }
+    voices.sort(function (a, b) { return (/en-GB/i.test(b.lang) ? 1 : 0) - (/en-GB/i.test(a.lang) ? 1 : 0); });
+    voices.forEach(function (v) { var o = document.createElement("option"); o.value = v.name; o.textContent = v.name + " (" + v.lang + ")"; sel.appendChild(o); });
+    if (!voiceName) voiceName = voices[0].name;
+    sel.value = voiceName;
+  }
+  if (synth) { loadVoices(); synth.onvoiceschanged = loadVoices; }
+  $("#voiceSel").addEventListener("change", function (e) { voiceName = e.target.value; });
+  function say(t) {
+    if (!synth) { alert("Trình duyệt này chưa hỗ trợ đọc mẫu. Em thử mở bằng Chrome hoặc Safari."); return; }
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; u.rate = 0.82;
+    var v = voices.filter(function (x) { return x.name === voiceName; })[0]; if (v) { u.voice = v; u.lang = v.lang; }
+    synth.speak(u);
+  }
+
+  /* ---------- scenes ---------- */
+  var SC = [{ k: "intro", step: 0 }];
+  CFG.groups.forEach(function (g, n) { SC.push({ k: "learn", step: 1, g: g, id: "g" + n }); });
+  CFG.items.forEach(function (it, n) { SC.push({ k: "q", step: 2, it: it, id: "q" + n, n: n }); });
+  SC.push({ k: "end", step: 3 });
+  var NQ = CFG.items.length;
+  if (S.i >= SC.length || S.i < 0) S.i = 0;
+
+  function solved(id) { var r = S.res[id]; return !!(r && r.done); }
+  function canNext() {
+    var s = SC[S.i];
+    if (s.k === "intro") return S.name.trim().length >= 2;
+    if (s.k === "learn") return !!S.tick[s.id];
+    if (s.k === "q") return solved(s.id);
+    return false;
+  }
+  function stepReach(st) { // can the chip for step st be opened
+    for (var j = 0; j < SC.length; j++) {
+      if (SC[j].step === st) return j <= maxOpen();
+    }
+    return false;
+  }
+  function maxOpen() {
+    var m = 0;
+    for (var j = 0; j < SC.length; j++) {
+      m = j;
+      var s = SC[j], ok = true;
+      if (s.k === "intro") ok = S.name.trim().length >= 2;
+      else if (s.k === "learn") ok = !!S.tick[s.id];
+      else if (s.k === "q") ok = solved(s.id);
+      else ok = false;
+      if (!ok) break;
+    }
+    return m;
+  }
+
+  function renderSteps() {
+    var cur = SC[S.i].step, h = "";
+    CFG.steps.forEach(function (nm, st) {
+      var cls = "chip" + (st === cur ? " cur" : "") + (st < cur ? " done" : "") + (stepReach(st) ? "" : " lock");
+      h += '<button class="' + cls + '" data-st="' + st + '"><span class="n">' + (st < cur ? "✓" : st + 1) + "</span>" + nm + "</button>";
+    });
+    $("#steps").innerHTML = h;
+    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (b) {
+      b.onclick = function () {
+        var st = +b.getAttribute("data-st"); if (!stepReach(st)) return;
+        for (var j = 0; j < SC.length; j++) if (SC[j].step === st) { S.i = j; break; }
+        save(); render();
+      };
+    });
+  }
+
+  function listenBtn(t, big) { return '<button class="spk' + (big ? " big" : "") + '" data-say="' + esc(t) + '" aria-label="Nghe ' + esc(t) + '">🔊</button>'; }
+  function bindSay(root) {
+    Array.prototype.forEach.call(root.querySelectorAll("[data-say]"), function (b) { b.onclick = function () { say(b.getAttribute("data-say")); }; });
+  }
+
+  function sceneIntro() {
+    return '<div class="card"><h2>' + CFG.hello + '</h2><p>' + CFG.intro + '</p>' +
+      '<p><b>Cách học:</b> (1) nghe và đọc to từng nhóm âm, (2) làm bài luyện, sai thì thử lại, (3) nộp bài cho cô.</p>' +
+      '<label for="nm"><b>Em tên là gì?</b></label><br><input class="name" id="nm" autocomplete="name" placeholder="Họ và tên" value="' + esc(S.name) + '"></div>';
+  }
+  function sceneLearn(s) {
+    var g = s.g, h = '<div class="card"><h2>' + g.title + '</h2><div class="muted">' + g.sub + "</div>";
+    if (g.cols) {
+      h += '<div class="cols" style="margin-top:14px">';
+      g.cols.forEach(function (c) {
+        h += '<div class="col"><h3>' + c.ipa + "</h3><div class=\"how\">" + c.how + "</div>";
+        c.words.forEach(function (w) {
+          h += '<div class="w">' + listenBtn(w[0]) + "<b>" + w[0] + '</b><span class="ipa">' + w[1] + '</span><span class="vi">' + w[2] + "</span></div>";
+        });
+        h += "</div>";
+      });
+      h += "</div>";
+    }
+    if (g.rules) {
+      g.rules.forEach(function (r) {
+        h += '<div class="rule"><div><b>' + r.t + "</b></div>";
+        h += '<div class="ex">' + r.ex + "</div>";
+        if (r.say) h += '<div style="margin-top:6px">' + r.say.map(function (w) { return listenBtn(w); }).join(" ") + "</div>";
+        if (r.n) h += '<div class="muted" style="font-size:15px;margin-top:4px">' + r.n + "</div>";
+        h += "</div>";
+      });
+    }
+    if (g.pairs) h += '<div class="pairs"><b>Cặp từ dễ nhầm:</b> ' + g.pairs + "</div>";
+    if (g.tip) h += '<div class="tip">' + g.tip + "</div>";
+    h += '<label class="tick"><input type="checkbox" id="tk"' + (S.tick[s.id] ? " checked" : "") + '> Em đã nghe và đọc to các từ trên</label></div>';
+    return h;
+  }
+  function qBody(s) {
+    var it = s.it, r = S.res[s.id] || { tries: 0, wrong: [] }, done = !!r.done, h = "";
+    var tag = { odd: "Chọn từ khác âm", listen: "Nghe và chọn", cls: "Nghe và phân loại", tap: "Bấm âm tiết có trọng âm", sodd: "Chọn từ khác trọng âm" }[it.t];
+    h += '<div class="card"><div class="muted">Câu ' + (s.n + 1) + "/" + NQ + " · " + tag + "</div>";
+    if (it.t === "odd" || it.t === "sodd") h += "<h2>" + it.p + "</h2>";
+    if (it.t === "listen" || it.t === "cls") h += "<h2>" + it.p + "</h2><div>" + listenBtn(it.say, true) + "</div>";
+    if (it.t === "tap") h += "<h2>" + it.p + '</h2><div>' + listenBtn(it.say, true) + "</div>";
+    if (it.t === "tap") {
+      h += '<div class="sylrow">';
+      it.syl.forEach(function (sy, j) {
+        var c = "syl"; if (r.wrong && r.wrong.indexOf(j) > -1) c += " wrong"; if (done && j === it.a) c += " right";
+        h += '<button class="' + c + '" data-o="' + j + '"' + (done || (r.wrong && r.wrong.indexOf(j) > -1) ? " disabled" : "") + ">" + sy + "</button>";
+      });
+      h += "</div>";
+    } else {
+      h += '<div class="opts' + (it.o.length === 2 ? " two" : "") + '">';
+      it.o.forEach(function (o, j) {
+        var c = "opt"; if (r.wrong && r.wrong.indexOf(j) > -1) c += " wrong"; if (done && j === it.a) c += " right";
+        var dis = done || (r.wrong && r.wrong.indexOf(j) > -1);
+        h += '<button class="' + c + '" data-o="' + j + '"' + (dis ? " disabled" : "") + "><span>" + o + "</span>";
+        if (it.t === "odd" || it.t === "sodd") h += '<span class="spk" style="display:inline-grid;place-items:center" data-say="' + esc(strip(o)) + '" role="button" aria-label="Nghe">🔊</span>';
+        h += "</button>";
+      });
+      h += "</div>";
+    }
+    if (done) {
+      h += '<div class="fb ' + (r.shown ? "info" : "ok") + '">' + (r.shown ? "<b>Đáp án:</b> " : "<b>Đúng rồi!</b> ") + it.x + "</div>";
+    } else if (r.tries > 0) {
+      h += '<div class="fb no"><b>Chưa đúng.</b> ' + (it.hint || "Nghe lại rồi chọn đáp án khác nhé.") + "</div>";
+    }
+    return h + "</div>";
+  }
+  function answer(s, val) {
+    var it = s.it, r = S.res[s.id] || (S.res[s.id] = { tries: 0, first: null, done: false, shown: false, wrong: [], ans: "" });
+    if (r.done) return;
+    var ok = (val === it.a);
+    r.tries++; if (r.first === null) r.first = ok;
+    r.ans = it.t === "tap" ? it.syl[val] : strip(it.o[val]);
+    if (ok) r.done = true; else { r.wrong.push(val); if (r.tries >= 2) { r.done = true; r.shown = true; } }
+    save(); render();
+  }
+  function scoreInfo() {
+    var ok = 0, total = SC.filter(function (s) { return s.k === "q"; }).length;
+    SC.forEach(function (s) { if (s.k === "q") { var r = S.res[s.id]; if (r && r.first && !r.shown) ok++; } });
+    return { ok: ok, total: total };
+  }
+  function sceneEnd() {
+    var sc = scoreInfo(), h = '<div class="card"><h2>Nộp bài</h2><p>Em làm đúng ngay lần đầu <b>' + sc.ok + "/" + sc.total + "</b> câu.</p>";
+    var miss = [];
+    SC.forEach(function (s) { if (s.k === "q") { var r = S.res[s.id]; if (!(r && r.first)) miss.push(s); } });
+    if (miss.length) {
+      h += "<b>Những câu cần ôn lại:</b><table class=\"res\">";
+      miss.forEach(function (s) { h += "<tr><td>Câu " + (s.n + 1) + "</td><td>" + s.it.x + "</td></tr>"; });
+      h += "</table>";
+    } else h += "<p>Em không sai câu nào. Rất tốt!</p>";
+    h += '<div style="margin-top:16px"><button class="btn primary" id="subBtn"' + (S.submitted ? " disabled" : "") + ">" + (S.submitted ? "Đã nộp" : "Nộp bài cho cô") + '</button></div><div id="subMsg">' + (S.submitted ? '<div class="note ok">Đã nộp bài cho cô. Em có thể đóng trang này.</div>' : "") + "</div></div>";
+    return h;
+  }
+
+  function render() {
+    var s = SC[S.i], st = $("#stage");
+    st.innerHTML = s.k === "intro" ? sceneIntro() : s.k === "learn" ? sceneLearn(s) : s.k === "q" ? qBody(s) : sceneEnd();
+    bindSay(st);
+    if (s.k === "intro") { $("#nm").oninput = function (e) { S.name = e.target.value; save(); upd(); }; }
+    if (s.k === "learn") { $("#tk").onchange = function (e) { S.tick[s.id] = e.target.checked; save(); upd(); }; }
+    if (s.k === "q") {
+      Array.prototype.forEach.call(st.querySelectorAll("[data-o]"), function (b) { b.onclick = function () { answer(s, +b.getAttribute("data-o")); }; });
+    }
+    if (s.k === "end") { var b = $("#subBtn"); if (b) b.onclick = submitAll; }
+    renderSteps(); upd();
+    window.scrollTo(0, 0);
+  }
+  function upd() {
+    var s = SC[S.i];
+    $("#barfill").style.width = Math.round((S.i / (SC.length - 1)) * 100) + "%";
+    $("#lbl").textContent = (S.i + 1) + " / " + SC.length;
+    $("#back").disabled = S.i === 0;
+    var nx = $("#next"); nx.style.visibility = s.k === "end" ? "hidden" : "visible"; nx.disabled = !canNext();
+    renderSteps();
+  }
+  $("#back").onclick = function () { if (S.i > 0) { S.i--; save(); render(); } };
+  $("#next").onclick = function () { if (canNext() && S.i < SC.length - 1) { S.i++; save(); render(); } };
+
+  /* ---------- submit ---------- */
+  async function post(obj) {
+    var body = JSON.stringify(obj), headers = { "Content-Type": "text/plain;charset=utf-8" };
+    try {
+      var r = await fetch(SCRIPT_URL, { method: "POST", headers: headers, body: body, redirect: "follow" });
+      var j = await r.json(); return j && j.ok === true;
+    } catch (e) {
+      try { await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: headers, body: body }); return true; } catch (e2) { return false; }
+    }
+  }
+  async function submitAll() {
+    var btn = $("#subBtn"), msg = $("#subMsg"); if (S.submitted) return;
+    btn.disabled = true; msg.innerHTML = '<div class="note">Đang gửi bài. Em đừng đóng trang nhé.</div>';
+    var details = [], sc = scoreInfo();
+    SC.forEach(function (s) {
+      if (s.k !== "q") return;
+      var r = S.res[s.id] || {}, it = s.it;
+      var correct = it.t === "tap" ? it.syl[it.a] : strip(it.o[it.a]);
+      details.push({ part: it.g, question: strip(it.p) + (it.say ? " [" + it.say + "]" : ""), answer: r.ans || "", correct: correct, result: (r.first && !r.shown ? "✅ Đúng lần đầu" : "❌ Sai lần đầu") + (r.tries > 1 ? " (" + r.tries + " lượt chọn)" : "") + (r.shown ? ", đã xem đáp án" : "") });
+    });
+    var ok = await post({ type: "submit", name: S.name.trim(), lesson: LESSON, summary: { recordings: 0, avg: null, full: null, writes: "Pronunciation", quiz: sc.ok + "/" + sc.total }, details: details });
+    if (!ok) { msg.innerHTML = '<div class="note err">Chưa gửi được. Em kiểm tra mạng rồi bấm lại nhé.</div>'; btn.disabled = false; return; }
+    S.submitted = true; save();
+    btn.textContent = "Đã nộp";
+    msg.innerHTML = '<div class="note ok">Đã nộp bài cho cô. Em làm tốt lắm! Em có thể đóng trang này.</div>';
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
